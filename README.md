@@ -19,18 +19,18 @@
 
 
 ----------------------------------------------
-# Requirements
+## Requirements
 * Visual Studio 2019 (no 2022, cause it's run on only 64bit, not compatible with 32bit COM. )
 * .NET 5.0 or later
 
-# Dependency
+## Dependency
 * Microsoft.Office.Core = 15.0.0
 * Microsoft.Office.Interop.PowerPoint = 15.0.4420.1028
 * HwpObjectLib = 1.0.0	(HwpCtrl api는 오류 발생)
 * [한글 보안 모듈](https://www.hancom.com/board/devdataView.do?board_seq=47&artcl_seq=4084&pageInfo.page=&search_text=)
 * WindowsApiCodePack = 1.1.3 (not essential)
 
-# Others
+## Others
 * 성경 축약어 텍스트
 * 한글 성경 데이터
 --------------------------------------------------
