@@ -12,6 +12,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Office.Core;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using HwpObjectLib;
+using System.Data.SQLite;
 
 namespace SundayWorshipPPTMaker
 {
@@ -42,12 +43,16 @@ namespace SundayWorshipPPTMaker
 
 	public partial class MainWindow : Window
 	{
-		public List<string> books;
-		public List<string> abbr;
+		public List<string> books=new List<string>();
+		public List<string> abbr=new List<string>();
+		public List<int> numOfChapters = new List<int>();
 		public string workFolder;
 		private DateTime dt;
 		private Jubo jubo;
 		string OutputDirectory = @"\Out\";
+		private SQLiteConnection conn = null;
+		private SQLiteCommand command = null;
+		private SQLiteDataReader rdr = null;
 
 		/// <summary>
 		/// 주보 파일에 대한 Path와 추출 데이터.
@@ -114,14 +119,26 @@ namespace SundayWorshipPPTMaker
 				BVSStart.book = wordList[verse];
 				BVSEnd.book = BVSStart.book;
 				int ch_length = wordList[verse + 1].Length;
-				if (char.IsLetter(wordList[verse + 1][ch_length - 1])) { wordList[verse + 1] = wordList[verse + 1].Substring(0,ch_length-1); }
-				BVSStart.chapter = int.Parse(wordList[verse + 1]);
-				BVSEnd.chapter = BVSStart.chapter;
-				int ps_length = wordList[verse + 2].Length;
-				if (char.IsLetter(wordList[verse + 2][ps_length - 1])) { wordList[verse + 2] = wordList[verse + 2].Substring(0,ps_length - 1); }
-				string[] range = wordList[verse + 2].Split('-','~',':');
-				BVSStart.passage = int.Parse(range[0]);
-				BVSEnd.passage = int.Parse(range[1]);
+
+				string[] range = wordList[verse + 1].Split('-', '~', ':');
+				if (range.Length == 4)
+                {
+					BVSStart.chapter = int.Parse(range[0]);
+					BVSStart.passage = int.Parse(range[1]);
+					BVSEnd.chapter = int.Parse(range[2]);
+					BVSEnd.passage = int.Parse(range[3]);
+                }
+
+				else {
+							if (char.IsLetter(wordList[verse + 1][ch_length - 1])) { wordList[verse + 1] = wordList[verse + 1].Substring(0, ch_length - 1); }
+							BVSStart.chapter = int.Parse(wordList[verse + 1]);
+							BVSEnd.chapter = BVSStart.chapter;
+							int ps_length = wordList[verse + 2].Length;
+							if (char.IsLetter(wordList[verse + 2][ps_length - 1])) { wordList[verse + 2] = wordList[verse + 2].Substring(0, ps_length - 1); }
+							range = wordList[verse + 2].Split('-', '~', ':');
+							BVSStart.passage = int.Parse(range[0]);
+							BVSEnd.passage = int.Parse(range[1]);
+				}
 
 				//말씀선포
 				int preach= wordList.IndexOf("말씀선포", idx_worship_start, idx_worship_end - idx_worship_start);
@@ -266,20 +283,15 @@ namespace SundayWorshipPPTMaker
 		{
 			InitializeComponent();
 
+			//GetBibleBooks();
+			GetBibleBooksDB();
+			InitComponentsValues();
 
-			books = new List<string>();
-			abbr = new List<string>();
-
-			GetBibleBooks();
-            
-            CmbStartBook.ItemsSource = books;
-			CmbEndBook.ItemsSource = books;
-
-			dt = GetComingSundayDate();
-			TxtOutputFileName.Text = dt.ToString("yyyy.MM.dd") + " 고등부 예배.pptx";
+			
 			jubo = new Jubo(dt.ToString("yy. M. d"));
 
             RegisterHWPSecurityModule();
+			
 		}
 
 		/// <summary>
@@ -328,6 +340,42 @@ namespace SundayWorshipPPTMaker
 			}
 		}
 
+		private void GetBibleBooksDB()
+        {
+			if (!File.Exists("RevisedKorBible.db"))
+            {
+				GetBibleBooks();
+				return;
+            }
+			conn = new SQLiteConnection("Data Source=RevisedKorBible.db;Version=3");
+			conn.Open();
+			command = conn.CreateCommand();
+			command.CommandText = String.Format("select Name,Abbr,Chapters from Books");
+			rdr = command.ExecuteReader();
+
+            while (rdr.Read())
+            {
+				books.Add(rdr.GetString(0));
+				abbr.Add(rdr.GetString(1));
+				numOfChapters.Add(rdr.GetInt32(2));
+            }
+        }
+
+		private void InitComponentsValues()
+        {
+			GetBibleBooksDB();
+			CmbStartBook.ItemsSource = books;
+			CmbEndBook.ItemsSource = books;
+			CmbStartBook.SelectedIndex = 0;
+			CmbEndBook.SelectedIndex = 0;
+			NumStartChapter.Value = 1;
+			NumStartPassage.Value = 1;
+			NumEndChapter.Value = 1;
+			NumEndPassage.Value = 1;
+
+			dt = GetComingSundayDate();
+			TxtOutputFileName.Text = dt.ToString("yyyy.MM.dd") + " 고등부 예배.pptx";
+		}
 		/// <summary>
 		/// 새 PPT에 필요한 모든 파일이 저장된 폴더를 작업폴더로 설정한다.
 		/// </summary>
@@ -367,11 +415,15 @@ namespace SundayWorshipPPTMaker
 				
 				//Update Fields
 				CmbStartBook.SelectedIndex=books.IndexOf(jubo.BVSStart.book);
-				TxtStartChapter.Text = jubo.BVSStart.chapter.ToString();
-				TxtStartPassage.Text = jubo.BVSStart.passage.ToString();
+				NumStartChapter.Value = jubo.BVSStart.chapter;
+				NumStartPassage.Value = jubo.BVSStart.passage;
+				//TxtStartChapter.Text = jubo.BVSStart.chapter.ToString();
+				//TxtStartPassage.Text = jubo.BVSStart.passage.ToString();
 				CmbEndBook.SelectedIndex = books.IndexOf(jubo.BVSEnd.book);
-				TxtEndChapter.Text = jubo.BVSEnd.chapter.ToString();
-				TxtEndPassage.Text = jubo.BVSEnd.passage.ToString();
+				NumEndChapter.Value = jubo.BVSEnd.chapter;
+				NumEndPassage.Value = jubo.BVSEnd.passage;
+				//TxtEndChapter.Text = jubo.BVSEnd.chapter.ToString();
+				//TxtEndPassage.Text = jubo.BVSEnd.passage.ToString();
 
 				//생일 필드
 				//생일자 있으면
@@ -481,9 +533,18 @@ namespace SundayWorshipPPTMaker
 		/// <summary>
 		/// 시작 범위의 책과 끝 범위의 책을 같이 변경한다.
 		/// </summary>
-		private void CmbStartBook_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void CmbBook_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			CmbEndBook.SelectedIndex = CmbStartBook.SelectedIndex;
+            if (((ComboBox)sender).Name == "CmbStartBook") 
+				CmbEndBook.SelectedIndex = CmbStartBook.SelectedIndex;
+			else
+				if (CmbStartBook.SelectedIndex > CmbEndBook.SelectedIndex)
+					CmbStartBook.SelectedIndex = CmbEndBook.SelectedIndex;
+			
+			int num= numOfChapters[((ComboBox)sender).SelectedIndex];
+			NumStartChapter.Maximum = num;
+			NumEndChapter.Maximum = num;
+			
 		}
 		/// <summary>
 		/// 끝 범위의 책이 시작 범위 보다 앞서지 않게 한다.
@@ -493,6 +554,53 @@ namespace SundayWorshipPPTMaker
 			if (CmbStartBook.SelectedIndex > CmbEndBook.SelectedIndex)
 				CmbStartBook.SelectedIndex = CmbEndBook.SelectedIndex;
 		}
+
+		private void NumStartChapter_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			conn = new SQLiteConnection("Data Source=RevisedKorBible.db;Verseion=3");
+			conn.Open();
+			command = conn.CreateCommand();
+			command.CommandText = String.Format("select count(*) from {0} where Chapter={1}", CmbStartBook.Text, ((Xceed.Wpf.Toolkit.IntegerUpDown)sender).Value);
+			rdr = command.ExecuteReader();
+			while (rdr.Read())
+			{
+				int num = rdr.GetInt32(0);
+				NumStartPassage.Maximum = num;
+			}
+			rdr.Close();
+
+			NumEndChapter.Minimum = NumStartChapter.Value;
+		}
+
+		private void NumStartPassage_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			if (NumStartChapter.Value == NumEndChapter.Value)
+				NumEndPassage.Minimum = NumStartPassage.Value;
+		}
+
+		private void NumEndChapter_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			conn = new SQLiteConnection("Data Source=RevisedKorBible.db;Verseion=3");
+			conn.Open();
+			command = conn.CreateCommand();
+			command.CommandText = String.Format("select count(*) from {0} where Chapter={1}", CmbStartBook.Text, ((Xceed.Wpf.Toolkit.IntegerUpDown)sender).Value);
+			rdr = command.ExecuteReader();
+			while (rdr.Read())
+			{
+				int num = rdr.GetInt32(0);
+				NumEndPassage.Maximum = num;
+			}
+			rdr.Close();
+
+			if (NumStartChapter.Value != NumEndChapter.Value)
+				NumEndPassage.Minimum = 1;
+		}
+
+		private void NumEndPassage_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+
+		}
+
 		/// <summary>
 		/// 시작 장과 끝 장을 같이 변경한다.
 		/// </summary>
@@ -604,6 +712,25 @@ namespace SundayWorshipPPTMaker
 			}
 			return verses;
         }
+		
+		private List<Tuple<string,string>> GetAllBibleVerseDB(BibleVerseSkeleton start, BibleVerseSkeleton end)
+        {
+			List<Tuple<string,string>> verses = new List<Tuple<string, string>>();
+			conn = new SQLiteConnection("Data Source=RevisedKorBible.db;Verseion=3");
+			conn.Open();
+			command = conn.CreateCommand();
+			command.CommandText = String.Format("select * from {0} where rowid between ", start.book) +
+				String.Format("(select rowid from {0} where Chapter={1} and Passage={2}) and (select rowid from {0} where Chapter={3} and Passage={4})",
+				start.book, start.chapter, start.passage, end.chapter, end.passage);
+			rdr = command.ExecuteReader();
+            while (rdr.Read())
+            {
+				verses.Add(new Tuple<string, string>(rdr.GetInt32(0).ToString() + ":" + rdr.GetInt32(1).ToString(), rdr.GetString(2)));
+            }
+			rdr.Close();
+			return verses;
+		}
+
 		/// <summary>
 		/// PPT생성 작업 전 빠진 부분 체크.
 		/// </summary>
@@ -686,23 +813,34 @@ namespace SundayWorshipPPTMaker
 			if (jubo.BVSStart.book == "시편")
 				verseString += "편 ";
 			else
-				verseString += "장";
+				verseString += "장 ";
 			verseString += jubo.BVSStart.passage.ToString() + "-" + jubo.BVSEnd.passage.ToString() + "절";
 
 			presentation.Slides[Constants.BibleEntry].Shapes[4].TextFrame.TextRange.Text = verseString;
 
 			//6:범위 3:본문
-			int passagesNum = jubo.BVSEnd.passage - jubo.BVSStart.passage;
+			//List<string> verses=GetAllBibleVerse(jubo.BVSStart, passagesNum);
+			List<Tuple<string,string>> verses = GetAllBibleVerseDB(jubo.BVSStart, jubo.BVSEnd);
+			int passagesNum = verses.Count();
             presentation.Slides[Constants.BibleEntry + 1].Shapes[6].TextFrame.TextRange.Text = verseString.Replace('-', '~');
-            for (int i = 0; i < passagesNum; i++)
+            for (int i = 0; i < passagesNum-1; i++)
             {
                 presentation.Slides[Constants.BibleEntry + 1].Duplicate();
             }
-			List<string> verses=GetAllBibleVerse(jubo.BVSStart, passagesNum);
-            for (int i = 0; i <= passagesNum; i++)
+				
+            for (int i = 0; i < passagesNum; i++)
             {
-                presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = verses[i];
-                presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.StartValue = jubo.BVSStart.passage + i;
+				string[] va = verses[i].Item1.Split(':');
+				if (int.Parse(va[0]) != jubo.BVSStart.chapter)
+                {
+					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletNone;
+					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = va[1] + ". " + verses[i].Item2;
+				}
+                else
+                {
+					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = verses[i].Item2;
+					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.StartValue = int.Parse(va[1]);
+                }
             }
 			
 
@@ -733,13 +871,17 @@ namespace SundayWorshipPPTMaker
 			//Save
 			string fileName = @"\"+TxtOutputFileName.Text;
 			string tempFilePath;
-			if (!System.IO.Directory.Exists(TxtOutputFolder.Text))
+			if (!Directory.Exists(TxtOutputFolder.Text))
 			{
 				//tempFilePath=Documents
 			}
 			tempFilePath = TxtOutputFolder.Text + @"\new";
 			string finalFilePath = TxtOutputFolder.Text + fileName;
 
+            if (!Directory.Exists(finalFilePath))
+            {
+				File.Delete(finalFilePath);
+            }
 			presentation.Export(tempFilePath, "pptx");
 			presentation.Close();
 
@@ -747,5 +889,7 @@ namespace SundayWorshipPPTMaker
 			System.IO.File.Move(tempFilePath + ".pptx", finalFilePath);
 			pptPres.Open(finalFilePath);
 		}
-	}
+
+        
+    }
 }
