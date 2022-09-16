@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SundayWorshipPPTMaker"
         mc:Ignorable="d"
-        Title="대양교회 고등부 예배ppt 제작기" Height="500" Width="500">
+        Title="대양교회 고등부 예배ppt 제작기" Height="500" Width="550">
     <Grid Margin="2" Background="Lavender" UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="1.4*" />
@@ -25,15 +26,15 @@
         <Grid.ColumnDefinitions >
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.5*" />
             <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.5*" />
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="1.5*" />
             <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.5*" />
             <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.5*" />
         </Grid.ColumnDefinitions>
         <Border Grid.Column="6" Grid.ColumnSpan="5">
             <Grid>
@@ -67,23 +68,31 @@
         </StackPanel>
 
         <Label Grid.Row="6">Bible</Label>
-        <ComboBox Name="CmbStartBook" IsEditable="True" SelectionChanged="CmbStartBook_SelectionChanged"  
+        <ComboBox Name="CmbStartBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"  
                   Grid.Row="6" Grid.Column="1" />
 
+        <xctk:IntegerUpDown Name="NumStartChapter" ValueChanged="NumStartChapter_ValueChanged"
+                            Grid.Row="6" Grid.Column="2" Margin="4" Minimum="1" ClipValueToMinMax="True" />
         <TextBox Name="TxtStartChapter" TextChanged="TxtStartChapter_TextChanged"
-                 Grid.Row="6" Grid.Column="2" Margin="3" />
+                 Grid.Row="6" Grid.Column="2" Margin="3" Visibility="Collapsed"/>
         <TextBlock Grid.Row="6" Grid.Column="3">:</TextBlock>
+        <xctk:IntegerUpDown Name="NumStartPassage" ValueChanged="NumStartPassage_ValueChanged" 
+                            Grid.Row="6" Grid.Column="4" Margin="4" Minimum="1" ClipValueToMinMax="True"/>
         <TextBox Name="TxtStartPassage" TextChanged="TxtStartPassage_TextChanged"
-                 Grid.Row="6" Grid.Column="4" Margin="3" />
+                 Grid.Row="6" Grid.Column="4" Margin="3" Visibility="Collapsed"/>
         <TextBlock Grid.Row="6" Grid.Column="5">~</TextBlock>
-        <ComboBox Name="CmbEndBook" IsEditable="True" SelectionChanged="CmbEndBook_SelectionChanged"
+        <ComboBox Name="CmbEndBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"
                   Grid.Row="6" Grid.Column="6" Grid.ColumnSpan="2" />
-
+        
+        <xctk:IntegerUpDown Name="NumEndChapter" ValueChanged="NumEndChapter_ValueChanged"
+                            Grid.Row="6" Grid.Column="8" Margin="4" Minimum="1" ClipValueToMinMax="True" />
         <TextBox Name="TxtEndChapter" TextChanged="TxtEndChapter_TextChanged"
-                 Grid.Row="6" Grid.Column="8" Margin="3" />
+                 Grid.Row="6" Grid.Column="8" Margin="3" Visibility="Collapsed"/>
         <TextBlock Grid.Row="6" Grid.Column="9">:</TextBlock>
+        <xctk:IntegerUpDown Name="NumEndPassage" ValueChanged="NumEndPassage_ValueChanged"
+                            Grid.Row="6" Grid.Column="10" Margin="4" Minimum="1" ClipValueToMinMax="True" />
         <TextBox Name="TxtEndPassage" TextChanged="TxtEndPassage_TextChanged"
-                 Grid.Row="6" Grid.Column="10" Margin="3" />
+                 Grid.Row="6" Grid.Column="10" Margin="3" Visibility="Collapsed" />
 
 
         <Label Grid.Row="7">Prayer</Label>
