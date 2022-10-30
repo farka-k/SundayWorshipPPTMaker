@@ -6,8 +6,11 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86</Platforms>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon />
+    <ApplicationIcon>icon_default_navy.ico</ApplicationIcon>
     <Win32Resource />
+    <Company />
+    <Authors>Farka</Authors>
+    <RepositoryUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,6 +31,9 @@
 
   <ItemGroup>
     <None Remove="BibleBooks.txt" />
+    <None Remove="logo01.png" />
+    <None Remove="logo02.png" />
+    <None Remove="logo03.png" />
     <None Remove="RevisedKorBible.txt" />
   </ItemGroup>
 
@@ -45,6 +51,9 @@
 
   <ItemGroup>
     <EmbeddedResource Include="BibleBooks.txt" />
+    <Resource Include="logo01.png" />
+    <Resource Include="logo02.png" />
+    <Resource Include="logo03.png" />
     <EmbeddedResource Include="RevisedKorBible.txt" />
   </ItemGroup>
 

@@ -70,6 +70,26 @@ namespace SundayWorshipPPTMaker.Properties {
         }
         
         /// <summary>
+        ///   (아이콘)과(와) 유사한 System.Drawing.Icon 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Icon icon_default_gold {
+            get {
+                object obj = ResourceManager.GetObject("icon_default_gold", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   (아이콘)과(와) 유사한 System.Drawing.Icon 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Icon icon_default_navy {
+            get {
+                object obj = ResourceManager.GetObject("icon_default_navy", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   파일이름을 설정하세요.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string InvalidFileName {
@@ -102,6 +122,36 @@ namespace SundayWorshipPPTMaker.Properties {
         internal static string InvalidWorkingDirectory {
             get {
                 return ResourceManager.GetString("InvalidWorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap logo01 {
+            get {
+                object obj = ResourceManager.GetObject("logo01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap logo02 {
+            get {
+                object obj = ResourceManager.GetObject("logo02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap logo03 {
+            get {
+                object obj = ResourceManager.GetObject("logo03", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

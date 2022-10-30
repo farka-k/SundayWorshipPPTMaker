@@ -121,6 +121,13 @@
     <value>HKEY_Current_User\Software\HNC\HwpCtrl\Modules</value>
     <comment>보안모듈 레지스트리 설치 경로</comment>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="icon_default_gold" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_default_gold.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_default_navy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_default_navy.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="InvalidFileName" xml:space="preserve">
     <value>파일이름을 설정하세요.</value>
   </data>
@@ -132,6 +139,15 @@
   </data>
   <data name="InvalidWorkingDirectory" xml:space="preserve">
     <value>작업폴더를 설정하세요.</value>
+  </data>
+  <data name="logo01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\logo01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="logo02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\logo02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="logo03" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\logo03.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NoPraise" xml:space="preserve">
     <value>추가된 곡이 없습니다.</value>
