@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
+using System.Drawing;
+using System.Windows.Media.Imaging;
 
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -43,6 +45,7 @@ namespace SundayWorshipPPTMaker
 
 	public partial class MainWindow : Window
 	{
+		Settings settings;
 		public List<string> books=new List<string>();
 		public List<string> abbr=new List<string>();
 		public List<int> numOfChapters = new List<int>();
@@ -364,6 +367,7 @@ namespace SundayWorshipPPTMaker
 		private void InitComponentsValues()
         {
 			GetBibleBooksDB();
+			LoadLogoImage();
 			CmbStartBook.ItemsSource = books;
 			CmbEndBook.ItemsSource = books;
 			CmbStartBook.SelectedIndex = 0;
@@ -376,6 +380,13 @@ namespace SundayWorshipPPTMaker
 			dt = GetComingSundayDate();
 			TxtOutputFileName.Text = dt.ToString("yyyy.MM.dd") + " 고등부 예배.pptx";
 		}
+
+		private void LoadLogoImage()
+        {
+			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/logo01.png"));
+			imageLogo.Source = image;
+        }
+
 		/// <summary>
 		/// 새 PPT에 필요한 모든 파일이 저장된 폴더를 작업폴더로 설정한다.
 		/// </summary>
@@ -890,6 +901,9 @@ namespace SundayWorshipPPTMaker
 			pptPres.Open(finalFilePath);
 		}
 
-        
+        private void btnShowSettings_Click(object sender, RoutedEventArgs e)
+        {
+			settings.Show();
+        }
     }
 }

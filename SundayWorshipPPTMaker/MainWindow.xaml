@@ -7,10 +7,10 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SundayWorshipPPTMaker"
         mc:Ignorable="d"
-        Title="대양교회 고등부 예배ppt 제작기" Height="500" Width="550">
+        Title="WorshipPPT Maker" Height="500" Width="550">
     <Grid Margin="2" Background="Lavender" UseLayoutRounding="False">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1.4*" />
+            <RowDefinition Height="2.8*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
@@ -36,6 +36,7 @@
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="1.5*" />
         </Grid.ColumnDefinitions>
+        <Image Name="imageLogo" Stretch="Fill" Grid.ColumnSpan="6" />
         <Border Grid.Column="6" Grid.ColumnSpan="5">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -43,7 +44,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button Name="btnShowHelp" Margin="3">Help</Button>
-                <Button Name="btnShowCredit" Grid.Column="1" Margin="3">Credit</Button>
+                <Button Name="btnShowSettings" Grid.Column="1" Margin="3" Click="btnShowSettings_Click">Settings</Button>
             </Grid>
         </Border>
 
