@@ -18,31 +18,6 @@ using System.Data.SQLite;
 
 namespace SundayWorshipPPTMaker
 {
-	
-	///	<summary>
-	///	템플릿 슬라이드 작업시 주요 슬라이드에 대한 슬라이드번호.
-	///	</summary>
-	///	<remarks>1-Base Indexing.</remarks>
-	static class Constants
-	{
-		/// <summary>찬양 시작슬라이드. 제목 Shape가 있음.</summary>
-		public const int PraiseEntry = 5;
-		/// <summary>찬양 시작슬라이드 이동후 복사시 복사된 슬라이드번호는 6부터 시작.</summary>
-		public const int PraiseSlidesInsertPos = 6;
-		/// <summary>대표기도</summary>
-		public const int PrayerNotice = 7;
-		/// <summary말씀</summary>
-		public const int BibleEntry = 8;
-		/// <summary>설교 전 영상</summary>
-		public const int VidBeforePreach = 10;
-		/// <summary>설교제목</summary>
-		public const int PreachEntry = 11;
-		/// <summary>생일광고</summary>
-		public const int AdBirthEntry = 23;
-		/// <summary>생일자 명단</summary>
-		public const int AdBirthList = 24;
-	}
-
 	public partial class MainWindow : Window
 	{
 		Settings settings;
@@ -379,11 +354,13 @@ namespace SundayWorshipPPTMaker
 
 			dt = GetComingSundayDate();
 			TxtOutputFileName.Text = dt.ToString("yyyy.MM.dd") + " 고등부 예배.pptx";
+
+			settings = new Settings();
 		}
 
 		private void LoadLogoImage()
         {
-			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/logo01.png"));
+			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/Resources/logo01.png"));
 			imageLogo.Source = image;
         }
 
@@ -470,7 +447,7 @@ namespace SundayWorshipPPTMaker
 			if (ofd.ShowDialog() == true)
 			{
 				if (sender_name == "BtnBrowseBasePPT")
-					TxtBasePPT.Text = ofd.FileName;
+					settings.TxtTemplatePath.Text = ofd.FileName;
 				else if (sender_name == "BtnBrowsePreach")
 					TxtPreachLocation.Text = ofd.FileName;
 				else    //sender_name=="BtnBrowseVid"
@@ -613,7 +590,7 @@ namespace SundayWorshipPPTMaker
 		}
 
 		/// <summary>
-		/// 시작 장과 끝 장을 같이 변경한다.
+		/// Deprecated: 시작 장과 끝 장을 같이 변경한다.
 		/// </summary>
 		/// <remarks>숫자로 입력이 제한된다.</remarks>
 		private void TxtStartChapter_TextChanged(object sender, TextChangedEventArgs e)
@@ -623,7 +600,7 @@ namespace SundayWorshipPPTMaker
 			TxtEndChapter.Text = TxtStartChapter.Text;
 		}
 		/// <summary>
-		/// 시작 절과 끝 절을 같이 변경한다.
+		/// Deprecated: 시작 절과 끝 절을 같이 변경한다.
 		/// </summary>
 		/// <remarks>숫자로 입력이 제한됨.</remarks>
 		private void TxtStartPassage_TextChanged(object sender, TextChangedEventArgs e)
@@ -633,7 +610,7 @@ namespace SundayWorshipPPTMaker
 			TxtEndPassage.Text = TxtStartPassage.Text;
 		}
 		/// <summary>
-		/// 끝나는 장은 시작하는 장보다 앞에 올 수 없다.
+		/// Deprecated: 끝나는 장은 시작하는 장보다 앞에 올 수 없다.
 		/// </summary>
 		/// <remarks>숫자로 입력이 제한됨.</remarks>
 		private void TxtEndChapter_TextChanged(object sender, TextChangedEventArgs e)
@@ -647,7 +624,7 @@ namespace SundayWorshipPPTMaker
 			}
 		}
 		/// <summary>
-		/// 끝나는 절은 시작하는 절보다 앞에 올 수 없다.
+		/// Deprecated: 끝나는 절은 시작하는 절보다 앞에 올 수 없다.
 		/// </summary>
 		/// <remarks>숫자로 입력이 제한됨.</remarks>
 		private void TxtEndPassage_TextChanged(object sender, TextChangedEventArgs e)
@@ -669,7 +646,7 @@ namespace SundayWorshipPPTMaker
 		}
 		
 		/// <summary>
-		/// 말씀 범위에 해당하는 모든 구절을 반환.
+		/// Deprecated: 말씀 범위에 해당하는 모든 구절을 반환.
 		/// </summary>
 		/// <param name="start">시작 범위를 나타내는 BVS클래스</param>
 		/// <param name="passagesNum">전체 절 갯수</param>
@@ -792,14 +769,14 @@ namespace SundayWorshipPPTMaker
 			if (CbBirth.IsChecked == true)
 			{
 				//생일자 명단 입력
-				presentation.Slides[Constants.AdBirthList].Shapes[1].TextFrame.TextRange.Text = 
+				presentation.Slides[settings.SettingsAdBirthList].Shapes[1].TextFrame.TextRange.Text = 
 					TxtBirthList.Text.Replace(", ","\n");
 			}
 			else
 			{
 				//생일 영역 삭제
-				presentation.Slides[Constants.AdBirthEntry].Delete();
-				presentation.Slides[Constants.AdBirthEntry].Delete();
+				presentation.Slides[settings.SettingsAdBirthEntry].Delete();
+				presentation.Slides[settings.SettingsAdBirthEntry].Delete();
 			}
 
 			//설교
@@ -807,14 +784,14 @@ namespace SundayWorshipPPTMaker
 			preachPPT.Slides.Range().Copy();
 
 			presentation.Windows[1].Activate();
-			presentation.Windows[1].View.GotoSlide(Constants.PreachEntry);
+			presentation.Windows[1].View.GotoSlide(settings.SettingsPreachEntry);
 			pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
-			presentation.Slides[Constants.PreachEntry].Shapes[2].TextFrame2.TextRange.Lines[2,1].Text = TxtTitle.Text;
+			presentation.Slides[settings.SettingsPreachEntry].Shapes[2].TextFrame2.TextRange.Lines[2,1].Text = TxtTitle.Text;
 			preachPPT.Close();
 
 			//설교 전 영상
 			if (System.IO.File.Exists(TxtVidLocation.Text))
-				presentation.Slides[Constants.VidBeforePreach].Shapes.AddMediaObject2(TxtVidLocation.Text);
+				presentation.Slides[settings.SettingsVidBeforePreach].Shapes.AddMediaObject2(TxtVidLocation.Text);
 
 			//말씀
 			//3:제목 4:구절
@@ -827,16 +804,16 @@ namespace SundayWorshipPPTMaker
 				verseString += "장 ";
 			verseString += jubo.BVSStart.passage.ToString() + "-" + jubo.BVSEnd.passage.ToString() + "절";
 
-			presentation.Slides[Constants.BibleEntry].Shapes[4].TextFrame.TextRange.Text = verseString;
+			presentation.Slides[settings.SettingsBibleEntry].Shapes[4].TextFrame.TextRange.Text = verseString;
 
 			//6:범위 3:본문
 			//List<string> verses=GetAllBibleVerse(jubo.BVSStart, passagesNum);
 			List<Tuple<string,string>> verses = GetAllBibleVerseDB(jubo.BVSStart, jubo.BVSEnd);
 			int passagesNum = verses.Count();
-            presentation.Slides[Constants.BibleEntry + 1].Shapes[6].TextFrame.TextRange.Text = verseString.Replace('-', '~');
+            presentation.Slides[settings.SettingsBibleEntry + 1].Shapes[6].TextFrame.TextRange.Text = verseString.Replace('-', '~');
             for (int i = 0; i < passagesNum-1; i++)
             {
-                presentation.Slides[Constants.BibleEntry + 1].Duplicate();
+                presentation.Slides[settings.SettingsBibleEntry + 1].Duplicate();
             }
 				
             for (int i = 0; i < passagesNum; i++)
@@ -844,19 +821,19 @@ namespace SundayWorshipPPTMaker
 				string[] va = verses[i].Item1.Split(':');
 				if (int.Parse(va[0]) != jubo.BVSStart.chapter)
                 {
-					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletNone;
-					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = va[1] + ". " + verses[i].Item2;
+					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletNone;
+					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = va[1] + ". " + verses[i].Item2;
 				}
                 else
                 {
-					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = verses[i].Item2;
-					presentation.Slides[Constants.BibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.StartValue = int.Parse(va[1]);
+					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = verses[i].Item2;
+					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.StartValue = int.Parse(va[1]);
                 }
             }
 			
 
             //기도
-            presentation.Slides[Constants.PrayerNotice].Shapes[2].TextFrame.TextRange.Text= TxtPrayer.Text;
+            presentation.Slides[settings.SettingsPrayerNotice].Shapes[2].TextFrame.TextRange.Text= TxtPrayer.Text;
 			
 			//찬양
 			for (int i = SongList.Items.Count - 1; i >= 0; i--)
@@ -865,19 +842,19 @@ namespace SundayWorshipPPTMaker
 				item.Slides.Range().Copy();
 
 				presentation.Windows[1].Activate();
-				presentation.Windows[1].View.GotoSlide(Constants.PraiseEntry);
+				presentation.Windows[1].View.GotoSlide(settings.SettingsPraiseEntry);
 				pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
 				//찬양 제목 슬라이드
-				presentation.Slides[Constants.PraiseSlidesInsertPos].Duplicate();
-				presentation.Slides[Constants.PraiseSlidesInsertPos].Shapes.Range().Delete();
-				presentation.Slides[Constants.PraiseEntry].Shapes.Range().Copy();
-				presentation.Slides[Constants.PraiseSlidesInsertPos].Shapes.Paste();
-				presentation.Slides[Constants.PraiseSlidesInsertPos].Shapes[1].TextFrame.TextRange.Text = 
+				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Duplicate();
+				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Shapes.Range().Delete();
+				presentation.Slides[settings.SettingsPraiseEntry].Shapes.Range().Copy();
+				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Shapes.Paste();
+				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Shapes[1].TextFrame.TextRange.Text = 
 					System.IO.Path.GetFileNameWithoutExtension(SongList.Items[i] as string);
 
 				item.Close();
 			}
-			presentation.Slides[Constants.PraiseEntry].Delete();
+			presentation.Slides[settings.SettingsPraiseEntry].Delete();
 			
 			//Save
 			string fileName = @"\"+TxtOutputFileName.Text;
@@ -900,10 +877,20 @@ namespace SundayWorshipPPTMaker
 			System.IO.File.Move(tempFilePath + ".pptx", finalFilePath);
 			pptPres.Open(finalFilePath);
 		}
-
+		
+		/// <summary>
+		/// Settings Window를 표시한다.
+		/// </summary>
         private void btnShowSettings_Click(object sender, RoutedEventArgs e)
         {
-			settings.Show();
+			settings.ShowDialog();
+        }
+		/// <summary>
+		/// 프로그램 종료 전 Settings Window를 닫는다.
+		/// </summary>
+        private void DisposeSettingWindow(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+			settings.Close();
         }
     }
 }

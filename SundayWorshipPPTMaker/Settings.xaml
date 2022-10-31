@@ -1,0 +1,134 @@
+﻿<Window x:Class="SundayWorshipPPTMaker.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:SundayWorshipPPTMaker"
+        mc:Ignorable="d"
+Title="Settings" Height="260" Width="400" WindowStartupLocation="CenterOwner" WindowStyle="None" BorderThickness="2,2,2,2" ResizeMode="NoResize" ShowInTaskbar="False">
+    <Grid Margin="1" Background="Lavender">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.2*" />
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.ColumnSpan="3" Margin="0,0,0,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label>Template</Label>
+            <TextBox Name="TxtTemplatePath" Grid.Row="2" Grid.Column="1" Margin="2,0" IsReadOnly="True"/>
+            <xctk:IconButton Name="BtnBrowseTemplate" Grid.Column="2" Height="27" Click="BtnBrowseTemplate_Click">
+                <xctk:IconButton.Icon>
+                    <Image Source="/Resources/search.png" />
+                </xctk:IconButton.Icon>
+            </xctk:IconButton>
+            <xctk:IconButton Name="BtnOpenFolder" Grid.Column="3" Height="27" Click="BtnOpenFolder_Click">
+                <xctk:IconButton.Icon>
+                    <Image Source="/Resources/open-folder.png" />
+                </xctk:IconButton.Icon>
+            </xctk:IconButton>
+            <xctk:IconButton Name="BtnOpenTemplateFile" Grid.Column="4" Height="27" Click="BtnOpenTemplateFile_Click">
+                <xctk:IconButton.Icon>
+                    <Image Source="/Resources/powerpoint.png"/>
+                </xctk:IconButton.Icon>
+            </xctk:IconButton>
+        </Grid>
+        <TextBlock Name="TxtTemplateFileError" Grid.Row="1" FontSize="10"></TextBlock>
+        <Grid Grid.Row="2" Grid.ColumnSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Stretch" FontSize="16" FontWeight="Bold" >▶ 슬라이드 삽입점 정의</TextBlock>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>찬양시작</Label>
+                <xctk:IntegerUpDown Name="NumPraiseEntry" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>찬양가사</Label>
+                <xctk:IntegerUpDown Name="NumPraiseSlidesInsertPos" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>대표기도</Label>
+                <xctk:IntegerUpDown Name="NumPrayerNotice" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>말씀</Label>
+                <xctk:IntegerUpDown Name="NumBibleEntry" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>영상</Label>
+                <xctk:IntegerUpDown Name="NumVidBeforePreach" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+            <Grid Grid.Row="3" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>설교</Label>
+                <xctk:IntegerUpDown Name="NumPreachEntry" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>생일광고</Label>
+                <xctk:IntegerUpDown Name="NumAdBirthEntry" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+            <Grid Grid.Row="4" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label>생일명단</Label>
+                <xctk:IntegerUpDown Name="NumAdBirthList" Grid.Column="1" Margin="0,2"></xctk:IntegerUpDown>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Name="BtnDefault" Click="BtnDefault_Click" Margin="2,0">Default</Button>
+            <Button Name="BtnOk" Grid.Column="1" Click="BtnOk_Click" Margin="2,0">Ok</Button>
+
+        </Grid>
+    </Grid>
+</Window>

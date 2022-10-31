@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86</Platforms>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>icon_default_navy.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\icon_default_navy.ico</ApplicationIcon>
     <Win32Resource />
     <Company />
     <Authors>Farka</Authors>
@@ -31,9 +31,16 @@
 
   <ItemGroup>
     <None Remove="BibleBooks.txt" />
-    <None Remove="logo01.png" />
-    <None Remove="logo02.png" />
-    <None Remove="logo03.png" />
+    <None Remove="Resources\icon_default_gold.ico" />
+    <None Remove="Resources\icon_default_navy.ico" />
+    <None Remove="Resources\logo01.png" />
+    <None Remove="Resources\logo02.png" />
+    <None Remove="Resources\logo03.png" />
+    <None Remove="Resources\minus.png" />
+    <None Remove="Resources\open-folder.png" />
+    <None Remove="Resources\plus.png" />
+    <None Remove="Resources\powerpoint.png" />
+    <None Remove="Resources\search.png" />
     <None Remove="RevisedKorBible.txt" />
   </ItemGroup>
 
@@ -51,9 +58,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="BibleBooks.txt" />
-    <Resource Include="logo01.png" />
-    <Resource Include="logo02.png" />
-    <Resource Include="logo03.png" />
     <EmbeddedResource Include="RevisedKorBible.txt" />
   </ItemGroup>
 
@@ -63,6 +67,19 @@
     <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.116" />
     <PackageReference Include="WindowsAPICodePack" Version="1.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\icon_default_gold.ico" />
+    <Resource Include="Resources\icon_default_navy.ico" />
+    <Resource Include="Resources\logo01.png" />
+    <Resource Include="Resources\logo02.png" />
+    <Resource Include="Resources\logo03.png" />
+    <Resource Include="Resources\minus.png" />
+    <Resource Include="Resources\open-folder.png" />
+    <Resource Include="Resources\plus.png" />
+    <Resource Include="Resources\powerpoint.png" />
+    <Resource Include="Resources\search.png" />
   </ItemGroup>
 
   <ItemGroup>

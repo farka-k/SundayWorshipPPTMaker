@@ -7,7 +7,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SundayWorshipPPTMaker"
         mc:Ignorable="d"
-        Title="WorshipPPT Maker" Height="500" Width="550">
+        Title="WorshipPPT Maker" Height="500" Width="550" Closing="DisposeSettingWindow">
     <Grid Margin="2" Background="Lavender" UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="2.8*" />
@@ -24,20 +24,21 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions >
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="13*" />
+            <ColumnDefinition Width="71*"/>
+            <ColumnDefinition Width="84*" />
+            <ColumnDefinition Width="63*" />
             <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="63*" />
             <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="1.5*" />
-            <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="63*" />
+            <ColumnDefinition Width="21*" />
+            <ColumnDefinition Width="63*" />
             <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="63*" />
         </Grid.ColumnDefinitions>
-        <Image Name="imageLogo" Stretch="Fill" Grid.ColumnSpan="6" />
-        <Border Grid.Column="6" Grid.ColumnSpan="5">
+        <Image Name="imageLogo" Stretch="Fill" Grid.ColumnSpan="7" Margin="0,0,0,32" Grid.RowSpan="2" />
+        <Border Grid.Column="6" Grid.ColumnSpan="6" Margin="20,0,0,32" Grid.RowSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -48,73 +49,73 @@
             </Grid>
         </Border>
 
-        <Label Grid.Row="1">Folder</Label>
-        <TextBox x:Name="TxtOutputFolder" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Margin="2" />
-        <Button Name="BtnSelectFolder" Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="3" Margin="2" Click="BtnSelectFolder_Click">Select Folder</Button>
-        
-        <Label Grid.Row="2">Base</Label>
-        <TextBox Name="TxtBasePPT" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="6" />
-        <Button Name="BtnBrowseBasePPT" Click="BtnBrowseSingleFile_Click" Grid.Row="2" Grid.Column="8" Grid.ColumnSpan="3" Margin="2">Browse</Button>
+        <Label Grid.Row="1" Grid.ColumnSpan="2">Folder</Label>
+        <TextBox x:Name="TxtOutputFolder" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="6" Margin="2,0,2,0" />
+        <Button Name="BtnSelectFolder" Grid.Row="1" Grid.Column="9" Grid.ColumnSpan="3" Margin="3,0,2,0" Click="BtnSelectFolder_Click">Select Folder</Button>
 
-        <Label Grid.Row="3" Grid.RowSpan="3" VerticalAlignment="Center">Songs</Label>
+        <Label Grid.Row="2" Grid.ColumnSpan="2">Base</Label>
+        <TextBox Name="TxtBasePPT" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Margin="71,0,0,0" />
+        <Button Name="BtnBrowseBasePPT" Click="BtnBrowseSingleFile_Click" Grid.Row="2" Grid.Column="9" Grid.ColumnSpan="3" Margin="3,0,2,0">Browse</Button>
+
+        <Label Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2">Songs</Label>
         <ListBox Name="SongList" SelectionMode="Extended"
-                 Grid.Row="3" Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="6" />
-        <StackPanel Grid.Row="3" Grid.RowSpan="3" Grid.Column="7" VerticalAlignment="Center">
+                 Grid.Row="3" Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="7" Margin="71,0,0,0" />
+        <StackPanel Grid.Row="3" Grid.RowSpan="2" Grid.Column="7" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="63,0,63,0">
             <Button Name="BtnOrderUp" Click="BtnOrderUp_Click">▲</Button>
             <Button Name="BtnOrderDown" Click="BtnOrderDown_Click">▼</Button>
         </StackPanel>
-        <StackPanel Grid.Row="3" Grid.RowSpan="3" Grid.Column="8" Grid.ColumnSpan="3" VerticalAlignment="Center" Margin="2">
+        <StackPanel Grid.Row="3" Grid.RowSpan="2" Grid.Column="9" Grid.ColumnSpan="3" VerticalAlignment="Center" Margin="3,0,2,0">
             <Button Name="BtnAddSongs" Click="BtnAddSongs_Click">Add</Button>
             <Button Name="BtnDelSongs" Click="BtnDelSongs_Click">Delete</Button>
         </StackPanel>
 
-        <Label Grid.Row="6">Bible</Label>
+        <Label Grid.Row="6" Grid.ColumnSpan="2">Bible</Label>
         <ComboBox Name="CmbStartBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"  
-                  Grid.Row="6" Grid.Column="1" />
+                  Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Margin="71,0,63,0" />
 
         <xctk:IntegerUpDown Name="NumStartChapter" ValueChanged="NumStartChapter_ValueChanged"
-                            Grid.Row="6" Grid.Column="2" Margin="4" Minimum="1" ClipValueToMinMax="True" />
+                            Grid.Row="6" Grid.Column="3" Margin="4,4,4,4" Minimum="1" ClipValueToMinMax="True" />
         <TextBox Name="TxtStartChapter" TextChanged="TxtStartChapter_TextChanged"
-                 Grid.Row="6" Grid.Column="2" Margin="3" Visibility="Collapsed"/>
-        <TextBlock Grid.Row="6" Grid.Column="3">:</TextBlock>
+                 Grid.Row="6" Grid.Column="3" Margin="3,0,3,0" Visibility="Collapsed"/>
+        <TextBlock Grid.Row="6" Grid.Column="4">:</TextBlock>
         <xctk:IntegerUpDown Name="NumStartPassage" ValueChanged="NumStartPassage_ValueChanged" 
-                            Grid.Row="6" Grid.Column="4" Margin="4" Minimum="1" ClipValueToMinMax="True"/>
+                            Grid.Row="6" Grid.Column="5" Margin="4,4,4,4" Minimum="1" ClipValueToMinMax="True"/>
         <TextBox Name="TxtStartPassage" TextChanged="TxtStartPassage_TextChanged"
-                 Grid.Row="6" Grid.Column="4" Margin="3" Visibility="Collapsed"/>
-        <TextBlock Grid.Row="6" Grid.Column="5">~</TextBlock>
+                 Grid.Row="6" Grid.Column="5" Margin="3,0,3,0" Visibility="Collapsed"/>
+        <TextBlock Grid.Row="6" Grid.Column="6">~</TextBlock>
         <ComboBox Name="CmbEndBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"
-                  Grid.Row="6" Grid.Column="6" Grid.ColumnSpan="2" />
-        
+                  Grid.Row="6" Grid.Column="6" Grid.ColumnSpan="4" Margin="20,0,63,0" />
+
         <xctk:IntegerUpDown Name="NumEndChapter" ValueChanged="NumEndChapter_ValueChanged"
-                            Grid.Row="6" Grid.Column="8" Margin="4" Minimum="1" ClipValueToMinMax="True" />
+                            Grid.Row="6" Grid.Column="9" Margin="5,4,4,4" Minimum="1" ClipValueToMinMax="True" />
         <TextBox Name="TxtEndChapter" TextChanged="TxtEndChapter_TextChanged"
-                 Grid.Row="6" Grid.Column="8" Margin="3" Visibility="Collapsed"/>
-        <TextBlock Grid.Row="6" Grid.Column="9">:</TextBlock>
+                 Grid.Row="6" Grid.Column="9" Margin="4,0,3,0" Visibility="Collapsed"/>
+        <TextBlock Grid.Row="6" Grid.Column="10">:</TextBlock>
         <xctk:IntegerUpDown Name="NumEndPassage" ValueChanged="NumEndPassage_ValueChanged"
-                            Grid.Row="6" Grid.Column="10" Margin="4" Minimum="1" ClipValueToMinMax="True" />
+                            Grid.Row="6" Grid.Column="11" Margin="4,4,4,4" Minimum="1" ClipValueToMinMax="True" />
         <TextBox Name="TxtEndPassage" TextChanged="TxtEndPassage_TextChanged"
-                 Grid.Row="6" Grid.Column="10" Margin="3" Visibility="Collapsed" />
+                 Grid.Row="6" Grid.Column="11" Margin="3,0,3,0" Visibility="Collapsed" />
 
 
-        <Label Grid.Row="7">Prayer</Label>
-        <TextBox Name="TxtPrayer" Grid.Row="7" Grid.Column="1" />
-        <Label Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="3" HorizontalAlignment="Center">Title</Label>
-        <TextBox Name="TxtTitle" Grid.Row="7" Grid.Column="5" Grid.ColumnSpan="6" Margin="2" />
+        <Label Grid.Row="7" Grid.ColumnSpan="2">Prayer</Label>
+        <TextBox Name="TxtPrayer" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" Margin="71,0,63,0" />
+        <Label Grid.Row="7" Grid.Column="4" HorizontalAlignment="Center">Title</Label>
+        <TextBox Name="TxtTitle" Grid.Row="7" Grid.Column="6" Grid.ColumnSpan="6" Margin="2,0,2,0" />
 
-        <Label Grid.Row="8">Preach</Label>
-        <TextBox Name="TxtPreachLocation" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="6" />
+        <Label Grid.Row="8" Grid.ColumnSpan="2">Preach</Label>
+        <TextBox Name="TxtPreachLocation" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="7" Margin="71,0,0,0" />
         <Button Name="BtnBrowsePreach" Click="BtnBrowseSingleFile_Click"
-                Grid.Row="8" Grid.Column="8" Grid.ColumnSpan="3" Margin="2">Browse</Button>
+                Grid.Row="8" Grid.Column="9" Grid.ColumnSpan="3" Margin="3,0,2,0">Browse</Button>
 
-        <Label Grid.Row="9">Vid</Label>
-        <TextBox Name="TxtVidLocation" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="6" />
+        <Label Grid.Row="9" Grid.ColumnSpan="2">Vid</Label>
+        <TextBox Name="TxtVidLocation" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="7" Margin="71,0,0,0" />
         <Button Name="BtnBrowseVid" Click="BtnBrowseSingleFile_Click"
-                Grid.Row="9" Grid.Column="8" Grid.ColumnSpan="3" Margin="2">Browse</Button>
+                Grid.Row="9" Grid.Column="9" Grid.ColumnSpan="3" Margin="3,0,2,0">Browse</Button>
 
-        <Label Grid.Row="10">Birthday</Label>
+        <Label Grid.Row="10" Grid.ColumnSpan="2">Birthday</Label>
         <CheckBox Name="CbBirth" Checked="CheckBox_CheckChanged" Unchecked="CheckBox_CheckChanged"
-                  Grid.Row="10" Grid.Column="1" Margin="3" ></CheckBox>
-        <Grid Name="BirthList" Visibility="Hidden" Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="9" VerticalAlignment="Center">
+                  Grid.Row="10" Grid.Column="2" Margin="3,0,3,0" ></CheckBox>
+        <Grid Name="BirthList" Visibility="Hidden" Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="9" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="4*" />
@@ -123,8 +124,8 @@
             <TextBox Name="TxtBirthList" Grid.Column="1" VerticalAlignment="Center" Margin="2" />
         </Grid>
 
-        <Label Grid.Row="11" VerticalAlignment="Center">FileName</Label>
-        <TextBox Name="TxtOutputFileName" Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="6" VerticalAlignment="Center" Margin="2" />
-        <Button Name="BtnDoTask" Grid.Row="11" Grid.Column="8" Grid.ColumnSpan="3" Margin="2" Click="DoTask">Go</Button>
+        <Label Grid.Row="11" Grid.ColumnSpan="2">FileName</Label>
+        <TextBox Name="TxtOutputFileName" Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="6" Margin="2,0,2,0" />
+        <Button Name="BtnDoTask" Grid.Row="11" Grid.Column="9" Grid.ColumnSpan="3" Margin="3,0,2,0" Click="DoTask">Go</Button>
     </Grid>
 </Window>
