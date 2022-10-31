@@ -106,6 +106,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="cover.pptx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="RevisedKorBible.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

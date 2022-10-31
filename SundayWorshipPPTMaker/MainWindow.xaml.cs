@@ -717,6 +717,15 @@ namespace SundayWorshipPPTMaker
 			PowerPoint.Presentations pptPres = pptApp.Presentations;
 			PowerPoint.Presentation presentation = pptPres.Open(settings.templateFileFullPath);
 
+			//add Random Cover
+			Random rnd = new Random();
+			int coverIndex=rnd.Next(1, 23);
+			PowerPoint.Presentation cover = pptPres.Open(AppDomain.CurrentDomain.BaseDirectory + "cover.pptx",WithWindow: MsoTriState.msoFalse);
+			cover.Slides[coverIndex].Copy();
+			presentation.Windows[1].Activate();
+			pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
+			presentation.Slides[1].Delete();
+
 			if (CbBirth.IsChecked == true)
 			{
 				//생일자 명단 입력

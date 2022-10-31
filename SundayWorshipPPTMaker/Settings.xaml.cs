@@ -63,6 +63,7 @@ namespace SundayWorshipPPTMaker
         {
             InitializeComponent();
 			InitParams();
+			SetParams();
 		}
 
 		/// <summary>
