@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
-using System.Drawing;
 using System.Windows.Media.Imaging;
 
 using Microsoft.Win32;
@@ -435,23 +434,18 @@ namespace SundayWorshipPPTMaker
 
 			OpenFileDialog ofd = new OpenFileDialog();
 			string sender_name = ((Button)sender).Name;
-			ofd.Filter = "Presentation Files(*.ppt;*.pptx)|*.ppt;*.pptx|All Files(*.*)|*.*";
 			ofd.InitialDirectory = workFolder;
-			if (sender_name == "BtnBrowseBasePPT")
-			{
-				ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
-			}
-			else if (sender_name == "BtnBrowseVid")
+
+			if (sender_name == "BtnBrowseVid")
 			{
 				ofd.Filter = "Video Files(*.avi;*.flv;*.mp4;*.wmv;*.mkv)|*.avi;*.flv;*.mp4;*.wmv;*.mkv|All Files(*.*)|*.*";
 			}
-			else { }
-
+			else { 
+				ofd.Filter = "Presentation Files(*.ppt;*.pptx)|*.ppt;*.pptx|All Files(*.*)|*.*";
+			}
 			if (ofd.ShowDialog() == true)
 			{
-				if (sender_name == "BtnBrowseBasePPT")
-					settings.TxtTemplatePath.Text = ofd.FileName;
-				else if (sender_name == "BtnBrowsePreach")
+				if (sender_name == "BtnBrowsePreach")
 					TxtPreachLocation.Text = ofd.FileName;
 				else    //sender_name=="BtnBrowseVid"
 					TxtVidLocation.Text = ofd.FileName;
@@ -592,53 +586,6 @@ namespace SundayWorshipPPTMaker
 
 		}
 
-		/*
-		/// <summary>
-		/// Deprecated: 시작 장과 끝 장을 같이 변경한다.
-		/// </summary>
-		/// <remarks>숫자로 입력이 제한된다.</remarks>
-		private void TxtStartChapter_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			string s = Regex.Replace(((TextBox)sender).Text, @"[^\d.]", "");
-			((TextBox)sender).Text = s;
-			TxtEndChapter.Text = TxtStartChapter.Text;
-		}
-		/// <summary>
-		/// Deprecated: 시작 절과 끝 절을 같이 변경한다.
-		/// </summary>
-		/// <remarks>숫자로 입력이 제한됨.</remarks>
-		private void TxtStartPassage_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			string s = Regex.Replace(((TextBox)sender).Text, @"[^\d.]", "");
-			((TextBox)sender).Text = s;
-			TxtEndPassage.Text = TxtStartPassage.Text;
-		}
-		/// <summary>
-		/// Deprecated: 끝나는 장은 시작하는 장보다 앞에 올 수 없다.
-		/// </summary>
-		/// <remarks>숫자로 입력이 제한됨.</remarks>
-		private void TxtEndChapter_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			string s = Regex.Replace(((TextBox)sender).Text, @"[^\d.]", "");
-			((TextBox)sender).Text = s;
-			if (CmbStartBook.SelectedIndex == CmbEndBook.SelectedIndex)
-			{
-				if (int.Parse(TxtStartChapter.Text) > int.Parse(TxtEndChapter.Text))
-					TxtStartChapter.Text = TxtEndChapter.Text;
-			}
-		}
-		/// <summary>
-		/// Deprecated: 끝나는 절은 시작하는 절보다 앞에 올 수 없다.
-		/// </summary>
-		/// <remarks>숫자로 입력이 제한됨.</remarks>
-		private void TxtEndPassage_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			string s = Regex.Replace(((TextBox)sender).Text, @"[^\d.]", "");
-			((TextBox)sender).Text = s;
-			if (TxtStartChapter.Text == TxtEndChapter.Text)
-				if (int.Parse(TxtStartPassage.Text) > int.Parse(TxtEndPassage.Text))
-					TxtStartPassage.Text = TxtEndPassage.Text;
-		}*/
 		/// <summary>
 		/// CbBirth체크박스가 체크되면 BirthList영역을 표시. 해제시 숨김 처리.
 		/// </summary>
@@ -765,7 +712,7 @@ namespace SundayWorshipPPTMaker
 		private void DoTask(object sender, RoutedEventArgs e)
 		{
 			if (CheckErrorBeforeDoTask()) return;
-
+			
 			PowerPoint.Application pptApp = new PowerPoint.Application();
 			PowerPoint.Presentations pptPres = pptApp.Presentations;
 			PowerPoint.Presentation presentation = pptPres.Open(settings.templateFileFullPath);
