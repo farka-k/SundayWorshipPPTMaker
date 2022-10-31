@@ -41,8 +41,32 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button Name="btnShowHelp" Margin="3">Help</Button>
-                <Button Name="btnShowSettings" Grid.Column="1" Margin="3" Click="btnShowSettings_Click">Settings</Button>
+                <Button Name="BtnShowHelp" Margin="3" Click="BtnShowHelp_Click">Help</Button>
+                <Popup Name="HelpPopup" Width="300" Height="200" VerticalAlignment="Center" StaysOpen="False">
+                    <WrapPanel Background="Lavender" Orientation="Vertical" Margin="1">
+                        <TextBlock HorizontalAlignment="Stretch" Margin="5" FontSize="16" FontWeight="Bold">Dev by Farka. 2022.</TextBlock>
+                        <TextBlock HorizontalAlignment="Left" Margin="5" FontSize="16" FontWeight="Bold">
+                            ▶ Usage:
+                            <Hyperlink Name="LinkGithub" NavigateUri="https://github.com/farka-k/SundayWorshipPPTMaker" RequestNavigate="LinkUri_RequestNavigate">
+                                Github
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Left" Margin="5" FontSize="16" FontWeight="Bold">
+                            ▶ Icons from
+                            <Hyperlink Name="LinkFlatIcon" NavigateUri="https://www.flaticon.com" RequestNavigate="LinkUri_RequestNavigate">
+                                Flaticon
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="12,5" FontSize="14" FontWeight="Bold">
+                            browse, search: Freepik<LineBreak></LineBreak>
+                            folder: kumakamu<LineBreak></LineBreak>
+                            powerpoint: Pixel perfect<LineBreak></LineBreak>
+                            plus, minus: kliwir art<LineBreak></LineBreak>
+                            select, arrow: Creative Stall Premium
+                        </TextBlock>
+                    </WrapPanel>
+                </Popup>
+                <Button Name="BtnShowSettings" Grid.Column="1" Margin="3" Click="BtnShowSettings_Click">Settings</Button>
             </Grid>
         </Border>
 

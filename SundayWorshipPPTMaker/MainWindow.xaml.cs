@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -841,7 +842,7 @@ namespace SundayWorshipPPTMaker
 		/// <summary>
 		/// Settings Window를 표시한다.
 		/// </summary>
-        private void btnShowSettings_Click(object sender, RoutedEventArgs e)
+        private void BtnShowSettings_Click(object sender, RoutedEventArgs e)
         {
 			settings.ShowDialog();
         }
@@ -851,6 +852,19 @@ namespace SundayWorshipPPTMaker
         private void DisposeSettingWindow(object sender, System.ComponentModel.CancelEventArgs e)
         {
 			settings.Close();
+        }
+
+        private void BtnShowHelp_Click(object sender, RoutedEventArgs e)
+        {
+			HelpPopup.IsOpen = true;
+        }
+
+        private void LinkUri_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+			Process.Start(
+				new ProcessStartInfo(e.Uri.AbsoluteUri){ UseShellExecute=true,}
+			);
+			e.Handled = true;
         }
     }
 }
