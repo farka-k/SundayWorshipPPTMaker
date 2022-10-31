@@ -31,6 +31,9 @@
 
   <ItemGroup>
     <None Remove="BibleBooks.txt" />
+    <None Remove="Resources\arrow-down.png" />
+    <None Remove="Resources\arrow-up.png" />
+    <None Remove="Resources\folder-management.png" />
     <None Remove="Resources\icon_default_gold.ico" />
     <None Remove="Resources\icon_default_navy.ico" />
     <None Remove="Resources\logo01.png" />
@@ -41,6 +44,7 @@
     <None Remove="Resources\plus.png" />
     <None Remove="Resources\powerpoint.png" />
     <None Remove="Resources\search.png" />
+    <None Remove="Resources\search_vid.png" />
     <None Remove="RevisedKorBible.txt" />
   </ItemGroup>
 
@@ -70,6 +74,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\arrow-down.png" />
+    <Resource Include="Resources\arrow-up.png" />
+    <Resource Include="Resources\folder-management.png" />
     <Resource Include="Resources\icon_default_gold.ico" />
     <Resource Include="Resources\icon_default_navy.ico" />
     <Resource Include="Resources\logo01.png" />
@@ -80,6 +87,7 @@
     <Resource Include="Resources\plus.png" />
     <Resource Include="Resources\powerpoint.png" />
     <Resource Include="Resources\search.png" />
+    <Resource Include="Resources\search_vid.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -358,6 +358,9 @@ namespace SundayWorshipPPTMaker
 			settings = new Settings();
 		}
 
+		/// <summary>
+		/// 메인화면의 로고 이미지 로딩.
+		/// </summary>
 		private void LoadLogoImage()
         {
 			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/Resources/logo01.png"));
@@ -589,6 +592,7 @@ namespace SundayWorshipPPTMaker
 
 		}
 
+		/*
 		/// <summary>
 		/// Deprecated: 시작 장과 끝 장을 같이 변경한다.
 		/// </summary>
@@ -634,7 +638,7 @@ namespace SundayWorshipPPTMaker
 			if (TxtStartChapter.Text == TxtEndChapter.Text)
 				if (int.Parse(TxtStartPassage.Text) > int.Parse(TxtEndPassage.Text))
 					TxtStartPassage.Text = TxtEndPassage.Text;
-		}
+		}*/
 		/// <summary>
 		/// CbBirth체크박스가 체크되면 BirthList영역을 표시. 해제시 숨김 처리.
 		/// </summary>
@@ -731,7 +735,7 @@ namespace SundayWorshipPPTMaker
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidWorkingDirectory;
 			}
-			if (!File.Exists(TxtBasePPT.Text))
+			if (!File.Exists(settings.templateFileFullPath))
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidPresentationTemplate;
 			}
@@ -764,7 +768,7 @@ namespace SundayWorshipPPTMaker
 
 			PowerPoint.Application pptApp = new PowerPoint.Application();
 			PowerPoint.Presentations pptPres = pptApp.Presentations;
-			PowerPoint.Presentation presentation = pptPres.Open(TxtBasePPT.Text);
+			PowerPoint.Presentation presentation = pptPres.Open(settings.templateFileFullPath);
 
 			if (CbBirth.IsChecked == true)
 			{
