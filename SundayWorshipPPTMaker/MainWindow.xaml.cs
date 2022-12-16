@@ -363,7 +363,7 @@ namespace SundayWorshipPPTMaker
 		/// </summary>
 		private void LoadLogoImage()
         {
-			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/Resources/logo01.png"));
+			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/Resources/logo02.png"));
 			imageLogo.Source = image;
         }
 
