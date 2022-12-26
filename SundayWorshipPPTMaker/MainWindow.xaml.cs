@@ -600,7 +600,15 @@ namespace SundayWorshipPPTMaker
         {
 			//6:범위 3:본문
 			//List<string> verses=GetAllBibleVerse(jubo.BVSStart, passagesNum);
-			List<Tuple<string, string>> verses = GetAllBibleVerseDB(jubo.BVSStart, jubo.BVSEnd);
+			List<Tuple<string, string>> verses;
+			if (ManualMode.IsChecked == true)
+            {
+				verses = GetAllBibleVerseDB(
+					new BibleVerseSkeleton(CmbStartBook.Text, int.Parse(NumStartChapter.Text), int.Parse(NumStartPassage.Text)),
+					new BibleVerseSkeleton(CmbStartBook.Text, int.Parse(NumEndChapter.Text), int.Parse(NumEndPassage.Text))
+					);
+            }
+			else verses = GetAllBibleVerseDB(jubo.BVSStart, jubo.BVSEnd);
 			int passagesNum = verses.Count();
 			presentation.Slides[settings.SettingsBibleEntry + 1].Shapes[6].TextFrame.TextRange.Text = verseString.Replace('-', '~');
 			for (int i = 0; i < passagesNum - 1; i++)
