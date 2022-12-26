@@ -47,6 +47,7 @@
 4. 랜덤 커버 변경
 
 ## 22.12.26
+![image](https://user-images.githubusercontent.com/32349691/209490068-922a8c26-144c-49cd-a57e-7c52a2c90818.png)
 1. DarkMode Style
 2. 주보 파일 열수 없을 때 manual 설정
 3. 범위 텍스트 정규식
