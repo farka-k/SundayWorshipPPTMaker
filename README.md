@@ -46,7 +46,13 @@
 3. 버튼, 레이아웃 변경
 4. 랜덤 커버 변경
 
-## Working..
+## 22.12.26
+1. DarkMode Style
+2. 주보 파일 열수 없을 때 manual 설정
+3. 범위 텍스트 정규식
+4. 클래스, 함수 분리
+
+## Next..
 1. Calendar Pdf Parsing
 2. 가사ppt 스크래핑
-3. 작업 함수 모듈화
+3. Web연동
