@@ -33,228 +33,6 @@ namespace SundayWorshipPPTMaker
 		private SQLiteDataReader rdr = null;
 
 		/// <summary>
-		/// 주보 파일에 대한 Path와 추출 데이터.
-		/// </summary>
-		public class Jubo
-		{
-			/// <summary>주보 파일 이름</summary>
-			public string FileName { get; set; }
-			/// <summary>디렉토리명</summary>
-			public string Directory { get; set; }
-			/// <summary>디렉토리+파일이름</summary>
-			public string FullPath { get; set; }
-			
-			/// <summary>말씀 시작 범위</summary>
-			public BibleVerseSkeleton BVSStart { get; set; }
-			/// <summary>말씀 끝 범위</summary>
-			public BibleVerseSkeleton BVSEnd { get; set; }
-			/// <summary>대표기도자</summary>
-			public string PrayerName { get; set; }
-			/// <summary>설교제목</summary>
-			public string PreachTitle { get; set; }
-			/// <summary>생일자 유무</summary>
-			/// <value>생일자가 있으면 <c>true</c>, 없으면 <c>false</c></value>
-			public bool IsBirthday { get; set; }
-			/// <summary>생일자 이름 리스트</summary>
-			/// <remarks><c>BirthPersonList</c>의 원소는 
-			/// <c>BirthDateList</c>의 원소와 매칭된다
-			/// </remarks>
-			public List<string> BirthPersonList { get; set; }
-			/// <summary>생일 날짜 리스트</summary>
-			/// <remarks><c>BirthDateList</c>의 원소는 
-			/// <c>BirthPersonList</c>의 원소와 매칭된다
-			/// </remarks>
-			public List<string> BirthDateList { get; set; }
-			
-			///	<summary>생성자</summary>
-			/// <param name="fileName">주보 파일 이름</param>
-			public Jubo(string fileName) 
-			{
-				FileName = fileName+".hwp";
-				BVSStart = new BibleVerseSkeleton();
-				BVSEnd = new BibleVerseSkeleton();
-				BirthPersonList = new List<string>();
-				BirthDateList = new List<string>();
-			}
-
-			/// <summary>
-			/// 주보 파일에서 추출한 텍스트에서 말씀범위,대표기도자,설교제목,생일자에 대한 정보를 찾는다.
-			/// </summary>
-			/// <param name="source"></param>
-			public void Parse(string source) {
-				List<string> wordList = source.Trim().Split(new string[]{" ","\r\n"}, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-				int idx_worship_start = wordList.IndexOf("사도신경");
-				int idx_worship_end = wordList.IndexOf("주기도문");
-				int idx_ad=wordList.IndexOf("소식");		//not use yet
-				int idx_birth=wordList.IndexOf("생일자");
-
-				//대표기도
-				int prayer=wordList.IndexOf("대표기도", idx_worship_start, idx_worship_end - idx_worship_start);
-				PrayerName = wordList[prayer + 1] + " " + wordList[prayer + 2];
-
-				//성경봉독
-				int verse = prayer + 4;
-				BVSStart.book = wordList[verse];
-				BVSEnd.book = BVSStart.book;
-				int ch_length = wordList[verse + 1].Length;
-
-				string[] range = wordList[verse + 1].Split('-', '~', ':');
-				if (range.Length == 4)
-                {
-					BVSStart.chapter = int.Parse(range[0]);
-					BVSStart.passage = int.Parse(range[1]);
-					BVSEnd.chapter = int.Parse(range[2]);
-					BVSEnd.passage = int.Parse(range[3]);
-                }
-
-				else {
-							if (char.IsLetter(wordList[verse + 1][ch_length - 1])) { wordList[verse + 1] = wordList[verse + 1].Substring(0, ch_length - 1); }
-							BVSStart.chapter = int.Parse(wordList[verse + 1]);
-							BVSEnd.chapter = BVSStart.chapter;
-							int ps_length = wordList[verse + 2].Length;
-							if (char.IsLetter(wordList[verse + 2][ps_length - 1])) { wordList[verse + 2] = wordList[verse + 2].Substring(0, ps_length - 1); }
-							range = wordList[verse + 2].Split('-', '~', ':');
-							BVSStart.passage = int.Parse(range[0]);
-							BVSEnd.passage = int.Parse(range[1]);
-				}
-
-				//말씀선포
-				int preach= wordList.IndexOf("말씀선포", idx_worship_start, idx_worship_end - idx_worship_start);
-				int consecr = wordList.IndexOf("봉헌", preach, idx_worship_end - preach);
-				for(int i = preach + 1; i < consecr - 2; i++)
-				{
-					PreachTitle += wordList[i] + " ";
-				}
-				PreachTitle.Trim();
-
-				//생일자
-				for(int iter = idx_birth + 1; ; iter+=2)
-				{
-					if (char.IsDigit(wordList[iter][0]))
-					{
-						BirthDateList.Add(wordList[iter]);
-						//선생님일 경우
-						if (wordList[iter + 2] == "T")
-						{
-							iter++;
-							BirthPersonList.Add(wordList[iter] + " " + wordList[iter + 1]);
-						}
-						else
-							BirthPersonList.Add(wordList[iter + 1]);
-					}
-					else
-					{
-						break;
-					}
-				}
-				if (BirthPersonList.Count > 0)
-				{
-					IsBirthday = true;
-				}
-			}
-			
-			/// <summary>
-			/// 주보 파일의 위치를 저장.
-			/// </summary>
-			/// <param name="directory"></param>
-			public void SetPathInfo(string directory)
-			{
-				Directory = directory;
-				FullPath = Directory + @"\" + FileName;
-			}
-
-			///	<summary>주보 파일을 파싱한 string을 반환.</summary>
-			///	<remarks>파일위치,말씀범위,대표기도자,설교제목,생일자</remarks>
-			///	<returns>string</returns>
-			public string GetJuboInfo()
-			{
-				string info="";
-				info += this.FullPath + "\n";
-				info += BVSStart.ToString() + "~" + BVSEnd.ToString() + "\n";
-				info += PrayerName + "\n";
-				info += PreachTitle + "\n";
-				info += "생일자:\n";
-				int n = BirthPersonList.Count;
-				for(int i = 0; i < n; i++)
-				{
-					if (i != 0) info += ", ";
-					info += BirthPersonList[i] + " " + BirthDateList[i];
-				}
-				
-				return info;
-			}
-
-			/**	<summary>생일 광고용 string 반환</summary>
-			*	<returns>생일자 명단,날짜 데이터를 {이름}({월}.{일}{요일})의 형태로 ','로 구분한 string을 반환한다.<br/>
-			*	<example>
-			*	생일자:{홍길동,김서방},날짜:{11/9수,11/13주일} -> 홍길동(11/9수), 김서방(11/13주일)
-			*	</example>
-			*	</returns>
-			*/
-			public string GetBirthAdString()
-			{
-				string text = "";
-				for(int i = 0; i < BirthPersonList.Count; i++)
-				{
-					if (i != 0) text += ", ";
-					string date = BirthDateList[i];
-					int len = date.Length;
-					if (date[^2] == '일')
-					{
-						date = date.Remove(len-4,2);
-					}
-					else
-					{
-						date = date.Remove(len-3,1);
-					}
-
-					text += BirthPersonList[i] + "(" + date;
-				}
-				return text;
-			}
-		}
-
-		/// <summary>
-		/// 성경 구조 정보
-		/// </summary>
-		public class BibleVerseSkeleton
-		{
-			/// <summary>책 이름. ex) 창세기,출애굽기,레위기,...</summary>
-			public string book { get; set; }
-			/// <summary>장 혹은 편.</summary>
-			public int chapter { get; set; }
-			/// <summary>절.</summary>
-			public int passage { get; set; }
-			public BibleVerseSkeleton() { }
-			/// <summary>Initialize class with specific book, chapter, passage.</summary>
-			/// <param name="book">책 이름</param>
-			/// <param name="chapter">장</param>
-			/// <param name="passage">절</param>
-			public BibleVerseSkeleton(string book, int chapter, int passage)
-			{
-				this.book = book;
-				this.chapter = chapter;
-				this.passage = passage;
-			}
-			public BibleVerseSkeleton(BibleVerseSkeleton bvs)
-			{
-				this.book = bvs.book;
-				this.chapter = bvs.chapter;
-				this.passage = bvs.passage;
-			}
-
-			/** <remarks>override basic ToString() method.</remarks>
-			 * <returns>책 이름,장,절에 대한 string.<br/>
-			 * <example><br/>ex) 창세기 1:1</example>
-			 * </returns>
-			 */
-			public override string ToString()
-			{
-				return book + " " + chapter.ToString() + ":" + passage.ToString();
-			}
-		}
-
-		/// <summary>
 		/// MainWindow 초기화 코드
 		/// </summary>
 		public MainWindow()
@@ -386,18 +164,19 @@ namespace SundayWorshipPPTMaker
 
 				if (hwp.Open(jubo.FullPath, "", ""))
 				{
-					MessageBox.Show("Opened");
 					string txt = (string)hwp.GetTextFile("TEXT", "");
 					if (!System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + OutputDirectory))
 						System.IO.Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + OutputDirectory);
 					System.IO.File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + OutputDirectory + dt.ToString("yy-MM-dd") + ".txt", txt);
+					ManualMode.IsChecked = false;
 
 					jubo.Parse(txt);
 					MessageBox.Show(jubo.GetJuboInfo());
 				}
 				else
 				{
-					MessageBox.Show("File Open Failed");
+					MessageBox.Show("File Open Failed.\nChange to manual mode.");
+					ManualMode.IsChecked = true;
 					return;
 				}
 				
@@ -675,7 +454,7 @@ namespace SundayWorshipPPTMaker
 		/// PPT생성 작업 전 빠진 부분 체크.
 		/// </summary>
 		/// <returns>에러가 없으면 <c>false</c>, 있으면 <c>true</c></returns>
-		private bool CheckErrorBeforeDoTask()
+		private bool CheckErrorBeforeTask()
         {
 			string errorMsg = Properties.Resources.TaskErrorCheckMessage;
 			int errorCheckNum = 1;
@@ -695,10 +474,22 @@ namespace SundayWorshipPPTMaker
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidPreachPPT;
 			}
-			if (!TxtOutputFileName.Text.EndsWith(".pptx") || TxtOutputFileName.Text.StartsWith(".pptx"))
+			if (ManualMode.IsChecked==true)
+            {
+				if (TxtPrayer.Text.Length == 0)
+					errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.NoPrayer;
+				if (TxtTitle.Text.Length == 0)
+					errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.NoTitle;
+            }
+			if (TxtOutputFileName.Text.StartsWith(".pptx"))
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidFileName;
 			}
+			if (!TxtOutputFileName.Text.EndsWith(".pptx"))
+            {
+				TxtOutputFileName.Text += ".pptx";
+            }
+
 			if (errorCheckNum == 1) return false;
 			else
 			{
@@ -706,32 +497,47 @@ namespace SundayWorshipPPTMaker
 				return true;
 			}
 		}
-		/// <summary>
-		/// 새 PPT를 작성한다. PowerPoint가 실행되고 모든 작업을 마친 파일을 연다. 저장 위치는 작업폴더와 같음.
-		/// </summary>
-		/// <remarks>인덱스 참조 편의를 위해 예배 진행 순서의 역순으로 수행.</remarks>
-		private void DoTask(object sender, RoutedEventArgs e)
-		{
-			if (CheckErrorBeforeDoTask()) return;
-			
-			PowerPoint.Application pptApp = new PowerPoint.Application();
-			PowerPoint.Presentations pptPres = pptApp.Presentations;
-			PowerPoint.Presentation presentation = pptPres.Open(settings.templateFileFullPath);
 
-			//add Random Cover
+		private void AddRandomCover(
+			ref PowerPoint.Application pptApp,
+			ref PowerPoint.Presentations pptPres, 
+			ref PowerPoint.Presentation presentation)
+        {
 			Random rnd = new Random();
-			int coverIndex=rnd.Next(1, 23);
-			PowerPoint.Presentation cover = pptPres.Open(AppDomain.CurrentDomain.BaseDirectory + "cover.pptx",WithWindow: MsoTriState.msoFalse);
-			cover.Slides[coverIndex].Copy();
+			int coverIndex = rnd.Next(1, 23);
+			PowerPoint.Presentation covers=pptPres.Open(AppDomain.CurrentDomain.BaseDirectory + "cover.pptx", 
+				WithWindow: MsoTriState.msoFalse);
+			covers.Slides[coverIndex].Copy();
 			presentation.Windows[1].Activate();
 			pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
 			presentation.Slides[1].Delete();
+			covers.Close();
 
+			presentation.Slides[1].Shapes[1].LockAspectRatio = MsoTriState.msoFalse;
+			presentation.Slides[1].Shapes[1].Height = Utils.CMToPoint(Constants.CoverImageHeight);
+			presentation.Slides[1].Shapes[1].Width = Utils.CMToPoint(Constants.CoverImageWidth);
+			presentation.Slides[1].Shapes[1].Top = Utils.CMToPoint(Constants.CoverImageTop);
+			presentation.Slides[1].Shapes[1].Left = Utils.CMToPoint(Constants.CoverImageLeft);
+
+			presentation.Slides[1].Shapes[2].LockAspectRatio = MsoTriState.msoFalse;
+			presentation.Slides[1].Shapes[2].Top = Utils.CMToPoint(Constants.CoverCommentTop);
+			presentation.Slides[1].Shapes[2].Left = Utils.CMToPoint(Constants.CoverCommentLeft);
+
+
+			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[1, 1].Text = dt.ToString("yyyy.MM.dd");
+			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[1, 1].Font.Size = 40;
+			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[2, 1].Text = "XX주일";
+			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[2, 1].Font.Size = 48;
+
+		}
+
+		private void EditBirthDaySlides(ref PowerPoint.Presentation presentation)
+        {
 			if (CbBirth.IsChecked == true)
 			{
 				//생일자 명단 입력
-				presentation.Slides[settings.SettingsAdBirthList].Shapes[1].TextFrame.TextRange.Text = 
-					TxtBirthList.Text.Replace(", ","\n");
+				presentation.Slides[settings.SettingsAdBirthList].Shapes[1].TextFrame.TextRange.Text =
+					TxtBirthList.Text.Replace(", ", "\n");
 			}
 			else
 			{
@@ -739,64 +545,94 @@ namespace SundayWorshipPPTMaker
 				presentation.Slides[settings.SettingsAdBirthEntry].Delete();
 				presentation.Slides[settings.SettingsAdBirthEntry].Delete();
 			}
+		}
 
-			//설교
+		private void AddPreachSlides(ref PowerPoint.Application pptApp,
+			ref PowerPoint.Presentations pptPres,
+			ref PowerPoint.Presentation presentation)
+        {
 			PowerPoint.Presentation preachPPT = pptPres.Open(TxtPreachLocation.Text, WithWindow: MsoTriState.msoFalse);
 			preachPPT.Slides.Range().Copy();
 
 			presentation.Windows[1].Activate();
 			presentation.Windows[1].View.GotoSlide(settings.SettingsPreachEntry);
 			pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
-			presentation.Slides[settings.SettingsPreachEntry].Shapes[2].TextFrame2.TextRange.Lines[2,1].Text = TxtTitle.Text;
+			presentation.Slides[settings.SettingsPreachEntry].Shapes[2].TextFrame2.TextRange.Lines[2, 1].Text = TxtTitle.Text;
 			preachPPT.Close();
+		}
 
-			//설교 전 영상
+		private void AddVideo(ref PowerPoint.Presentation presentation)
+        {
 			if (System.IO.File.Exists(TxtVidLocation.Text))
 				presentation.Slides[settings.SettingsVidBeforePreach].Shapes.AddMediaObject2(TxtVidLocation.Text);
+		}
 
-			//말씀
-			//3:제목 4:구절
-			string verseString = "";
-			verseString += jubo.BVSStart.book +" ";
-			verseString += jubo.BVSStart.chapter.ToString();
-			if (jubo.BVSStart.book == "시편")
+		private void EditBibleVerseCover(ref PowerPoint.Presentation presentation,out string verseString)
+        {
+			verseString = CmbStartBook.Text + " ";
+			verseString += NumStartChapter.Text;
+			if (CmbStartBook.Text == "시편")
 				verseString += "편 ";
 			else
 				verseString += "장 ";
-			verseString += jubo.BVSStart.passage.ToString() + "-" + jubo.BVSEnd.passage.ToString() + "절";
+
+			//Case Multi passages through multiple chapters
+			if (NumStartChapter.Text != NumEndChapter.Text)
+            {
+				verseString += NumStartChapter.Text + ":" + NumStartPassage.Text + "-" 
+					+ NumEndChapter.Text + ":" + NumEndPassage.Text;
+            }
+			//Case Single Passage
+			else if (NumStartPassage.Text == NumEndPassage.Text)
+            {
+				verseString += NumStartPassage.Text + "절";
+            }
+			//Default
+            else
+            {
+				verseString += NumStartPassage.Text + "-" + NumEndPassage.Text + "절";
+            }
 
 			presentation.Slides[settings.SettingsBibleEntry].Shapes[4].TextFrame.TextRange.Text = verseString;
+		}
 
+		private void AddBibleVerses(ref PowerPoint.Presentation presentation,string verseString)
+        {
 			//6:범위 3:본문
 			//List<string> verses=GetAllBibleVerse(jubo.BVSStart, passagesNum);
-			List<Tuple<string,string>> verses = GetAllBibleVerseDB(jubo.BVSStart, jubo.BVSEnd);
+			List<Tuple<string, string>> verses = GetAllBibleVerseDB(jubo.BVSStart, jubo.BVSEnd);
 			int passagesNum = verses.Count();
-            presentation.Slides[settings.SettingsBibleEntry + 1].Shapes[6].TextFrame.TextRange.Text = verseString.Replace('-', '~');
-            for (int i = 0; i < passagesNum-1; i++)
-            {
-                presentation.Slides[settings.SettingsBibleEntry + 1].Duplicate();
-            }
-				
-            for (int i = 0; i < passagesNum; i++)
-            {
+			presentation.Slides[settings.SettingsBibleEntry + 1].Shapes[6].TextFrame.TextRange.Text = verseString.Replace('-', '~');
+			for (int i = 0; i < passagesNum - 1; i++)
+			{
+				presentation.Slides[settings.SettingsBibleEntry + 1].Duplicate();
+			}
+
+			for (int i = 0; i < passagesNum; i++)
+			{
 				string[] va = verses[i].Item1.Split(':');
 				if (int.Parse(va[0]) != jubo.BVSStart.chapter)
-                {
+				{
 					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletNone;
 					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = va[1] + ". " + verses[i].Item2;
 				}
-                else
-                {
+				else
+				{
 					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.Text = verses[i].Item2;
 					presentation.Slides[settings.SettingsBibleEntry + 1 + i].Shapes[3].TextFrame.TextRange.ParagraphFormat.Bullet.StartValue = int.Parse(va[1]);
-                }
-            }
-			
+				}
+			}
+		}
 
-            //기도
-            presentation.Slides[settings.SettingsPrayerNotice].Shapes[2].TextFrame.TextRange.Text= TxtPrayer.Text;
-			
-			//찬양
+		private void EditPrayer(ref PowerPoint.Presentation presentation)
+        {
+			presentation.Slides[settings.SettingsPrayerNotice].Shapes[2].TextFrame.TextRange.Text = TxtPrayer.Text;
+		}
+
+		private void AddSongSlides(ref PowerPoint.Application pptApp,
+			ref PowerPoint.Presentations pptPres,
+			ref PowerPoint.Presentation presentation)
+        {
 			for (int i = SongList.Items.Count - 1; i >= 0; i--)
 			{
 				PowerPoint.Presentation item = pptPres.Open((string)SongList.Items[i], WithWindow: MsoTriState.msoFalse);
@@ -810,33 +646,65 @@ namespace SundayWorshipPPTMaker
 				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Shapes.Range().Delete();
 				presentation.Slides[settings.SettingsPraiseEntry].Shapes.Range().Copy();
 				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Shapes.Paste();
-				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Shapes[1].TextFrame.TextRange.Text = 
+				presentation.Slides[settings.SettingsPraiseSlidesInsertPos].Shapes[1].TextFrame.TextRange.Text =
 					System.IO.Path.GetFileNameWithoutExtension(SongList.Items[i] as string);
 
 				item.Close();
 			}
 			presentation.Slides[settings.SettingsPraiseEntry].Delete();
-			
-			//Save
-			string fileName = @"\"+TxtOutputFileName.Text;
-			string tempFilePath;
+		}
+
+		private void SavePPT(ref PowerPoint.Presentation presentation, out string tempFilePath, out string finalFilePath)
+        {
+			string fileName = @"\" + TxtOutputFileName.Text;
 			if (!Directory.Exists(TxtOutputFolder.Text))
 			{
 				//tempFilePath=Documents
 			}
 			tempFilePath = TxtOutputFolder.Text + @"\new";
-			string finalFilePath = TxtOutputFolder.Text + fileName;
+			finalFilePath = TxtOutputFolder.Text + fileName;
 
-            if (!Directory.Exists(finalFilePath))
-            {
+			if (!Directory.Exists(finalFilePath))
+			{
 				File.Delete(finalFilePath);
-            }
+			}
 			presentation.Export(tempFilePath, "pptx");
 			presentation.Close();
+		}
 
+		private void OpenFinalPPT(ref PowerPoint.Presentations pptPres, string tempFilePath, string finalFilePath)
+        {
 			//Open the created Presentation
 			System.IO.File.Move(tempFilePath + ".pptx", finalFilePath);
 			pptPres.Open(finalFilePath);
+		}
+
+		/// <summary>
+		/// 새 PPT를 작성한다. PowerPoint가 실행되고 모든 작업을 마친 파일을 연다. 저장 위치는 작업폴더와 같음.
+		/// </summary>
+		/// <remarks>인덱스 참조 편의를 위해 예배 진행 순서의 역순으로 수행.</remarks>
+		private void StartTask(object sender, RoutedEventArgs e)
+		{
+			if (CheckErrorBeforeTask()) return;
+			
+			PowerPoint.Application pptApp = new PowerPoint.Application();
+			PowerPoint.Presentations pptPres = pptApp.Presentations;
+			PowerPoint.Presentation presentation = pptPres.Open(settings.templateFileFullPath);
+			
+			AddRandomCover(ref pptApp, ref pptPres, ref presentation);
+			EditBirthDaySlides(ref presentation);
+			AddPreachSlides(ref pptApp, ref pptPres, ref presentation);
+			AddVideo(ref presentation);
+
+			string argVerseString;
+			EditBibleVerseCover(ref presentation,out argVerseString);
+			AddBibleVerses(ref presentation,argVerseString);
+			EditPrayer(ref presentation);
+			AddSongSlides(ref pptApp, ref pptPres, ref presentation);
+
+			string argTempFilePath, argFinalFilePath;
+			SavePPT(ref presentation, out argTempFilePath, out argFinalFilePath);
+			OpenFinalPPT(ref pptPres, argTempFilePath, argFinalFilePath);
 		}
 		
 		/// <summary>
@@ -865,6 +733,16 @@ namespace SundayWorshipPPTMaker
 				new ProcessStartInfo(e.Uri.AbsoluteUri){ UseShellExecute=true,}
 			);
 			e.Handled = true;
+        }
+
+        private void ManualMode_Checked(object sender, RoutedEventArgs e)
+        {
+			((CheckBox)sender).IsEnabled = true;
+        }
+
+        private void ManualMode_Unchecked(object sender, RoutedEventArgs e)
+        {
+			((CheckBox)sender).IsEnabled = false;
         }
     }
 }

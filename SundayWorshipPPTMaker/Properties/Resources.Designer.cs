@@ -205,6 +205,24 @@ namespace SundayWorshipPPTMaker.Properties {
         }
         
         /// <summary>
+        ///   대표기도자를 설정하세요.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoPrayer {
+            get {
+                return ResourceManager.GetString("NoPrayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   설교제목을 설정하세요.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoTitle {
+            get {
+                return ResourceManager.GetString("NoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
         internal static System.Drawing.Bitmap open_folder {

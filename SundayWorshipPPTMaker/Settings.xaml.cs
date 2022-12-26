@@ -10,30 +10,6 @@ using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 
 namespace SundayWorshipPPTMaker
 {
-    ///	<summary>
-    ///	템플릿 슬라이드 작업시 주요 슬라이드에 대한 슬라이드번호.
-    ///	</summary>
-    ///	<remarks>1-Base Indexing.</remarks>
-    static class Constants
-	{
-		/// <summary>찬양 시작슬라이드. 제목 Shape가 있음.</summary>
-		public const int PraiseEntry = 5;
-		/// <summary>찬양 시작슬라이드 이동후 복사시 복사된 슬라이드번호는 6부터 시작.</summary>
-		public const int PraiseSlidesInsertPos = 6;
-		/// <summary>대표기도</summary>
-		public const int PrayerNotice = 7;
-		/// <summary말씀</summary>
-		public const int BibleEntry = 8;
-		/// <summary>설교 전 영상</summary>
-		public const int VidBeforePreach = 10;
-		/// <summary>설교제목</summary>
-		public const int PreachEntry = 11;
-		/// <summary>생일광고</summary>
-		public const int AdBirthEntry = 23;
-		/// <summary>생일자 명단</summary>
-		public const int AdBirthList = 24;
-	}
-
 	/// <summary>
 	/// Settings.xaml에 대한 상호 작용 논리
 	/// </summary>
