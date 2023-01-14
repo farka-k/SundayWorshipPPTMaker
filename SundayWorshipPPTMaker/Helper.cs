@@ -115,9 +115,9 @@ namespace SundayWorshipPPTMaker
 				bibleRangeText += wordList[i] + " ";
 			}
 			bibleRangeText.Trim();
-			string patternSinglePassage = @"[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+\s*\d+[장:]\s*\d+[절]?";
+			string patternSinglePassage = @"[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+\s*\d+[장편:]\s*\d+[절]?";
 			string patternMultiPassages = patternSinglePassage + @"\s*[-~]\s*\d+[절]?";
-			string patternMultiChapters = patternSinglePassage + @"\s*[-~]\s*\d+[장:]\s*\d+[절]?";
+			string patternMultiChapters = patternSinglePassage + @"\s*[-~]\s*\d+[장편:]\s*\d+[절]?";
 
 			Regex rxSingleNumber = new Regex(@"\d+");
 			BVSStart.book = bibleRangeText.Split()[0];
