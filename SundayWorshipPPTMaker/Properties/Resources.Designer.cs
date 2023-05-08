@@ -83,9 +83,332 @@ namespace SundayWorshipPPTMaker.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap bgDefault1 {
+            get {
+                object obj = ResourceManager.GetObject("bgDefault1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/bibleCover.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriBibleCover {
+            get {
+                return ResourceManager.GetString("BGUriBibleCover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/bibleTextLight.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriBibleTextLight {
+            get {
+                return ResourceManager.GetString("BGUriBibleTextLight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/bibleTextOriginal.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriBibleTextOrigin {
+            get {
+                return ResourceManager.GetString("BGUriBibleTextOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/birthday01.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriBirthday01 {
+            get {
+                return ResourceManager.GetString("BGUriBirthday01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/birthday02.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriBirthday02 {
+            get {
+                return ResourceManager.GetString("BGUriBirthday02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/cross01.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriCross01 {
+            get {
+                return ResourceManager.GetString("BGUriCross01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/cross02.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriCross02 {
+            get {
+                return ResourceManager.GetString("BGUriCross02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/cutImg01.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriCutImg01 {
+            get {
+                return ResourceManager.GetString("BGUriCutImg01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/cutImg02.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriCutImg02 {
+            get {
+                return ResourceManager.GetString("BGUriCutImg02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/cutImg03.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriCutImg03 {
+            get {
+                return ResourceManager.GetString("BGUriCutImg03", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/dedication.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriDedication {
+            get {
+                return ResourceManager.GetString("BGUriDedication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/bgDefault.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriDefault {
+            get {
+                return ResourceManager.GetString("BGUriDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/dsong00.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriDSong {
+            get {
+                return ResourceManager.GetString("BGUriDSong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/intro.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriIntro {
+            get {
+                return ResourceManager.GetString("BGUriIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/pray01.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriPray01 {
+            get {
+                return ResourceManager.GetString("BGUriPray01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/pray02.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriPray02 {
+            get {
+                return ResourceManager.GetString("BGUriPray02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/preach.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BGUriPreach {
+            get {
+                return ResourceManager.GetString("BGUriPreach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap bibleCover {
+            get {
+                object obj = ResourceManager.GetObject("bibleCover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap bibleTextLight {
+            get {
+                object obj = ResourceManager.GetObject("bibleTextLight", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap bibleTextOriginal {
+            get {
+                object obj = ResourceManager.GetObject("bibleTextOriginal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap birthday01 {
+            get {
+                object obj = ResourceManager.GetObject("birthday01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap birthday02 {
+            get {
+                object obj = ResourceManager.GetObject("birthday02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap cross01 {
+            get {
+                object obj = ResourceManager.GetObject("cross01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap cross02 {
+            get {
+                object obj = ResourceManager.GetObject("cross02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap cutImg01 {
+            get {
+                object obj = ResourceManager.GetObject("cutImg01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap cutImg02 {
+            get {
+                object obj = ResourceManager.GetObject("cutImg02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap cutImg03 {
+            get {
+                object obj = ResourceManager.GetObject("cutImg03", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap dedication {
+            get {
+                object obj = ResourceManager.GetObject("dedication", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap dsong01 {
+            get {
+                object obj = ResourceManager.GetObject("dsong01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap dsong02 {
+            get {
+                object obj = ResourceManager.GetObject("dsong02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap dsong03 {
+            get {
+                object obj = ResourceManager.GetObject("dsong03", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap dsongBG {
+            get {
+                object obj = ResourceManager.GetObject("dsongBG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap folder_management {
             get {
                 object obj = ResourceManager.GetObject("folder_management", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap heart {
+            get {
+                object obj = ResourceManager.GetObject("heart", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -116,6 +439,52 @@ namespace SundayWorshipPPTMaker.Properties {
             get {
                 object obj = ResourceManager.GetObject("icon_default_navy", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/dsong01.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ImgUriDSong01 {
+            get {
+                return ResourceManager.GetString("ImgUriDSong01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/dsong02.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ImgUriDSong02 {
+            get {
+                return ResourceManager.GetString("ImgUriDSong02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/dsong03.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ImgUriDSong03 {
+            get {
+                return ResourceManager.GetString("ImgUriDSong03", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/seal.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ImgUriSeal {
+            get {
+                return ResourceManager.GetString("ImgUriSeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap intro {
+            get {
+                object obj = ResourceManager.GetObject("intro", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -248,6 +617,46 @@ namespace SundayWorshipPPTMaker.Properties {
         internal static System.Drawing.Bitmap powerpoint {
             get {
                 object obj = ResourceManager.GetObject("powerpoint", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pray01 {
+            get {
+                object obj = ResourceManager.GetObject("pray01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pray02 {
+            get {
+                object obj = ResourceManager.GetObject("pray02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap preach {
+            get {
+                object obj = ResourceManager.GetObject("preach", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap seal {
+            get {
+                object obj = ResourceManager.GetObject("seal", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

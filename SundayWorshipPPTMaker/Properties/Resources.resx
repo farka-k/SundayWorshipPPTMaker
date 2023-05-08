@@ -124,8 +124,110 @@
   <data name="arrow_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="bgDefault1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bgDefault.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BGUriBibleCover" xml:space="preserve">
+    <value>/Resources/bibleCover.jpg</value>
+  </data>
+  <data name="BGUriBibleTextLight" xml:space="preserve">
+    <value>/Resources/bibleTextLight.png</value>
+  </data>
+  <data name="BGUriBibleTextOrigin" xml:space="preserve">
+    <value>/Resources/bibleTextOriginal.png</value>
+  </data>
+  <data name="BGUriBirthday01" xml:space="preserve">
+    <value>/Resources/birthday01.jpg</value>
+  </data>
+  <data name="BGUriBirthday02" xml:space="preserve">
+    <value>/Resources/birthday02.jpg</value>
+  </data>
+  <data name="BGUriCross01" xml:space="preserve">
+    <value>/Resources/cross01.jpg</value>
+  </data>
+  <data name="BGUriCross02" xml:space="preserve">
+    <value>/Resources/cross02.jpg</value>
+  </data>
+  <data name="BGUriCutImg01" xml:space="preserve">
+    <value>/Resources/cutImg01.png</value>
+  </data>
+  <data name="BGUriCutImg02" xml:space="preserve">
+    <value>/Resources/cutImg02.png</value>
+  </data>
+  <data name="BGUriCutImg03" xml:space="preserve">
+    <value>/Resources/cutImg03.png</value>
+  </data>
+  <data name="BGUriDedication" xml:space="preserve">
+    <value>/Resources/dedication.jpg</value>
+  </data>
+  <data name="BGUriDefault" xml:space="preserve">
+    <value>/Resources/bgDefault.png</value>
+  </data>
+  <data name="BGUriDSong" xml:space="preserve">
+    <value>/Resources/dsong00.jpg</value>
+  </data>
+  <data name="BGUriIntro" xml:space="preserve">
+    <value>/Resources/intro.png</value>
+  </data>
+  <data name="BGUriPray01" xml:space="preserve">
+    <value>/Resources/pray01.jpg</value>
+  </data>
+  <data name="BGUriPray02" xml:space="preserve">
+    <value>/Resources/pray02.jpg</value>
+  </data>
+  <data name="BGUriPreach" xml:space="preserve">
+    <value>/Resources/preach.jpg</value>
+  </data>
+  <data name="bibleCover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bibleCover.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bibleTextLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bibleTextLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bibleTextOriginal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bibleTextOriginal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="birthday01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\birthday01.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="birthday02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\birthday02.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cross01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cross01.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cross02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cross02.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cutImg01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cutImg01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cutImg02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cutImg02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cutImg03" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cutImg03.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dedication" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dedication.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dsong01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dsong01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dsong02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dsong02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dsong03" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dsong03.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dsongBG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dsongBG.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="folder_management" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder-management.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="heart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\heart.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="HncRoot" xml:space="preserve">
     <value>HKEY_Current_User\Software\HNC\HwpCtrl\Modules</value>
@@ -136,6 +238,21 @@
   </data>
   <data name="icon_default_navy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_default_navy.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ImgUriDSong01" xml:space="preserve">
+    <value>/Resources/dsong01.png</value>
+  </data>
+  <data name="ImgUriDSong02" xml:space="preserve">
+    <value>/Resources/dsong02.png</value>
+  </data>
+  <data name="ImgUriDSong03" xml:space="preserve">
+    <value>/Resources/dsong03.png</value>
+  </data>
+  <data name="ImgUriSeal" xml:space="preserve">
+    <value>/Resources/seal.png</value>
+  </data>
+  <data name="intro" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\intro.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="InvalidFileName" xml:space="preserve">
     <value>파일이름을 설정하세요.</value>
@@ -178,6 +295,18 @@
   </data>
   <data name="powerpoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\powerpoint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pray01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pray01.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pray02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pray02.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="preach" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\preach.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="seal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\seal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
