@@ -256,6 +256,16 @@ namespace SundayWorshipPPTMaker.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap bibleIcon {
+            get {
+                object obj = ResourceManager.GetObject("bibleIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap bibleTextLight {
             get {
                 object obj = ResourceManager.GetObject("bibleTextLight", resourceCulture);
@@ -439,6 +449,15 @@ namespace SundayWorshipPPTMaker.Properties {
             get {
                 object obj = ResourceManager.GetObject("icon_default_navy", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/bibleIcon.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ImgUriBibleIcon {
+            get {
+                return ResourceManager.GetString("ImgUriBibleIcon", resourceCulture);
             }
         }
         
