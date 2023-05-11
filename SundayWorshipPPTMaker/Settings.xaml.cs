@@ -32,6 +32,9 @@ namespace SundayWorshipPPTMaker
 		/// <summary>생일자 명단</summary>
 		public int SettingsAdBirthList;
 
+		public float SlideWidth = Utils.CMToPoint(Constants.SlideSize16x9Width);
+		public float SlideHeight = Utils.CMToPoint(Constants.SlideSizeHeight);
+
 		public string templateDirectory = AppDomain.CurrentDomain.BaseDirectory.ToString() + @"template\";
 		public string templateFileName;
 		public string templateFileFullPath;

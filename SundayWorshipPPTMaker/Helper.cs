@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Threading.Tasks;
-
+using Tesseract;
+using Microsoft.Office.Core;
+using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 namespace SundayWorshipPPTMaker
 {
 	///	<summary>
-	///	템플릿 슬라이드 작업 상수
+	///	Template Constants
 	///	</summary>
-	///	<remarks>1-Base Indexing.</remarks>
-	static class Constants
+	public static class Constants
 	{
 		/// <summary>찬양 시작슬라이드. 제목 Shape가 있음.</summary>
 		public const int PraiseEntry = 5;
@@ -30,17 +31,61 @@ namespace SundayWorshipPPTMaker
 		/// <summary>생일자 명단</summary>
 		public const int AdBirthList = 24;
 
-		public const float CoverImageHeight = 9.4f;
+		public const float SlideSize16x9Width = 33.867f;
+		public const float SlideSizeHeight = 19.05f;
+		public const float SlideSize4x3Width = 25.4f;
 		public const float CoverImageWidth = 27.6f;
+		public const float CoverImageHeight = 9.4f;
 		public const float CoverImageTop = 2.52f;
 		public const float CoverImageLeft = 3.13f;
-		public const float CoverCommentHeight = 4.02f;
 		public const float CoverCommentWidth = 16.86f;
+		public const float CoverCommentHeight = 4.02f;
 		public const float CoverCommentTop = 12.53f;
 		public const float CoverCommentLeft = 8.5f;
+		public const float PaneHeight = 14.32f;
+
+		public const string FontNanumSquareBold = "나눔스퀘어 Bold";
+		public const string FontNanumSquareExBold = "나눔스퀘어라운드 ExtraBold";
+		public const string FontMalgunGothic = "맑은 고딕";
+		public const string FontKopubDotumBold = "Kopub돋움체 Bold";
+		public const string FontSequenceTitle = "KT&G 상상제목 B";
+		public const string FontSongTitle = "HY궁서B";
+		public const float RoundedRectangleRadius = 0.07707f;
 	}
 
-	public class Utils
+	public enum SlideContentsType { Cover, Main}
+	public enum TextEmphasis
+    {
+		None=0b_0000_0000,
+		Bold=0b_0000_0001,
+		Italic=0b_0000_0010,
+		UnderLine=0b_0000_0100,
+		Shadow=0b_0000_1000,
+		StrikeThrough=0b_0001_0000
+    }
+	public class ShadowOptions
+    {
+		public ShadowOptions(MsoShadowStyle style = MsoShadowStyle.msoShadowStyleOuterShadow,
+			int color = 0, float transparency=0.57f, float size=100, float blur=3, double angle=45,float distance=3)
+        {
+			Style = style;
+			Color = color;
+			Transparency = transparency;
+			Size = size;
+			Blur = blur;
+			Angle = angle;
+			Distance = distance;
+        }
+		public MsoShadowStyle Style { get; set; }
+		public int Color { get; set; }
+		public float Transparency { get; set; }
+		public float Size { get; set; }
+		public float Blur { get; set; }
+		public double Angle { get; set; }
+		public float Distance { get; set; }
+    }
+
+	public static class Utils
 	{
 		public static float CMToPoint(float cm)
 		{
@@ -50,6 +95,24 @@ namespace SundayWorshipPPTMaker
 		{
 			return (pt / 72) * 2.54f;
 		}
+		/// <summary>
+		/// 다가오는 일요일의 날짜를 구한다.
+		/// </summary>
+		/// <returns>해당 날짜를 나타내는 DateTime Object</returns>
+		public static DateTime GetComingSundayDate()
+		{
+			int daysRemain = (7 - (int)DateTime.Now.DayOfWeek) % 7;
+			DateTime dt = DateTime.Now.AddDays(daysRemain);
+			return dt;
+		}
+
+		public static bool IsLastSundayOfMonth()
+        {
+			DateTime dt = GetComingSundayDate();
+			var next = dt.AddDays(7);
+			if (next.Month != dt.Month) return true;
+			else return false;
+        }
 
 	}
 

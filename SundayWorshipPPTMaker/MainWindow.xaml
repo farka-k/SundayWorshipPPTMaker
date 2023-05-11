@@ -7,156 +7,185 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SundayWorshipPPTMaker"
         mc:Ignorable="d"
-        Title="WorshipPPT Maker" Height="500" Width="550" Closing="DisposeSettingWindow">
-    <Grid Background="{StaticResource DarkMode.Base.Background}" UseLayoutRounding="False">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2.8*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions >
-            <ColumnDefinition Width="6*"/>
-            <ColumnDefinition Width="6*" />
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="6*" />
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="5*" />
-        </Grid.ColumnDefinitions>
-        <Image Name="imageLogo" Stretch="Fill" Grid.ColumnSpan="6" Margin="2,0" />
-        <Border Grid.Column="6" Grid.ColumnSpan="4">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="2*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnShowHelp" Margin="3" Click="BtnShowHelp_Click">Help</Button>
-                <Popup Name="HelpPopup" Width="300" Height="200" VerticalAlignment="Center" StaysOpen="False">
-                    <WrapPanel Background="{StaticResource DarkMode.Base.Background}" Orientation="Vertical" Margin="1">
-                        <TextBlock HorizontalAlignment="Stretch" Margin="5" FontSize="16" FontWeight="Bold">Dev by Farka. 2022.</TextBlock>
-                        <TextBlock HorizontalAlignment="Left" Margin="5" FontSize="16" FontWeight="Bold">
+        Title="WorshipPPT Maker" Height="500" Width="600" Closing="DisposeSettingWindow">
+    <Grid Background="{StaticResource DarkMode.Base.Background}">
+        <TabControl TabStripPlacement="Left">
+            <TabItem Style="{DynamicResource TabItemStyle1}" Header="Main">
+                <Grid Background="{StaticResource DarkMode.Base.Background}" UseLayoutRounding="False">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2.8*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="6*"/>
+                        <ColumnDefinition Width="6*" />
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="6*" />
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="5*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Name="imageLogo" Stretch="Fill" Grid.ColumnSpan="6" Margin="2,0" />
+                    <Border Grid.Column="6" Grid.ColumnSpan="4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="2*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnShowHelp" Margin="3" Click="BtnShowHelp_Click">Help</Button>
+                            <Popup Name="HelpPopup" Width="300" Height="200" VerticalAlignment="Center" StaysOpen="False">
+                                <WrapPanel Background="{StaticResource DarkMode.Base.Background}" Orientation="Vertical" Margin="1">
+                                    <TextBlock HorizontalAlignment="Stretch" Margin="5" FontSize="16" FontWeight="Bold">Dev by Farka. 2022.</TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Margin="5" FontSize="16" FontWeight="Bold">
                             ▶ Usage:
                             <Hyperlink Name="LinkGithub" NavigateUri="https://github.com/farka-k/SundayWorshipPPTMaker" RequestNavigate="LinkUri_RequestNavigate">
                                 Github
                             </Hyperlink>
-                        </TextBlock>
-                        <TextBlock HorizontalAlignment="Left" Margin="5" FontSize="16" FontWeight="Bold">
+                                    </TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Margin="5" FontSize="16" FontWeight="Bold">
                             ▶ Icons from
                             <Hyperlink Name="LinkFlatIcon" NavigateUri="https://www.flaticon.com" RequestNavigate="LinkUri_RequestNavigate">
                                 Flaticon
                             </Hyperlink>
-                        </TextBlock>
-                        <TextBlock Margin="12,5" FontSize="14" FontWeight="Bold">
+                                    </TextBlock>
+                                    <TextBlock Margin="12,5" FontSize="14" FontWeight="Bold">
                             browse, search: Freepik<LineBreak></LineBreak>
                             folder: kumakamu<LineBreak></LineBreak>
                             powerpoint: Pixel perfect<LineBreak></LineBreak>
                             plus, minus: kliwir art<LineBreak></LineBreak>
                             select, arrow: Creative Stall Premium
-                        </TextBlock>
-                    </WrapPanel>
-                </Popup>
-                <Button Name="BtnShowSettings" Grid.Column="1" Margin="3" Click="BtnShowSettings_Click" Template="{DynamicResource ButtonTemplate1}">Settings</Button>
-                <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="ManualMode" Grid.Row="1" Content="ManualMode" IsChecked="False" 
+                                    </TextBlock>
+                                </WrapPanel>
+                            </Popup>
+                            <Button Name="BtnShowSettings" Grid.Column="1" Margin="3" Click="BtnShowSettings_Click" Template="{DynamicResource ButtonTemplate1}">Settings</Button>
+                            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="ManualMode" Grid.Row="1" Content="ManualMode" IsChecked="False" 
                           Checked="ManualMode_Checked" Unchecked="ManualMode_Unchecked"
                           ToolTip="주보 파일 인식 불가시 수동 입력 모드로 전환합니다" IsEnabled="False"/>
-            </Grid>
-        </Border>
+                        </Grid>
+                    </Border>
 
-        <Label Grid.Row="1">Folder</Label>
-        <TextBox x:Name="TxtOutputFolder" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="작업 폴더"/>
-        <xctk:IconButton Name="BtnSelectFolder" Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" 
+                    <Label Grid.Row="1">Folder</Label>
+                    <TextBox x:Name="TxtOutputFolder" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="작업 폴더"/>
+                    <xctk:IconButton Name="BtnSelectFolder" Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" 
                          Click="BtnSelectFolder_Click" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="작업에 필요한 파일들을 저장한 폴더를 선택합니다" >
-            <Image Source="/Resources/folder-management.png" />
-        </xctk:IconButton>
-        
-        <Label Grid.Row="2" Grid.RowSpan="3">Songs</Label>
-        <ListBox Name="SongList" SelectionMode="Extended"
+                        <Image Source="/Resources/folder-management.png" />
+                    </xctk:IconButton>
+
+                    <Label Grid.Row="2" Grid.RowSpan="3">Songs</Label>
+                    <ListBox Name="SongList" SelectionMode="Extended"
                  Grid.Row="2" Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="6"
                  Background="{StaticResource DarkMode.Control.Static.Background}" />
-        <StackPanel Grid.Row="2" Grid.RowSpan="3" Grid.Column="7" VerticalAlignment="Center" Margin="7,0">
-            <xctk:IconButton Name="BtnOrderUp" Click="BtnOrderUp_Click" Background="{x:Null}" BorderBrush="{x:Null}">
-                <Image Source="/Resources/arrow-up.png" Height="35"/>
-            </xctk:IconButton>
-            <xctk:IconButton Name="BtnOrderDown" Click="BtnOrderDown_Click" Background="{x:Null}" BorderBrush="{x:Null}">
-                <Image Source="/Resources/arrow-down.png" Height="35"/>
-            </xctk:IconButton>
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.RowSpan="3" Grid.Column="8" Grid.ColumnSpan="2" VerticalAlignment="Center">
-            <xctk:IconButton Name="BtnAddSongs" Click="BtnAddSongs_Click" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="가사ppt 파일 선택">
-                <Image Source="/Resources/plus.png" Height="50"/>
-            </xctk:IconButton>
-            <xctk:IconButton Name="BtnDelSongs" Click="BtnDelSongs_Click" BorderBrush="{x:Null}" Background="{x:Null}" ToolTip="선택된 파일을 목록에서 삭제">
-                <Image Source="/Resources/minus.png" Height="50" />
-            </xctk:IconButton>
-        </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.RowSpan="3" Grid.Column="7" VerticalAlignment="Center" Margin="7,0">
+                        <xctk:IconButton Name="BtnOrderUp" Click="BtnOrderUp_Click" Background="{x:Null}" BorderBrush="{x:Null}">
+                            <Image Source="/Resources/arrow-up.png" Height="35"/>
+                        </xctk:IconButton>
+                        <xctk:IconButton Name="BtnOrderDown" Click="BtnOrderDown_Click" Background="{x:Null}" BorderBrush="{x:Null}">
+                            <Image Source="/Resources/arrow-down.png" Height="35"/>
+                        </xctk:IconButton>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.RowSpan="3" Grid.Column="8" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                        <xctk:IconButton Name="BtnAddSongs" Click="BtnAddSongs_Click" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="가사ppt 파일 선택">
+                            <Image Source="/Resources/plus.png" Height="50"/>
+                        </xctk:IconButton>
+                        <xctk:IconButton Name="BtnDelSongs" Click="BtnDelSongs_Click" BorderBrush="{x:Null}" Background="{x:Null}" ToolTip="선택된 파일을 목록에서 삭제">
+                            <Image Source="/Resources/minus.png" Height="50" />
+                        </xctk:IconButton>
+                    </StackPanel>
 
-        <Label Grid.Row="5">Bible</Label>
-        <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="CmbStartBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"  
+                    <Label Grid.Row="5">Bible</Label>
+                    <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="CmbStartBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"  
                   Grid.Row="5" Grid.Column="1"/>
-        <xctk:IntegerUpDown Name="NumStartChapter" ValueChanged="NumStartChapter_ValueChanged"
+                    <xctk:IntegerUpDown Name="NumStartChapter" ValueChanged="NumStartChapter_ValueChanged"
                             Grid.Row="5" Grid.Column="2" Margin="4" Minimum="1" ClipValueToMinMax="True" />
-        <TextBlock Grid.Row="5" Grid.Column="3">:</TextBlock>
-        <xctk:IntegerUpDown Name="NumStartPassage" ValueChanged="NumStartPassage_ValueChanged" 
+                    <TextBlock Grid.Row="5" Grid.Column="3">:</TextBlock>
+                    <xctk:IntegerUpDown Name="NumStartPassage" ValueChanged="NumStartPassage_ValueChanged" 
                             Grid.Row="5" Grid.Column="4" Margin="4" Minimum="1" ClipValueToMinMax="True" Background="#FF36393F" Foreground="Ivory"/>
-        <TextBlock Grid.Row="5" Grid.Column="5">~</TextBlock>
-        <ComboBox Name="CmbEndBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"
+                    <TextBlock Grid.Row="5" Grid.Column="5">~</TextBlock>
+                    <ComboBox Name="CmbEndBook" IsEditable="True" SelectionChanged="CmbBook_SelectionChanged"
                   Grid.Row="5" Grid.Column="6" Style="{DynamicResource ComboBoxStyle1}" />
 
-        <xctk:IntegerUpDown Name="NumEndChapter" ValueChanged="NumEndChapter_ValueChanged"
+                    <xctk:IntegerUpDown Name="NumEndChapter" ValueChanged="NumEndChapter_ValueChanged"
                             Grid.Row="5" Grid.Column="7" Margin="4" Minimum="1" ClipValueToMinMax="True" Background="#FF36393F" Foreground="Ivory"/>
-        <TextBlock Grid.Row="5" Grid.Column="8">:</TextBlock>
-        <xctk:IntegerUpDown Name="NumEndPassage" ValueChanged="NumEndPassage_ValueChanged"
+                    <TextBlock Grid.Row="5" Grid.Column="8">:</TextBlock>
+                    <xctk:IntegerUpDown Name="NumEndPassage" ValueChanged="NumEndPassage_ValueChanged"
                             Grid.Row="5" Grid.Column="9" Margin="4" Minimum="1" ClipValueToMinMax="True" Background="#FF36393F" Foreground="Ivory"/>
 
 
-        <Label Grid.Row="6"  Margin="0,2,0,0" VerticalAlignment="Top">Prayer</Label>
-        <TextBox Name="TxtPrayer" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="대표기도" />
-        <Label Grid.Row="6" Grid.Column="4" HorizontalAlignment="Center">Title</Label>
-        <TextBox Name="TxtTitle" Grid.Row="6" Grid.Column="5" Grid.ColumnSpan="5" Margin="2,0" ToolTip="설교 제목" />
+                    <Label Grid.Row="6"  Margin="0,2,0,0" VerticalAlignment="Top">Prayer</Label>
+                    <TextBox Name="TxtPrayer" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="대표기도" />
+                    <Label Grid.Row="6" Grid.Column="4" HorizontalAlignment="Center">Title</Label>
+                    <TextBox Name="TxtTitle" Grid.Row="6" Grid.Column="5" Grid.ColumnSpan="5" Margin="2,0" ToolTip="설교 제목" />
 
-        <Label Grid.Row="7" ToolTip="설교ppt">Preach</Label>
-        <TextBox Name="TxtPreachLocation" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="설교ppt"/>
-        <xctk:IconButton Name="BtnBrowsePreach" Click="BtnBrowseSingleFile_Click"
+                    <Label Grid.Row="7" ToolTip="설교ppt">Preach</Label>
+                    <TextBox Name="TxtPreachLocation" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="설교ppt"/>
+                    <xctk:IconButton Name="BtnBrowsePreach" Click="BtnBrowseSingleFile_Click"
                          Grid.Row="7" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" BorderBrush="{x:Null}" Background="{x:Null}" ToolTip="설교ppt 파일 선택">
-            <Image Source="/Resources/search.png" />
-        </xctk:IconButton>
+                        <Image Source="/Resources/search.png" />
+                    </xctk:IconButton>
 
-        <Label Grid.Row="8" Grid.ColumnSpan="2" Margin="0,0,79,3" VerticalAlignment="Bottom" >Vid</Label>
-        <TextBox Name="TxtVidLocation" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="설교 전 영상"/>
-        <xctk:IconButton Name="BtnBrowseVid" Click="BtnBrowseSingleFile_Click"
+                    <Label Grid.Row="8" Grid.ColumnSpan="2" Margin="0,0,79,3" VerticalAlignment="Bottom" >Vid</Label>
+                    <TextBox Name="TxtVidLocation" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="설교 전 영상"/>
+                    <xctk:IconButton Name="BtnBrowseVid" Click="BtnBrowseSingleFile_Click"
                          Grid.Row="8" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="설교 전 영상 선택">
-            <Image Source="/Resources/search_vid.png" />
-        </xctk:IconButton>
+                        <Image Source="/Resources/search_vid.png" />
+                    </xctk:IconButton>
 
-        <Label Grid.Row="9" >Birthday</Label>
-        <CheckBox Name="CbBirth" Checked="CheckBox_CheckChanged" Unchecked="CheckBox_CheckChanged"
+                    <Label Grid.Row="9" >Birthday</Label>
+                    <CheckBox Name="CbBirth" Checked="CheckBox_CheckChanged" Unchecked="CheckBox_CheckChanged"
                   Grid.Row="9" Grid.Column="1" Margin="3,0" ToolTip="생일자 포함 여부" Template="{DynamicResource CheckBoxTemplate1}"></CheckBox>
-        <Grid Name="BirthList" Visibility="Hidden" Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="8" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="4*" />
-            </Grid.ColumnDefinitions>
-            <Label>List</Label>
-            <TextBox Name="TxtBirthList" Grid.Column="1" Margin="0,2,0,0" ToolTip="생일자 명단"/>
-        </Grid>
+                    <Grid Name="BirthList" Visibility="Hidden" Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="8" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="4*" />
+                        </Grid.ColumnDefinitions>
+                        <Label>List</Label>
+                        <TextBox Name="TxtBirthList" Grid.Column="1" Margin="0,2,0,0" ToolTip="생일자 명단"/>
+                    </Grid>
 
-        <Label Grid.Row="10">FileName</Label>
-        <TextBox Name="TxtOutputFileName" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="7" Margin="2,0" ToolTip="저장할 파일 이름"/>
-        <Button Name="BtnDoTask" Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" Click="StartTask" Template="{DynamicResource ButtonTemplate1}" ToolTip="작업 실행">Run</Button>
+                    <Label Grid.Row="10">FileName</Label>
+                    <TextBox Name="TxtOutputFileName" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="7" Margin="2,0" ToolTip="저장할 파일 이름"/>
+                    <Button Name="BtnDoTask" Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" Click="StartTask" Template="{DynamicResource ButtonTemplate1}" ToolTip="작업 실행">Run</Button>
+                </Grid>
+            </TabItem>
+            <TabItem Style="{DynamicResource TabItemStyle1}" Header="가사">
+                <Grid Background="{StaticResource DarkMode.Base.Background}">
+                    <StackPanel>
+                        
+                    <DockPanel>
+                        <TextBox Width="480">asdf</TextBox>
+                        <Button Template="{DynamicResource ButtonTemplate1}">asdf</Button>
+                    </DockPanel>
+                        <TextBox MaxHeight="150" TextWrapping="Wrap" AcceptsReturn="True"  AcceptsTab="True" VerticalScrollBarVisibility="Auto"
+                                 Text="가사 &#x0a; 인데요&#x0a;&#x0a;&#x0a;&#x0a;&#x0a;&#x0a;긴 가사를 넣으면&#x0a;&#x0a;이렇게 스크롤바가 뙇"
+                                 >
+                        </TextBox>
+                        <DockPanel>
+                            <Label Style="{StaticResource baseStyle}">BackGround</Label>
+                            <xctk:ColorPicker 
+                                
+                                Background="{StaticResource DarkMode.Control.Static.Background}"
+                                DropDownBackground="Black" HeaderBackground="#FF070808" HeaderForeground="#FFFFE2E2" 
+                                TabBackground="#FF070808" TabForeground="#FFFFE2E2"></xctk:ColorPicker>
+                        </DockPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

@@ -155,7 +155,7 @@
     <value>/Resources/cutImg02.png</value>
   </data>
   <data name="BGUriCutImg03" xml:space="preserve">
-    <value>/Resources/cutImg03.png</value>
+    <value>/Resources/cutImg03.jpg</value>
   </data>
   <data name="BGUriDedication" xml:space="preserve">
     <value>/Resources/dedication.jpg</value>
@@ -164,7 +164,7 @@
     <value>/Resources/bgDefault.png</value>
   </data>
   <data name="BGUriDSong" xml:space="preserve">
-    <value>/Resources/dsong00.jpg</value>
+    <value>/Resources/dsongBG.jpg</value>
   </data>
   <data name="BGUriIntro" xml:space="preserve">
     <value>/Resources/intro.png</value>
@@ -195,6 +195,12 @@
   </data>
   <data name="birthday02" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\birthday02.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bsong01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bsong01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bsong02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bsong02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cross01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cross01.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -244,6 +250,12 @@
   </data>
   <data name="ImgUriBibleIcon" xml:space="preserve">
     <value>/Resources/bibleIcon.png</value>
+  </data>
+  <data name="ImgUriBSong01" xml:space="preserve">
+    <value>/Resources/bsong01.png</value>
+  </data>
+  <data name="ImgUriBSong02" xml:space="preserve">
+    <value>/Resources/bsong02.png</value>
   </data>
   <data name="ImgUriDSong01" xml:space="preserve">
     <value>/Resources/dsong01.png</value>

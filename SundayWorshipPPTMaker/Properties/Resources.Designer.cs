@@ -172,7 +172,7 @@ namespace SundayWorshipPPTMaker.Properties {
         }
         
         /// <summary>
-        ///   /Resources/cutImg03.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   /Resources/cutImg03.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string BGUriCutImg03 {
             get {
@@ -199,7 +199,7 @@ namespace SundayWorshipPPTMaker.Properties {
         }
         
         /// <summary>
-        ///   /Resources/dsong00.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   /Resources/dsongBG.jpg과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string BGUriDSong {
             get {
@@ -299,6 +299,26 @@ namespace SundayWorshipPPTMaker.Properties {
         internal static System.Drawing.Bitmap birthday02 {
             get {
                 object obj = ResourceManager.GetObject("birthday02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap bsong01 {
+            get {
+                object obj = ResourceManager.GetObject("bsong01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap bsong02 {
+            get {
+                object obj = ResourceManager.GetObject("bsong02", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -458,6 +478,24 @@ namespace SundayWorshipPPTMaker.Properties {
         internal static string ImgUriBibleIcon {
             get {
                 return ResourceManager.GetString("ImgUriBibleIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/bsong01.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ImgUriBSong01 {
+            get {
+                return ResourceManager.GetString("ImgUriBSong01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /Resources/bsong02.png과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ImgUriBSong02 {
+            get {
+                return ResourceManager.GetString("ImgUriBSong02", resourceCulture);
             }
         }
         
