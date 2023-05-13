@@ -464,10 +464,10 @@ namespace SundayWorshipPPTMaker
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidWorkingDirectory;
 			}
-			if (!File.Exists(settings.templateFileFullPath))
+			/*if (!File.Exists(settings.templateFileFullPath))
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidPresentationTemplate;
-			}
+			}*/
 			if (SongList.Items.Count == 0)
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.NoPraise;
@@ -541,7 +541,7 @@ namespace SundayWorshipPPTMaker
 				out currentSlide);
 
 			currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRectangle,
-				0, 0, settings.SlideWidth, settings.SlideHeight);
+				0, 0, settings.SlideSize.Width, settings.SlideSize.Height);
 			var currentShape = currentSlide.Shapes[1];
 			currentShape.Fill.ForeColor.RGB = 0;
 			currentShape.Fill.Transparency = 0.45f;
@@ -592,7 +592,7 @@ namespace SundayWorshipPPTMaker
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriCross02,
 				out currentSlide);
 			currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRectangle,
-				0, 0, settings.SlideWidth, settings.SlideHeight);
+				0, 0, settings.SlideSize.Width, settings.SlideSize.Height);
 			currentSlide.Shapes[1].Fill.ForeColor.RGB = 0;
 			currentSlide.Shapes[1].Fill.Transparency = 0.45f;
 			currentSlide.Shapes[1].Line.ForeColor.RGB = 0;
@@ -960,7 +960,7 @@ namespace SundayWorshipPPTMaker
 			
 			currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRectangle,
 				0, Utils.CMToPoint(2.54f),
-				settings.SlideWidth, Utils.CMToPoint(Constants.PaneHeight));
+				settings.SlideSize.Width, Utils.CMToPoint(Constants.PaneHeight));
 			var currentShape = currentSlide.Shapes[1];
 			currentShape.Fill.ForeColor.RGB = 0;
 			currentShape.Fill.Transparency = 0.45f;
@@ -994,7 +994,7 @@ namespace SundayWorshipPPTMaker
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriDedication, out currentSlide);
 			currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRectangle,
-				0, Utils.CMToPoint(3.32f), settings.SlideWidth, Utils.CMToPoint(5.2f));
+				0, Utils.CMToPoint(3.32f), settings.SlideSize.Width, Utils.CMToPoint(5.2f));
 			currentShape = currentSlide.Shapes[1];
 			currentShape.Fill.ForeColor.RGB = 0;
 			currentShape.Fill.Transparency = 0.26f;

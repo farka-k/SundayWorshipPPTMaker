@@ -31,6 +31,9 @@ namespace SundayWorshipPPTMaker
 		/// <summary>생일자 명단</summary>
 		public const int AdBirthList = 24;
 
+
+		public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+		public static string ResourceDirectory = AppDomain.CurrentDomain.BaseDirectory + @"Resources\";
 		public const float SlideSize16x9Width = 33.867f;
 		public const float SlideSizeHeight = 19.05f;
 		public const float SlideSize4x3Width = 25.4f;
@@ -52,8 +55,20 @@ namespace SundayWorshipPPTMaker
 		public const string FontSongTitle = "HY궁서B";
 		public const float RoundedRectangleRadius = 0.07707f;
 	}
-
-	public enum SlideContentsType { Cover, Main}
+	public struct slideSize
+    {
+		public float Width;
+		public float Height;
+		public slideSize(float width,float height)
+        {
+			Width = width;
+			Height = height;
+        }
+    }
+	
+	public enum SlideContentsType { Cover, Main }
+	public enum SlideSizeType { WideScreen, Normal }
+	public enum OCREngineType { Clova, Tesseract }
 	public enum TextEmphasis
     {
 		None=0b_0000_0000,

@@ -240,6 +240,10 @@
         <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource baseStyle}">
             <Setter Property="Background" Value="{StaticResource DarkMode.Control.Static.Background}" />
         </Style>
+        <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource baseStyle}">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
         <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource baseStyle}">
             <Setter Property="Background" Value="{StaticResource DarkMode.Control.Static.Background}" />
         </Style>
