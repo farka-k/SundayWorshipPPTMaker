@@ -29,9 +29,9 @@ namespace SundayWorshipPPTMaker
 		private DateTime dt;
 		private Jubo jubo;
 		string OutputDirectory = @"\Out\";
-		private SQLiteConnection conn = null;
-		private SQLiteCommand command = null;
-		private SQLiteDataReader rdr = null;
+		private static SQLiteConnection conn = null;
+		private static SQLiteCommand command = null;
+		private static SQLiteDataReader rdr = null;
 
 		/// <summary>
 		/// MainWindow 초기화 코드
@@ -213,7 +213,6 @@ namespace SundayWorshipPPTMaker
 		/// <remarks>이벤트를 발생시킨 버튼 이름에 따라 FileDialog의 형태가 바뀐다.</remarks>
 		private void BtnBrowseSingleFile_Click(object sender, RoutedEventArgs e)
 		{
-
 			OpenFileDialog ofd = new OpenFileDialog();
 			string sender_name = ((Button)sender).Name;
 			ofd.InitialDirectory = workFolder;
@@ -233,6 +232,12 @@ namespace SundayWorshipPPTMaker
 					TxtVidLocation.Text = ofd.FileName;
 			}
 		}
+		
+		private void SelectJuboImage()
+        {
+			
+        }
+
 		/// <summary>
 		/// 선택된 아이템의 위치를 위로 한 칸 올린다.
 		/// </summary>
@@ -1035,9 +1040,9 @@ namespace SundayWorshipPPTMaker
 			AddSlide(ref presentation, ref last_idx, out currentSlide);
 			MakeAdvTemplate(ref currentSlide, SlideContentsType.Main);
 			currentSlide.Duplicate();
-			currentSlide=presentation.Slides[++last_idx];
-			currentSlide.Shapes[2].TextFrame2.TextRange.Text = "사랑의 편지 신청 받고 있습니다!";
-			currentSlide.Shapes[2].TextFrame2.TextRange.Words[1, 2].Font.Fill.ForeColor.RGB = 0x0000ff;
+			currentSlide=presentation.Slides[last_idx+1];
+			currentSlide.Shapes[2].TextFrame2.TextRange.Text = "사랑의 편지💌,  찬양팀🎤  신청 받고 있습니다!";
+			currentSlide.Shapes[2].TextFrame2.TextRange.Words[1, 4].Font.Fill.ForeColor.RGB = 0x0000ff;
 
 			EditBirthDaySlides(ref presentation, ref last_idx);
 			AddCutSlide(ref presentation, ref last_idx,
@@ -1050,7 +1055,7 @@ namespace SundayWorshipPPTMaker
 					MsoTriState.msoFalse, MsoTriState.msoTrue, Utils.CMToPoint(4.23f), 0);
 				presentation.Slides[last_idx + i].Shapes[1].LockAspectRatio = MsoTriState.msoFalse;
 			}
-			last_idx++;
+			last_idx+=2;
 
 			//추가 광고
 
@@ -1154,7 +1159,7 @@ namespace SundayWorshipPPTMaker
 					titleText = "🎉 " + "이번 주 생일자";
 
 				var currentShapes = currentSlide.Shapes[1];
-				SetTextEffectOptions(ref currentShapes, "titleText", Constants.FontNanumSquareExBold, 54, paragraphAlignment: MsoParagraphAlignment.msoAlignCenter);
+				SetTextEffectOptions(ref currentShapes, titleText, Constants.FontNanumSquareExBold, 54, paragraphAlignment: MsoParagraphAlignment.msoAlignCenter);
 
 				currentSlide.Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal,
 					Utils.CMToPoint(3.93f), Utils.CMToPoint(6.33f), Utils.CMToPoint(26.6f), Utils.CMToPoint(2.64f));
