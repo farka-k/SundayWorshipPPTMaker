@@ -8,6 +8,13 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Net;
+using Drawing=System.Drawing;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -150,11 +157,12 @@ namespace SundayWorshipPPTMaker
 				workFolder = dlg.FileName;
 				jubo.SetPathInfo(workFolder);
 
-				HwpObject hwp = new HwpObject();
-				hwp.RegisterModule("FilePathCheckDLL", "FilePathChecker");
 
-				if (hwp.Open(jubo.FullPath, "", ""))
+				if (File.Exists(jubo.FullPath))
 				{
+					HwpObject hwp = new HwpObject();
+					hwp.RegisterModule("FilePathCheckDLL", "FilePathChecker");
+					hwp.Open(jubo.FullPath, "", "");
 					string txt = (string)hwp.GetTextFile("TEXT", "");
 					if (!System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + OutputDirectory))
 						System.IO.Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + OutputDirectory);
@@ -166,6 +174,23 @@ namespace SundayWorshipPPTMaker
 				}
 				else
 				{
+					dlg.IsFolderPicker = false;
+					dlg.Title = "Select Image to Recognize";
+					
+					if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+					{
+						if (GetTextFromOCRResult(settings.OCREngineType, dlg.FileName))
+						{
+							ManualMode.IsChecked = false;
+							MessageBox.Show(jubo.GetJuboInfo());
+						}
+						else
+						{
+							MessageBox.Show("File Open Failed.\nChange to manual mode.");
+							ManualMode.IsChecked = true;
+							return;
+						}
+					}
 					/*var engine = new TesseractEngine(@"./tessdata", "kor", EngineMode.Default);
 					var img = Pix.LoadFromFile(workFolder + @"/230430_2cr1.jpg");
 					var page = engine.Process(img);
@@ -177,9 +202,6 @@ namespace SundayWorshipPPTMaker
 						new_text += item;
                     }
 					MessageBox.Show(new_text);*/
-					MessageBox.Show("File Open Failed.\nChange to manual mode.");
-					ManualMode.IsChecked = true;
-					return;
 				}
 				
 				TxtPrayer.Text = jubo.PrayerName;
@@ -189,13 +211,9 @@ namespace SundayWorshipPPTMaker
 				CmbStartBook.SelectedIndex=books.IndexOf(jubo.BVSStart.book);
 				NumStartChapter.Value = jubo.BVSStart.chapter;
 				NumStartPassage.Value = jubo.BVSStart.passage;
-				//TxtStartChapter.Text = jubo.BVSStart.chapter.ToString();
-				//TxtStartPassage.Text = jubo.BVSStart.passage.ToString();
 				CmbEndBook.SelectedIndex = books.IndexOf(jubo.BVSEnd.book);
 				NumEndChapter.Value = jubo.BVSEnd.chapter;
 				NumEndPassage.Value = jubo.BVSEnd.passage;
-				//TxtEndChapter.Text = jubo.BVSEnd.chapter.ToString();
-				//TxtEndPassage.Text = jubo.BVSEnd.passage.ToString();
 
 				//생일 필드
 				//생일자 있으면
@@ -207,6 +225,71 @@ namespace SundayWorshipPPTMaker
 				else CbBirth.IsChecked = false;
 			}
 		}
+
+		private bool GetTextFromOCRResult(OCREngineType engine, string imagePath)
+        {
+			if (engine == OCREngineType.Clova)
+            {
+				ClovaOCRResponseFormat response = GetOCRResultClova(imagePath);
+				if (response != null)
+				{
+					var recFields = response.images[0].fields;
+					foreach(var field in recFields)
+                    {
+                        if (field.name == "contents")
+                        {
+							string[] contents = field.inferText.Split('\n');
+							int count = contents.Length;
+							//찬양
+							for(int i = 0; i < count - 2; i++)
+                            {
+								var files=Directory.GetFiles(jubo.Directory, "*"+contents[i]+"*.*");
+								if (files.Length>0) SongList.Items.Add(files[0]);
+								else
+                                {
+									//blackboard
+                                }
+                            }
+							//대표기도
+							jubo.PreachTitle = contents.Last<string>();
+							//말씀
+							string bibleRangeText = contents[count - 2];
+							jubo.SetBibleVerseRange(bibleRangeText);
+
+						}
+
+						else if (field.name == "performer")
+                        {
+							string[] performer = field.inferText.Split('\n');
+							jubo.WorshipLeader = performer[0];
+							jubo.PrayerName = performer[1];
+                        }
+
+						else if (field.name == "birthday")
+                        {
+							var birthdayInfo = field.inferText.Split('\n');
+							var dates = birthdayInfo[0].Split(' ');
+							var names = birthdayInfo[1].Split(' ');
+							jubo.BirthDateList.AddRange(dates);
+							jubo.BirthPersonList.AddRange(names);
+                        }
+
+						else if (field.name == "advertisement")
+                        {
+							jubo.AdStrings = Regex.Replace(field.inferText, "[ \n][0-9][ ]", "\n");
+                        }
+                    }
+					return true;
+				}
+				else return false;
+            }
+			// engine == OCREngineType.Tesseract
+            else
+            {
+				return false;
+            }
+        }
+
 		/// <summary>
 		/// 하나의 파일 이름을 불러온다.
 		/// </summary>
@@ -238,6 +321,78 @@ namespace SundayWorshipPPTMaker
 			
         }
 
+		private string SendImageToClovaServer(string imagePath)
+        {
+			string response = string.Empty;
+			string OCRINVOKEURL = Environment.GetEnvironmentVariable("ClovaOCRInvokeURL", EnvironmentVariableTarget.User);
+			string OCRSECRET = Environment.GetEnvironmentVariable("ClovaOCRSECRET", EnvironmentVariableTarget.User);
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(OCRINVOKEURL);
+			request.Method = "POST";
+			request.Headers.Add("X-OCR-SECRET", OCRSECRET);
+			request.Headers.Add(HttpRequestHeader.ContentType,"application/json");
+
+			string fileName = System.IO.Path.GetFileNameWithoutExtension(imagePath);
+			string fileExt = System.IO.Path.GetExtension(imagePath);
+			string Base64Img = Convert.ToBase64String(File.ReadAllBytes(imagePath));
+			ClovaOCRRequstFormat requestObj = new()
+			{
+				requestId = Guid.NewGuid().ToString(),
+				version = "V1",
+				timestamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds(),
+				lang = "ko",
+				images = new List<RequestImageJsonModel>()
+				{
+					new RequestImageJsonModel()
+					{
+						format = fileExt.Substring(1),
+						name = fileName,
+						data = Base64Img,
+						templateIds = new List<int> { int.Parse(Properties.Resources.ClovaOCRTemplateId) }
+                    }
+				}
+			};
+			//Demarshall
+			var options = new JsonSerializerOptions { WriteIndented = true };
+			string jsonString = JsonSerializer.Serialize(requestObj, options);
+			byte[] bytes = Encoding.UTF8.GetBytes(jsonString);
+			request.ContentLength = bytes.Length;
+			using (Stream reqStream = request.GetRequestStream())
+			{
+				reqStream.Write(bytes, 0, bytes.Length);
+			}
+
+			using (HttpWebResponse resp = (HttpWebResponse)request.GetResponse())
+            {
+				HttpStatusCode status = resp.StatusCode;
+                if (status == HttpStatusCode.OK)
+                {
+					Stream respStream = resp.GetResponseStream();
+					using (StreamReader sr=new StreamReader(respStream))
+                    {
+						response = sr.ReadToEnd();
+                    }
+                }
+            }
+			return response;
+        }
+
+		private ClovaOCRResponseFormat GetOCRResultClova(string imagePath)
+        {
+			//string imagePath= @"G:\대양 고등부\230514\test.jpg";
+			string response = SendImageToClovaServer(imagePath);
+			ClovaOCRResponseFormat responseObj= JsonSerializer.Deserialize<ClovaOCRResponseFormat>(response);
+			return responseObj;
+        }
+
+		private void PreProcessImage()
+        {
+
+        }
+
+		private void GetOCRResultTesseract()
+        {
+
+        }
 		/// <summary>
 		/// 선택된 아이템의 위치를 위로 한 칸 올린다.
 		/// </summary>

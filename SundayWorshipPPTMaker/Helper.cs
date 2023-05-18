@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using Tesseract;
 using Microsoft.Office.Core;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
@@ -14,24 +15,6 @@ namespace SundayWorshipPPTMaker
 	///	</summary>
 	public static class Constants
 	{
-		/// <summary>찬양 시작슬라이드. 제목 Shape가 있음.</summary>
-		public const int PraiseEntry = 5;
-		/// <summary>찬양 시작슬라이드 이동후 복사시 복사된 슬라이드번호는 6부터 시작.</summary>
-		public const int PraiseSlidesInsertPos = 6;
-		/// <summary>대표기도</summary>
-		public const int PrayerNotice = 7;
-		/// <summary말씀</summary>
-		public const int BibleEntry = 8;
-		/// <summary>설교 전 영상</summary>
-		public const int VidBeforePreach = 10;
-		/// <summary>설교제목</summary>
-		public const int PreachEntry = 11;
-		/// <summary>생일광고</summary>
-		public const int AdBirthEntry = 23;
-		/// <summary>생일자 명단</summary>
-		public const int AdBirthList = 24;
-
-
 		public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 		public static string ResourceDirectory = AppDomain.CurrentDomain.BaseDirectory + @"Resources\";
 		public const float SlideSize16x9Width = 33.867f;
@@ -131,6 +114,89 @@ namespace SundayWorshipPPTMaker
 
 	}
 
+	public class ClovaOCRRequstFormat
+    {
+		[JsonInclude]
+		public string version { get; set; }
+		[JsonInclude]
+		public string requestId { get; set; }
+		[JsonInclude]
+		public long timestamp { get; set; }
+		public string? lang { get; set; }
+		[JsonInclude]
+		public List<RequestImageJsonModel> images { get; set; }
+    }
+
+	public class ClovaOCRResponseFormat
+    {
+		//public string version { get; set; }
+		//public string requestId { get; set; }
+		//public long timestamp { get; set; }
+		public List<ResponseImageJsonModel> images { get; set; }
+    }
+
+	public class RequestImageJsonModel
+	{
+		[JsonInclude]
+		public string format { get; set; }
+		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+		public string? url { get; set; }
+		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+		public string? data { get; set; }
+		[JsonInclude]
+		public string name { get; set; }
+		public List<int> templateIds { get; set; }
+	}
+
+	public class ResponseImageJsonModel
+    {
+		public string uid { get; set; }
+		public string name { get; set; }
+		public string inferResult { get; set; }
+		public string message { get; set; }
+		public MatchedTemplateModel matchedTemplate { get; set; }
+		public ValidationResultModel validationResult { get; set; }
+		public List<ImageFieldModel> fields { get; set; }
+		public TitleModel title { get; set; }
+	}
+
+	public class MatchedTemplateModel
+    {
+		public int id { get; set; }
+		public string name { get; set; }
+	}
+
+	public class ValidationResultModel
+    {
+		public string result { get; set; }
+		public string message { get; set; }
+	}
+
+	public class ImageFieldModel
+    {
+		public string name { get; set; }
+		public string valueType { get; set; }
+		public string inferText { get; set; }
+		public float inferConfidence { get; set; }
+		public BoundingModel bounding { get; set; }
+	}
+
+	public class TitleModel
+    {
+		public string name { get; set; }
+		public BoundingModel bounding { get; set; }
+		public string inferText { get; set; }
+		public float inferConfidence { get; set; }
+	}
+
+	public class BoundingModel
+    {
+		public float top { get; set; }
+		public float left { get; set; }
+		public float width { get; set; }
+		public float height { get; set; }
+	}
+
 	/// <summary>
 	/// 주보 파일에 대한 Path와 추출 데이터.
 	/// </summary>
@@ -147,6 +213,8 @@ namespace SundayWorshipPPTMaker
 		public BibleVerseSkeleton BVSStart { get; set; }
 		/// <summary>말씀 끝 범위</summary>
 		public BibleVerseSkeleton BVSEnd { get; set; }
+		/// <summary>찬양인도자</summary>
+		public string WorshipLeader { get; set; }
 		/// <summary>대표기도자</summary>
 		public string PrayerName { get; set; }
 		/// <summary>설교제목</summary>
@@ -164,6 +232,8 @@ namespace SundayWorshipPPTMaker
 		/// <c>BirthPersonList</c>의 원소와 매칭된다
 		/// </remarks>
 		public List<string> BirthDateList { get; set; }
+		
+		public string AdStrings { get; set; }
 
 		///	<summary>생성자</summary>
 		/// <param name="fileName">주보 파일 이름</param>
@@ -176,9 +246,9 @@ namespace SundayWorshipPPTMaker
 			BirthDateList = new List<string>();
 		}
 
-		public void SetPrayerName(ref List<string> wordList, ref int cur_idx, ref int end_idx)
+		public void SetPrayerName(ref List<string> wordList, ref int cur_idx)
 		{
-			cur_idx = wordList.IndexOf("대표기도", cur_idx, end_idx - cur_idx);
+			//cur_idx = wordList.IndexOf("대표기도", cur_idx, end_idx - cur_idx);
 			PrayerName = wordList[cur_idx + 1] + " " + wordList[cur_idx + 2];
 		}
 		public void SetBibleVerseRange(ref List<string> wordList, ref int cur_idx, ref int end_idx)
@@ -192,31 +262,36 @@ namespace SundayWorshipPPTMaker
 			{
 				bibleRangeText += wordList[i] + " ";
 			}
-			bibleRangeText.Trim();
+			bibleRangeText=bibleRangeText.Trim();
+			SetBibleVerseRange(bibleRangeText);
+		}
+
+		public void SetBibleVerseRange(string text)
+        {
 			string patternSinglePassage = @"[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+\s*\d+[장편:]\s*\d+[절]?";
 			string patternMultiPassages = patternSinglePassage + @"\s*[-~]\s*\d+[절]?";
 			string patternMultiChapters = patternSinglePassage + @"\s*[-~]\s*\d+[장편:]\s*\d+[절]?";
 
 			Regex rxSingleNumber = new Regex(@"\d+");
-			BVSStart.book = bibleRangeText.Split()[0];
+			BVSStart.book = text.Split()[0];
 			BVSEnd.book = BVSStart.book;
-			MatchCollection matches = rxSingleNumber.Matches(bibleRangeText);
-			int idx = Regex.IsMatch(bibleRangeText, @"요한[1-3]서") ? 1 : 0;
-			if (Regex.IsMatch(bibleRangeText, patternMultiChapters))
+			MatchCollection matches = rxSingleNumber.Matches(text);
+			int idx = Regex.IsMatch(text, @"요한[1-3]서") ? 1 : 0;
+			if (Regex.IsMatch(text, patternMultiChapters))
 			{
 				BVSStart.chapter = int.Parse(matches[idx++].Value);
 				BVSStart.passage = int.Parse(matches[idx++].Value);
 				BVSEnd.chapter = int.Parse(matches[idx++].Value);
 				BVSEnd.passage = int.Parse(matches[idx++].Value);
 			}
-			else if (Regex.IsMatch(bibleRangeText, patternMultiPassages))
+			else if (Regex.IsMatch(text, patternMultiPassages))
 			{
 				BVSStart.chapter = int.Parse(matches[idx++].Value);
 				BVSEnd.chapter = BVSStart.chapter;
 				BVSStart.passage = int.Parse(matches[idx++].Value);
 				BVSEnd.passage = int.Parse(matches[idx++].Value);
 			}
-			else if (Regex.IsMatch(bibleRangeText, patternSinglePassage))
+			else if (Regex.IsMatch(text, patternSinglePassage))
 			{
 				BVSStart.chapter = int.Parse(matches[idx++].Value);
 				BVSStart.passage = int.Parse(matches[idx++].Value);
@@ -243,7 +318,7 @@ namespace SundayWorshipPPTMaker
 		{
 			BirthPersonList.Clear();
 			BirthDateList.Clear();
-			int idx_birth = wordList.IndexOf("생일자");
+			int idx_birth = wordList.FindIndex(0, s => s.Contains("생일자"));
 			for (int iter = idx_birth + 1; ; iter += 2)
 			{
 				if (char.IsDigit(wordList[iter][0]))
@@ -268,6 +343,34 @@ namespace SundayWorshipPPTMaker
 				IsBirthday = true;
 			}
 		}
+
+		private void SetWorshipLeader(ref List<string> wordList, ref int cur_idx, ref int idx_prayer)
+        {
+			WorshipLeader = wordList[idx_prayer - 2] + " " + wordList[idx_prayer - 1];
+			cur_idx = idx_prayer;
+        }
+
+		private void SetAdStrings(ref List<string> wordList, ref int idx_ad,ref int idx_ad_end)
+        {
+			int start = idx_ad + 1;			
+			var adString = String.Empty;
+			int num;
+			for(int i = start+1; ; i++)
+            {
+                if (i == idx_ad_end)
+                {
+					AdStrings += adString.Trim();
+					break;
+                }
+				if(int.TryParse(wordList[i],out num))
+                {
+					AdStrings += adString.Trim() + "\n";
+					adString = String.Empty;
+                } 
+				else adString += wordList[i] + " ";
+            }			
+        }
+
 		/// <summary>
 		/// 주보 파일에서 추출한 텍스트에서 말씀범위,대표기도자,설교제목,생일자에 대한 정보를 찾는다.
 		/// </summary>
@@ -277,12 +380,16 @@ namespace SundayWorshipPPTMaker
 			List<string> wordList = source.Trim().Split(new string[] { " ", "\r\n" }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
 			int cur_idx = wordList.IndexOf("사도신경");
 			int idx_worship_end = wordList.IndexOf("주기도문");
+			int idx_prayer = wordList.IndexOf("대표기도", cur_idx, idx_worship_end - cur_idx);
 			int idx_ad = wordList.IndexOf("소식");      //not use yet
+			int idx_ad_end = wordList.IndexOf("지난주");
 
-			SetPrayerName(ref wordList, ref cur_idx, ref idx_worship_end);
+			SetWorshipLeader(ref wordList, ref cur_idx, ref idx_prayer);
+			SetPrayerName(ref wordList, ref idx_prayer);
 			SetBibleVerseRange(ref wordList, ref cur_idx, ref idx_worship_end);
 			SetPreachTitle(ref wordList, ref cur_idx, ref idx_worship_end);
 			CheckBirthday(ref wordList);
+			SetAdStrings(ref wordList, ref idx_ad, ref idx_ad_end);
 		}
 
 		/// <summary>
