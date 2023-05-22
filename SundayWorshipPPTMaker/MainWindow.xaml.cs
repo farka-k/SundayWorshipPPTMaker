@@ -9,12 +9,16 @@ using System.Reflection;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Net;
-using Drawing=System.Drawing;
+using DT=System.Drawing.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Media;
+using System.Globalization;
+using System.Windows.Markup;
+using System.Windows.Data;
 
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -29,8 +33,8 @@ namespace SundayWorshipPPTMaker
 	public partial class MainWindow : Window
 	{
 		Settings settings;
-		public List<string> books=new List<string>();
-		public List<string> abbr=new List<string>();
+		public List<string> books = new List<string>();
+		public List<string> abbr = new List<string>();
 		public List<int> numOfChapters = new List<int>();
 		public string workFolder;
 		private DateTime dt;
@@ -39,7 +43,7 @@ namespace SundayWorshipPPTMaker
 		private static SQLiteConnection conn = null;
 		private static SQLiteCommand command = null;
 		private static SQLiteDataReader rdr = null;
-
+		private List<string> fonts = new List<string>();
 		/// <summary>
 		/// MainWindow 초기화 코드
 		/// </summary>
@@ -51,31 +55,31 @@ namespace SundayWorshipPPTMaker
 			GetBibleBooksDB();
 			InitComponentsValues();
 
-			
+
 			jubo = new Jubo(dt.ToString("yy. M. d"));
 
-            RegisterHWPSecurityModule();
-			
+			RegisterHWPSecurityModule();
+
 		}
 
 		/// <summary>
 		/// Hwp Object Library 보안 모듈을 레지스트리에 등록한다.
 		/// </summary>
 		private static void RegisterHWPSecurityModule()
-        {
+		{
 			Microsoft.Win32.Registry.SetValue(Properties.Resources.HncRoot, "FilePathChecker", AppDomain.CurrentDomain.BaseDirectory + @"\FilePathCheckerModuleExample.dll");
 		}
 		/// <summary>
 		/// Get the list of Bible Books from embedded text file
 		/// </summary>
 		private void GetBibleBooks()
-        {
+		{
 			Assembly _assembly;
 			StreamReader _textStreamReader = null;
 			try
 			{
 				_assembly = Assembly.GetExecutingAssembly();
-				_textStreamReader = new StreamReader(_assembly.GetManifestResourceStream(this.GetType().Namespace+".BibleBooks.txt"));
+				_textStreamReader = new StreamReader(_assembly.GetManifestResourceStream(this.GetType().Namespace + ".BibleBooks.txt"));
 			}
 			catch
 			{
@@ -95,28 +99,28 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private void GetBibleBooksDB()
-        {
+		{
 			if (!File.Exists("RevisedKorBible.db"))
-            {
+			{
 				GetBibleBooks();
 				return;
-            }
+			}
 			conn = new SQLiteConnection("Data Source=RevisedKorBible.db;Version=3");
 			conn.Open();
 			command = conn.CreateCommand();
 			command.CommandText = String.Format("select Name,Abbr,Chapters from Books");
 			rdr = command.ExecuteReader();
 
-            while (rdr.Read())
-            {
+			while (rdr.Read())
+			{
 				books.Add(rdr.GetString(0));
 				abbr.Add(rdr.GetString(1));
 				numOfChapters.Add(rdr.GetInt32(2));
-            }
-        }
+			}
+		}
 
 		private void InitComponentsValues()
-        {
+		{
 			GetBibleBooksDB();
 			LoadLogoImage();
 			CmbStartBook.ItemsSource = books;
@@ -132,16 +136,32 @@ namespace SundayWorshipPPTMaker
 			TxtOutputFileName.Text = dt.ToString("yyyy.MM.dd") + " 고등부 예배.pptx";
 
 			settings = new Settings();
+
+			GetFontFamilies();
 		}
 
 		/// <summary>
 		/// 메인화면의 로고 이미지 로딩.
 		/// </summary>
 		private void LoadLogoImage()
-        {
+		{
 			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/Resources/logo02.png"));
 			imageLogo.Source = image;
-        }
+		}
+
+		private void GetFontFamilies()
+		{
+			using (DT.InstalledFontCollection col = new DT.InstalledFontCollection())
+			{
+				foreach (var font in col.Families)
+				{
+					fonts.Add(font.Name);
+				}
+			}
+			fonts.Sort();
+
+			CmbFontList.ItemsSource = fonts;
+		}
 
 		/// <summary>
 		/// 새 PPT에 필요한 모든 파일이 저장된 폴더를 작업폴더로 설정한다.
@@ -176,7 +196,7 @@ namespace SundayWorshipPPTMaker
 				{
 					dlg.IsFolderPicker = false;
 					dlg.Title = "Select Image to Recognize";
-					
+
 					if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
 					{
 						if (GetTextFromOCRResult(settings.OCREngineType, dlg.FileName))
@@ -203,12 +223,12 @@ namespace SundayWorshipPPTMaker
                     }
 					MessageBox.Show(new_text);*/
 				}
-				
+
 				TxtPrayer.Text = jubo.PrayerName;
 				TxtTitle.Text = jubo.PreachTitle;
-				
+
 				//Update Fields
-				CmbStartBook.SelectedIndex=books.IndexOf(jubo.BVSStart.book);
+				CmbStartBook.SelectedIndex = books.IndexOf(jubo.BVSStart.book);
 				NumStartChapter.Value = jubo.BVSStart.chapter;
 				NumStartPassage.Value = jubo.BVSStart.passage;
 				CmbEndBook.SelectedIndex = books.IndexOf(jubo.BVSEnd.book);
@@ -227,29 +247,29 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private bool GetTextFromOCRResult(OCREngineType engine, string imagePath)
-        {
+		{
 			if (engine == OCREngineType.Clova)
-            {
+			{
 				ClovaOCRResponseFormat response = GetOCRResultClova(imagePath);
 				if (response != null)
 				{
 					var recFields = response.images[0].fields;
-					foreach(var field in recFields)
-                    {
-                        if (field.name == "contents")
-                        {
+					foreach (var field in recFields)
+					{
+						if (field.name == "contents")
+						{
 							string[] contents = field.inferText.Split('\n');
 							int count = contents.Length;
 							//찬양
-							for(int i = 0; i < count - 2; i++)
-                            {
-								var files=Directory.GetFiles(jubo.Directory, "*"+contents[i]+"*.*");
-								if (files.Length>0) SongList.Items.Add(files[0]);
+							for (int i = 0; i < count - 2; i++)
+							{
+								var files = Directory.GetFiles(jubo.Directory, "*" + contents[i] + "*.*");
+								if (files.Length > 0) SongList.Items.Add(files[0]);
 								else
-                                {
+								{
 									//blackboard
-                                }
-                            }
+								}
+							}
 							//대표기도
 							jubo.PreachTitle = contents.Last<string>();
 							//말씀
@@ -259,36 +279,36 @@ namespace SundayWorshipPPTMaker
 						}
 
 						else if (field.name == "performer")
-                        {
+						{
 							string[] performer = field.inferText.Split('\n');
 							jubo.WorshipLeader = performer[0];
 							jubo.PrayerName = performer[1];
-                        }
+						}
 
 						else if (field.name == "birthday")
-                        {
+						{
 							var birthdayInfo = field.inferText.Split('\n');
 							var dates = birthdayInfo[0].Split(' ');
 							var names = birthdayInfo[1].Split(' ');
 							jubo.BirthDateList.AddRange(dates);
 							jubo.BirthPersonList.AddRange(names);
-                        }
+						}
 
 						else if (field.name == "advertisement")
-                        {
+						{
 							jubo.AdStrings = Regex.Replace(field.inferText, "[ \n][0-9][ ]", "\n");
-                        }
-                    }
+						}
+					}
 					return true;
 				}
 				else return false;
-            }
+			}
 			// engine == OCREngineType.Tesseract
-            else
-            {
+			else
+			{
 				return false;
-            }
-        }
+			}
+		}
 
 		/// <summary>
 		/// 하나의 파일 이름을 불러온다.
@@ -304,7 +324,7 @@ namespace SundayWorshipPPTMaker
 			{
 				ofd.Filter = "Video Files(*.avi;*.flv;*.mp4;*.wmv;*.mkv)|*.avi;*.flv;*.mp4;*.wmv;*.mkv|All Files(*.*)|*.*";
 			}
-			else { 
+			else {
 				ofd.Filter = "Presentation Files(*.ppt;*.pptx)|*.ppt;*.pptx|All Files(*.*)|*.*";
 			}
 			if (ofd.ShowDialog() == true)
@@ -315,21 +335,21 @@ namespace SundayWorshipPPTMaker
 					TxtVidLocation.Text = ofd.FileName;
 			}
 		}
-		
+
 		private void SelectJuboImage()
-        {
-			
-        }
+		{
+
+		}
 
 		private string SendImageToClovaServer(string imagePath)
-        {
+		{
 			string response = string.Empty;
 			string OCRINVOKEURL = Environment.GetEnvironmentVariable("ClovaOCRInvokeURL", EnvironmentVariableTarget.User);
 			string OCRSECRET = Environment.GetEnvironmentVariable("ClovaOCRSECRET", EnvironmentVariableTarget.User);
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(OCRINVOKEURL);
 			request.Method = "POST";
 			request.Headers.Add("X-OCR-SECRET", OCRSECRET);
-			request.Headers.Add(HttpRequestHeader.ContentType,"application/json");
+			request.Headers.Add(HttpRequestHeader.ContentType, "application/json");
 
 			string fileName = System.IO.Path.GetFileNameWithoutExtension(imagePath);
 			string fileExt = System.IO.Path.GetExtension(imagePath);
@@ -348,7 +368,7 @@ namespace SundayWorshipPPTMaker
 						name = fileName,
 						data = Base64Img,
 						templateIds = new List<int> { int.Parse(Properties.Resources.ClovaOCRTemplateId) }
-                    }
+					}
 				}
 			};
 			//Demarshall
@@ -362,43 +382,43 @@ namespace SundayWorshipPPTMaker
 			}
 
 			using (HttpWebResponse resp = (HttpWebResponse)request.GetResponse())
-            {
+			{
 				HttpStatusCode status = resp.StatusCode;
-                if (status == HttpStatusCode.OK)
-                {
+				if (status == HttpStatusCode.OK)
+				{
 					Stream respStream = resp.GetResponseStream();
-					using (StreamReader sr=new StreamReader(respStream))
-                    {
+					using (StreamReader sr = new StreamReader(respStream))
+					{
 						response = sr.ReadToEnd();
-                    }
-                }
-            }
+					}
+				}
+			}
 			return response;
-        }
+		}
 
 		private ClovaOCRResponseFormat GetOCRResultClova(string imagePath)
-        {
+		{
 			//string imagePath= @"G:\대양 고등부\230514\test.jpg";
 			string response = SendImageToClovaServer(imagePath);
-			ClovaOCRResponseFormat responseObj= JsonSerializer.Deserialize<ClovaOCRResponseFormat>(response);
+			ClovaOCRResponseFormat responseObj = JsonSerializer.Deserialize<ClovaOCRResponseFormat>(response);
 			return responseObj;
-        }
+		}
 
 		private void PreProcessImage()
-        {
+		{
 
-        }
+		}
 
 		private void GetOCRResultTesseract()
-        {
+		{
 
-        }
+		}
 		/// <summary>
 		/// 선택된 아이템의 위치를 위로 한 칸 올린다.
 		/// </summary>
 		private void BtnOrderUp_Click(object sender, RoutedEventArgs e)
 		{
-            MoveItem(SongList, -1);
+			MoveItem(SongList, -1);
 		}
 		/// <summary>
 		/// 선택된 아이템의 위치를 아래로 한 칸 내린다.
@@ -407,7 +427,7 @@ namespace SundayWorshipPPTMaker
 		/// <param name="e"></param>
 		private void BtnOrderDown_Click(object sender, RoutedEventArgs e)
 		{
-            MoveItem(SongList, 1);
+			MoveItem(SongList, 1);
 		}
 		/// <summary>
 		/// 방향에 따라 아이템 위치 변경을 수행.
@@ -442,7 +462,7 @@ namespace SundayWorshipPPTMaker
 				foreach (string path in ofd.FileNames)
 				{
 					if (!SongList.Items.Contains(path))
-						SongList.Items.Add(path);
+						SongList.Items.Add(new SongItem { Title = Path.GetFileNameWithoutExtension(path), Path=path, PPTEnable = true });
 				}
 			}
 		}
@@ -462,16 +482,16 @@ namespace SundayWorshipPPTMaker
 		/// </summary>
 		private void CmbBook_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-            if (((ComboBox)sender).Name == "CmbStartBook") 
+			if (((ComboBox)sender).Name == "CmbStartBook")
 				CmbEndBook.SelectedIndex = CmbStartBook.SelectedIndex;
 			else
 				if (CmbStartBook.SelectedIndex > CmbEndBook.SelectedIndex)
-					CmbStartBook.SelectedIndex = CmbEndBook.SelectedIndex;
-			
-			int num= numOfChapters[((ComboBox)sender).SelectedIndex];
+				CmbStartBook.SelectedIndex = CmbEndBook.SelectedIndex;
+
+			int num = numOfChapters[((ComboBox)sender).SelectedIndex];
 			NumStartChapter.Maximum = num;
 			NumEndChapter.Maximum = num;
-			
+
 		}
 		/// <summary>
 		/// 끝 범위의 책이 시작 범위 보다 앞서지 않게 한다.
@@ -537,7 +557,7 @@ namespace SundayWorshipPPTMaker
 			if (check) BirthList.Visibility = Visibility.Visible;
 			else BirthList.Visibility = Visibility.Hidden;
 		}
-		
+
 		/// <summary>
 		/// Deprecated: 말씀 범위에 해당하는 모든 구절을 반환.
 		/// </summary>
@@ -548,9 +568,9 @@ namespace SundayWorshipPPTMaker
 		/// <br/> {약어}{장}:{절}{Space}{구절}
 		/// </remarks>
 		private List<string> GetAllBibleVerse(BibleVerseSkeleton start, int passagesNum)
-        {
+		{
 			List<string> verses = new List<string>();
-			
+
 			string bookAbbr = abbr[books.IndexOf(start.book)];
 			string verseAbbr = bookAbbr + start.chapter.ToString() + ":" + start.passage.ToString();
 
@@ -573,8 +593,8 @@ namespace SundayWorshipPPTMaker
 				string line;
 				while ((line = _textStreamReader.ReadLine()) != null)
 				{
-                    if (!found)
-                    {
+					if (!found)
+					{
 						if (verseAbbr == line.Split().ElementAt(0))
 						{
 							found = true;
@@ -592,11 +612,11 @@ namespace SundayWorshipPPTMaker
 				}
 			}
 			return verses;
-        }
-		
-		private List<Tuple<string,string>> GetAllBibleVerseDB(BibleVerseSkeleton start, BibleVerseSkeleton end)
-        {
-			List<Tuple<string,string>> verses = new List<Tuple<string, string>>();
+		}
+
+		private List<Tuple<string, string>> GetAllBibleVerseDB(BibleVerseSkeleton start, BibleVerseSkeleton end)
+		{
+			List<Tuple<string, string>> verses = new List<Tuple<string, string>>();
 			conn = new SQLiteConnection("Data Source=RevisedKorBible.db;Verseion=3");
 			conn.Open();
 			command = conn.CreateCommand();
@@ -604,10 +624,10 @@ namespace SundayWorshipPPTMaker
 				String.Format("(select rowid from {0} where Chapter={1} and Passage={2}) and (select rowid from {0} where Chapter={3} and Passage={4})",
 				start.book, start.chapter, start.passage, end.chapter, end.passage);
 			rdr = command.ExecuteReader();
-            while (rdr.Read())
-            {
+			while (rdr.Read())
+			{
 				verses.Add(new Tuple<string, string>(rdr.GetInt32(0).ToString() + ":" + rdr.GetInt32(1).ToString(), rdr.GetString(2)));
-            }
+			}
 			rdr.Close();
 			return verses;
 		}
@@ -617,7 +637,7 @@ namespace SundayWorshipPPTMaker
 		/// </summary>
 		/// <returns>에러가 없으면 <c>false</c>, 있으면 <c>true</c></returns>
 		private bool CheckErrorBeforeTask()
-        {
+		{
 			string errorMsg = Properties.Resources.TaskErrorCheckMessage;
 			int errorCheckNum = 1;
 			if (!Directory.Exists(TxtOutputFolder.Text))
@@ -636,21 +656,21 @@ namespace SundayWorshipPPTMaker
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidPreachPPT;
 			}
-			if (ManualMode.IsChecked==true)
-            {
+			if (ManualMode.IsChecked == true)
+			{
 				if (TxtPrayer.Text.Length == 0)
 					errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.NoPrayer;
 				if (TxtTitle.Text.Length == 0)
 					errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.NoTitle;
-            }
+			}
 			if (TxtOutputFileName.Text.StartsWith(".pptx"))
 			{
 				errorMsg += "\n" + errorCheckNum++.ToString() + ". " + Properties.Resources.InvalidFileName;
 			}
 			if (!TxtOutputFileName.Text.EndsWith(".pptx"))
-            {
+			{
 				TxtOutputFileName.Text += ".pptx";
-            }
+			}
 
 			if (errorCheckNum == 1) return false;
 			else
@@ -662,12 +682,12 @@ namespace SundayWorshipPPTMaker
 
 		private void AddRandomCover(
 			ref PowerPoint.Application pptApp,
-			ref PowerPoint.Presentations pptPres, 
+			ref PowerPoint.Presentations pptPres,
 			ref PowerPoint.Presentation presentation)
-        {
+		{
 			Random rnd = new Random();
 			int coverIndex = rnd.Next(1, 23);
-			PowerPoint.Presentation covers=pptPres.Open(AppDomain.CurrentDomain.BaseDirectory + "cover.pptx", 
+			PowerPoint.Presentation covers = pptPres.Open(AppDomain.CurrentDomain.BaseDirectory + "cover.pptx",
 				WithWindow: MsoTriState.msoFalse);
 			covers.Slides[coverIndex].Copy();
 			presentation.Windows[1].Activate();
@@ -694,10 +714,10 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private void AddCreed(ref PowerPoint.Presentation presentation, ref int last_idx)
-        {
+		{
 			PowerPoint.Slide currentSlide;
-			AddCutSlide(ref presentation, ref last_idx, 
-				AppDomain.CurrentDomain.BaseDirectory+Properties.Resources.BGUriCross01,
+			AddCutSlide(ref presentation, ref last_idx,
+				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriCross01,
 				out currentSlide);
 
 			currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRectangle,
@@ -724,10 +744,10 @@ namespace SundayWorshipPPTMaker
 			currentShape = currentSlide.Shapes[3];
 			currentShape.LockAspectRatio = MsoTriState.msoFalse;
 			SetTextEffectOptions(ref currentShape,
-				"나는 전능하신 아버지 하나님, 천지의 창조주를 믿습니다.\n"+
-				"나는 그의 유일하신 아들, 우리 주 예수 그리스도를 믿습니다.\n"+
-				"그는 성령으로 잉태되어 동정녀 마리아에게서 나시고,\n"+
-				"본디오 빌라도에게 고난을 받아 십자가에 못 박혀 죽으시고,\n"+
+				"나는 전능하신 아버지 하나님, 천지의 창조주를 믿습니다.\n" +
+				"나는 그의 유일하신 아들, 우리 주 예수 그리스도를 믿습니다.\n" +
+				"그는 성령으로 잉태되어 동정녀 마리아에게서 나시고,\n" +
+				"본디오 빌라도에게 고난을 받아 십자가에 못 박혀 죽으시고,\n" +
 				"장사된 지 사흘 만에 죽은 자 가운데서 다시 살아나셨으며,",
 				Constants.FontNanumSquareBold, 36, fontFillColor: 0xffffff,
 				paragraphAlignment: MsoParagraphAlignment.msoAlignJustify,
@@ -739,14 +759,14 @@ namespace SundayWorshipPPTMaker
 
 			currentSlide.Duplicate();
 			presentation.Slides[++last_idx].Shapes[3].TextFrame2.TextRange.Text =
-				"하늘에 오르시어 전능하신 아버지 하나님 우편에 앉아 계시다가\n"+
-				"거기로부터 살아있는 자와 죽은 자를 심판하러 오십니다.\n"+
-				"나는 성령을 믿으며, 거룩한 공교회와 성도의 교제와\n"+
+				"하늘에 오르시어 전능하신 아버지 하나님 우편에 앉아 계시다가\n" +
+				"거기로부터 살아있는 자와 죽은 자를 심판하러 오십니다.\n" +
+				"나는 성령을 믿으며, 거룩한 공교회와 성도의 교제와\n" +
 				"죄를 용서 받는 것과 몸의 부활과 영생을 믿습니다.\n아멘.";
 		}
 
 		private void AddLordsPrayer(ref PowerPoint.Presentation presentation, ref int last_idx)
-        {
+		{
 			PowerPoint.Slide currentSlide;
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriCross02,
@@ -773,25 +793,25 @@ namespace SundayWorshipPPTMaker
 				Utils.CMToPoint(31.4f), Utils.CMToPoint(13.2f));
 			currentShape = currentSlide.Shapes[3];
 			SetTextEffectOptions(ref currentShape,
-				"하늘에 계신 우리 아버지,\n아버지의 이름을 거룩하게 하시며\n"+
-				"아버지의 나라가 오게 하시며,\n아버지의 뜻이 하늘에서와 같이 땅에서도 이루어지게 하소서.\n"+
+				"하늘에 계신 우리 아버지,\n아버지의 이름을 거룩하게 하시며\n" +
+				"아버지의 나라가 오게 하시며,\n아버지의 뜻이 하늘에서와 같이 땅에서도 이루어지게 하소서.\n" +
 				"오늘 우리에게 일용할 양식을 주시고,\n우리가 우리에게 잘못한 사람을 용서하여 준 것같이",
 				Constants.FontNanumSquareBold, 36, fontFillColor: 0xffffff,
-				paragraphAlignment:MsoParagraphAlignment.msoAlignJustify, verticalAnchor: MsoVerticalAnchor.msoAnchorMiddle,
-				autoSize:MsoAutoSize.msoAutoSizeNone, lineSpace: 1.5f);
+				paragraphAlignment: MsoParagraphAlignment.msoAlignJustify, verticalAnchor: MsoVerticalAnchor.msoAnchorMiddle,
+				autoSize: MsoAutoSize.msoAutoSizeNone, lineSpace: 1.5f);
 			currentShape.TextFrame2.TextRange.Font.Glow.Color.RGB = 0xF4C71D;
 			currentShape.TextFrame2.TextRange.Font.Glow.Radius = 5;
 			currentShape.TextFrame2.TextRange.Font.Glow.Transparency = 0.6f;
 			currentSlide.Duplicate();
 			presentation.Slides[++last_idx].Shapes[3].TextFrame2.TextRange.Text =
-				"우리 죄를 용서하여 주시고,\n우리를 시험에 빠지지 않게 하시고\n"+
+				"우리 죄를 용서하여 주시고,\n우리를 시험에 빠지지 않게 하시고\n" +
 				"악에서 구하소서.\n나라와 권능과 영광이\n영원히 아버지의 것입니다.\n아멘.";
 		}
 		private void AddSongSlides(ref PowerPoint.Application pptApp,
 			ref PowerPoint.Presentations pptPres,
 			ref PowerPoint.Presentation presentation,
 			ref int last_idx)
-        {
+		{
 			PowerPoint.Slide currentSlide;
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriIntro,
@@ -803,7 +823,7 @@ namespace SundayWorshipPPTMaker
 			SetTextEffectOptions(ref currentShape, "경배와 찬양", "KT&G 상상제목 B", 80,
 				verticalAnchor: MsoVerticalAnchor.msoAnchorMiddle, autoSize: MsoAutoSize.msoAutoSizeNone);
 
-			for (int i =0; i < SongList.Items.Count; i++)
+			for (int i = 0; i < SongList.Items.Count; i++)
 			{
 				PowerPoint.Presentation item = pptPres.Open((string)SongList.Items[i], WithWindow: MsoTriState.msoFalse);
 				item.Slides.Range().Copy();
@@ -815,26 +835,26 @@ namespace SundayWorshipPPTMaker
 				currentSlide = presentation.Slides[++last_idx];
 				currentSlide.Duplicate();
 				currentSlide.Shapes.Range().Delete();
-				AddSongTitle(ref currentSlide,i);
+				AddSongTitle(ref currentSlide, i);
 
 				last_idx += item.Slides.Count;
 				item.Close();
 			}
 			//presentation.Slides[settings.SettingsPraiseEntry].Delete();
-			
+
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriCutImg01,
 				out currentSlide);
 		}
 		private void AddSongTitle(ref PowerPoint.Slide currentSlide, int index)
-        {
+		{
 			currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRoundedRectangle,
 					Utils.CMToPoint(7.13f), Utils.CMToPoint(8.15f), Utils.CMToPoint(19.6f), Utils.CMToPoint(2.79f));
 			var currentShape = currentSlide.Shapes[1];
 			currentShape.Line.Visible = MsoTriState.msoFalse;
 			AdjustShadow(ref currentShape, 0, 0.4f, 100, 28, 45, 16);
 			currentShape.Duplicate();
-			
+
 			currentShape = currentSlide.Shapes[2];
 			currentShape.Left = Utils.CMToPoint(7.13f);
 			currentShape.Top = Utils.CMToPoint(8.15f);
@@ -852,20 +872,20 @@ namespace SundayWorshipPPTMaker
 				MsoAutoSize.msoAutoSizeNone, shadowOptions: new ShadowOptions(transparency: 0.6f, distance: 3));
 		}
 
-		private void AddSlide(ref PowerPoint.Presentation presentation,ref int last_idx,out PowerPoint.Slide currentSlide)
-        {
+		private void AddSlide(ref PowerPoint.Presentation presentation, ref int last_idx, out PowerPoint.Slide currentSlide)
+		{
 			presentation.Windows[1].Activate();
 			presentation.Windows[1].View.GotoSlide(last_idx);
 			presentation.Slides.AddSlide(++last_idx, presentation.SlideMaster.CustomLayouts[7]);
 			currentSlide = presentation.Slides[last_idx];
-        }
+		}
 
 		private void AddCutSlide(ref PowerPoint.Presentation presentation, ref int last_idx, string path, out PowerPoint.Slide currentSlide)
-        {
+		{
 			AddSlide(ref presentation, ref last_idx, out currentSlide);
 			currentSlide.FollowMasterBackground = MsoTriState.msoFalse;
 			currentSlide.Background.Fill.UserPicture(path);
-        }
+		}
 
 		private void SetTextEffectOptions(ref PowerPoint.Shape currentShape, string text, string fontName = "굴림", float fontSize = 18,
 			TextEmphasis emphasis = TextEmphasis.None, int fontFillColor = 0,
@@ -873,8 +893,8 @@ namespace SundayWorshipPPTMaker
 			MsoVerticalAnchor verticalAnchor = MsoVerticalAnchor.msoAnchorTop,
 			MsoAutoSize autoSize = MsoAutoSize.msoAutoSizeShapeToFitText,
 			float lineSpace = 1, MsoTriState fontLineVisible = MsoTriState.msoFalse,
-			int fontLineColor = 0, float fontLineWeight = 1, ShadowOptions shadowOptions=null)
-        {
+			int fontLineColor = 0, float fontLineWeight = 1, ShadowOptions shadowOptions = null)
+		{
 			currentShape.TextFrame2.AutoSize = autoSize;
 			currentShape.TextFrame2.TextRange.Text = text;
 			currentShape.TextFrame2.TextRange.Font.NameFarEast = fontName;
@@ -902,18 +922,18 @@ namespace SundayWorshipPPTMaker
 			currentShape.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = fontFillColor;
 			currentShape.TextFrame2.TextRange.Font.Line.Visible = fontLineVisible;
 			if (fontLineVisible == MsoTriState.msoTrue)
-            {
+			{
 				currentShape.TextFrame2.TextRange.Font.Line.ForeColor.RGB = fontLineColor;
 				currentShape.TextFrame2.TextRange.Font.Line.Weight = fontLineWeight;
-            }
+			}
 
-        }
+		}
 
 		private void EditPrayer(ref PowerPoint.Presentation presentation, ref int last_idx)
-        {
+		{
 			PowerPoint.Slide currentSlide;
-			AddCutSlide(ref presentation, ref last_idx, 
-				AppDomain.CurrentDomain.BaseDirectory+Properties.Resources.BGUriPray01,
+			AddCutSlide(ref presentation, ref last_idx,
+				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriPray01,
 				out currentSlide);
 			currentSlide.Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal,
 				Utils.CMToPoint(3.6f), Utils.CMToPoint(2.12f), Utils.CMToPoint(20), Utils.CMToPoint(4.36f));
@@ -929,14 +949,14 @@ namespace SundayWorshipPPTMaker
 				Utils.CMToPoint(6.38f), Utils.CMToPoint(5.33f), Utils.CMToPoint(21.1f), Utils.CMToPoint(3.2f));
 			currentShape = currentSlide.Shapes[2];
 			SetTextEffectOptions(ref currentShape, TxtPrayer.Text, Constants.FontSequenceTitle, 60,
-				TextEmphasis.None, 0xffffff, lineSpace:1.5f);
+				TextEmphasis.None, 0xffffff, lineSpace: 1.5f);
 			currentSlide.Shapes[2].TextFrame2.TextRange.Font.Line.Visible = MsoTriState.msoTrue;
 			currentSlide.Shapes[2].TextFrame2.TextRange.Font.Line.ForeColor.RGB = 0x404040;
 			currentSlide.Shapes[2].TextFrame2.TextRange.Font.Line.Weight = 1.25f;
 		}
 
-		private void EditBibleVerseCover(ref PowerPoint.Shape currentShape,out string verseString)
-        {
+		private void EditBibleVerseCover(ref PowerPoint.Shape currentShape, out string verseString)
+		{
 			verseString = CmbStartBook.Text + " ";
 			verseString += NumStartChapter.Text;
 			if (CmbStartBook.Text == "시편")
@@ -946,26 +966,26 @@ namespace SundayWorshipPPTMaker
 
 			//Case Multi passages through multiple chapters
 			if (NumStartChapter.Text != NumEndChapter.Text)
-            {
-				verseString += NumStartChapter.Text + ":" + NumStartPassage.Text + "-" 
+			{
+				verseString += NumStartChapter.Text + ":" + NumStartPassage.Text + "-"
 					+ NumEndChapter.Text + ":" + NumEndPassage.Text;
-            }
+			}
 			//Case Single Passage
 			else if (NumStartPassage.Text == NumEndPassage.Text)
-            {
+			{
 				verseString += NumStartPassage.Text + "절";
-            }
+			}
 			//Default
-            else
-            {
+			else
+			{
 				verseString += NumStartPassage.Text + "-" + NumEndPassage.Text + "절";
-            }
+			}
 
 			currentShape.TextFrame.TextRange.Text = verseString;
 		}
 
 		private void AddBibleVerseSlides(ref PowerPoint.Presentation presentation, ref int last_idx, string verseString)
-        {
+		{
 			PowerPoint.Slide currentSlide;
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriDefault, out currentSlide);
@@ -1001,7 +1021,7 @@ namespace SundayWorshipPPTMaker
 
 
 			//절 수
-			List <Tuple<string, string>> verses;
+			List<Tuple<string, string>> verses;
 			if (ManualMode.IsChecked == true)
 			{
 				verses = GetAllBibleVerseDB(
@@ -1020,7 +1040,7 @@ namespace SundayWorshipPPTMaker
 			{
 				int slideIndex = currentSlide.SlideIndex;
 				string[] va = verses[i].Item1.Split(':');
-				if (int.Parse(va[0])!=int.Parse(NumStartChapter.Text))
+				if (int.Parse(va[0]) != int.Parse(NumStartChapter.Text))
 				{
 					presentation.Slides[slideIndex + i].Shapes[6].TextFrame.TextRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletNone;
 					presentation.Slides[slideIndex + i].Shapes[6].TextFrame.TextRange.Text = va[1] + ". " + verses[i].Item2;
@@ -1033,10 +1053,10 @@ namespace SundayWorshipPPTMaker
 			}
 			last_idx += passagesNum - 1;
 		}
-		
+
 		private void AddBibleCover(ref PowerPoint.Presentation presentation,
 			ref int last_idx, out string verseString)
-        {
+		{
 			PowerPoint.Slide currentSlide;
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriDefault, out currentSlide);
@@ -1076,27 +1096,27 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private void AddSeal(ref PowerPoint.Slide currentSlide)
-        {
+		{
 			currentSlide.Shapes.AddPicture2(
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.ImgUriSeal,
 				MsoTriState.msoFalse, MsoTriState.msoTrue,
 				Utils.CMToPoint(15.63f), Utils.CMToPoint(17.72f), Utils.CMToPoint(2.61f), Utils.CMToPoint(0.87f));
-        }
+		}
 		private void AddVideo(ref PowerPoint.Presentation presentation, ref int last_idx)
-        {
+		{
 			if (System.IO.File.Exists(TxtVidLocation.Text))
-            {
+			{
 				PowerPoint.Slide currentSlide;
 				AddSlide(ref presentation, ref last_idx, out currentSlide);
 				currentSlide.Shapes.AddMediaObject2(TxtVidLocation.Text);
-            }
+			}
 		}
 
 		private void AddPreachSlides(ref PowerPoint.Application pptApp,
 			ref PowerPoint.Presentations pptPres,
 			ref PowerPoint.Presentation presentation,
 			ref int last_idx)
-        {
+		{
 			AddPreachCover(ref presentation, ref last_idx);
 
 			PowerPoint.Presentation preachPPT = pptPres.Open(TxtPreachLocation.Text, WithWindow: Microsoft.Office.Core.MsoTriState.msoFalse);
@@ -1109,15 +1129,15 @@ namespace SundayWorshipPPTMaker
 			last_idx += preachPPT.Slides.Count;
 			preachPPT.Close();
 		}
-		
+
 		private void AddPreachCover(ref PowerPoint.Presentation presentation,
 			ref int last_idx)
-        {
+		{
 			PowerPoint.Slide currentSlide;
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriPreach,
 				out currentSlide);
-			
+
 			currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRectangle,
 				0, Utils.CMToPoint(2.54f),
 				settings.SlideSize.Width, Utils.CMToPoint(Constants.PaneHeight));
@@ -1127,8 +1147,8 @@ namespace SundayWorshipPPTMaker
 			currentShape.Line.Visible = MsoTriState.msoFalse;
 
 			SetTextEffectOptions(ref currentShape, "[말씀선포]\n" + TxtTitle.Text + "\n\n\n" + "유주원 전도사",
-				"맑은 고딕", fontFillColor: 0xffffff, paragraphAlignment: MsoParagraphAlignment.msoAlignCenter, 
-				verticalAnchor:MsoVerticalAnchor.msoAnchorMiddle, autoSize:MsoAutoSize.msoAutoSizeNone);
+				"맑은 고딕", fontFillColor: 0xffffff, paragraphAlignment: MsoParagraphAlignment.msoAlignCenter,
+				verticalAnchor: MsoVerticalAnchor.msoAnchorMiddle, autoSize: MsoAutoSize.msoAutoSizeNone);
 			currentSlide.Shapes[1].TextFrame2.TextRange.Lines[1, 1].Font.Size = 32;
 			currentSlide.Shapes[1].TextFrame2.TextRange.Lines[1, 1].Font.Fill.ForeColor.RGB = 0x00c0ff;
 			currentSlide.Shapes[1].TextFrame2.TextRange.Lines[2, 1].Font.Size = 54;
@@ -1139,7 +1159,7 @@ namespace SundayWorshipPPTMaker
 
 		private void AddAfterPreach(ref PowerPoint.Presentation presentation,
 			ref int last_idx)
-        {
+		{
 			PowerPoint.Slide currentSlide;
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriPray02, out currentSlide);
@@ -1166,14 +1186,14 @@ namespace SundayWorshipPPTMaker
 				fontLineColor: 0x074898, fontLineWeight: 1.25f,
 				shadowOptions: new ShadowOptions(transparency: 0.7f, angle: 90, distance: 1.8f));
 			currentSlide.Duplicate();
-			presentation.Slides[last_idx+1].Shapes[1].TextFrame2.TextRange.InsertAfter("기도");
+			presentation.Slides[last_idx + 1].Shapes[1].TextFrame2.TextRange.InsertAfter("기도");
 
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriDSong, out currentSlide);
 			currentSlide.Duplicate();
 			currentSlide.Duplicate();
-			for(int i = 0; i < 3; i++)
-            {
+			for (int i = 0; i < 3; i++)
+			{
 				presentation.Slides[last_idx + i].Shapes.AddPicture2(
 					AppDomain.CurrentDomain.BaseDirectory + "/Resources/dsong0" + (i + 1).ToString() + ".png",
 					MsoTriState.msoFalse, MsoTriState.msoTrue, Utils.CMToPoint(4.23f), 0);
@@ -1184,7 +1204,7 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private void AddAdvSlides(ref PowerPoint.Presentation presentation, ref int last_idx)
-        {
+		{
 			PowerPoint.Slide currentSlide;
 			AddCutSlide(ref presentation, ref last_idx,
 				AppDomain.CurrentDomain.BaseDirectory + Properties.Resources.BGUriCutImg02, out currentSlide);
@@ -1195,7 +1215,7 @@ namespace SundayWorshipPPTMaker
 			AddSlide(ref presentation, ref last_idx, out currentSlide);
 			MakeAdvTemplate(ref currentSlide, SlideContentsType.Main);
 			currentSlide.Duplicate();
-			currentSlide=presentation.Slides[last_idx+1];
+			currentSlide = presentation.Slides[last_idx + 1];
 			currentSlide.Shapes[2].TextFrame2.TextRange.Text = "사랑의 편지💌,  찬양팀🎤  신청 받고 있습니다!";
 			currentSlide.Shapes[2].TextFrame2.TextRange.Words[1, 4].Font.Fill.ForeColor.RGB = 0x0000ff;
 
@@ -1210,7 +1230,7 @@ namespace SundayWorshipPPTMaker
 					MsoTriState.msoFalse, MsoTriState.msoTrue, Utils.CMToPoint(4.23f), 0);
 				presentation.Slides[last_idx + i].Shapes[1].LockAspectRatio = MsoTriState.msoFalse;
 			}
-			last_idx+=2;
+			last_idx += 2;
 
 			//추가 광고
 
@@ -1220,7 +1240,7 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private void MakeAdvTemplate(ref PowerPoint.Slide currentSlide, SlideContentsType slideContentsType)
-        {
+		{
 			//커버
 			currentSlide.FollowMasterBackground = MsoTriState.msoFalse;
 			currentSlide.Background.Fill.TwoColorGradient(MsoGradientStyle.msoGradientHorizontal, 1);
@@ -1231,7 +1251,7 @@ namespace SundayWorshipPPTMaker
 			gradStops.Insert(0xccf2ff, 0.60f);
 
 			if (slideContentsType == SlideContentsType.Cover)
-            {
+			{
 				currentSlide.Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal,
 					Utils.CMToPoint(9.24f), Utils.CMToPoint(7.49f), Utils.CMToPoint(15.38f), Utils.CMToPoint(4.02f));
 				var currentShape = currentSlide.Shapes[1];
@@ -1242,9 +1262,9 @@ namespace SundayWorshipPPTMaker
 				var fontGradStops = currentShape.TextFrame2.TextRange.Font.Fill.GradientStops;
 				fontGradStops[1].Color.RGB = 0x629bb8;
 				fontGradStops[2].Color.RGB = 0x3E628c;
-            }
-            else
-            {
+			}
+			else
+			{
 				currentSlide.Shapes.AddShape(MsoAutoShapeType.msoShapeRoundedRectangle,
 					Utils.CMToPoint(1.83f), Utils.CMToPoint(1.12f), Utils.CMToPoint(30.2f), Utils.CMToPoint(8));
 				var currentShape = currentSlide.Shapes[1];
@@ -1271,7 +1291,7 @@ namespace SundayWorshipPPTMaker
 		private void AdjustShadow(ref PowerPoint.TextFrame2 textFrame,
 			int color = 0, float transparency = 0.57f, float size = 100, float blur = 3, double angle = 45, float distance = 3,
 			MsoShadowStyle shadowStyle = MsoShadowStyle.msoShadowStyleOuterShadow)
-        {
+		{
 			textFrame.TextRange.Font.Shadow.Style = shadowStyle;
 			textFrame.TextRange.Font.Shadow.ForeColor.RGB = color;
 			textFrame.TextRange.Font.Shadow.Transparency = transparency;
@@ -1327,7 +1347,7 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private void SavePPT(ref PowerPoint.Presentation presentation, out string tempFilePath, out string finalFilePath)
-        {
+		{
 			string fileName = @"\" + TxtOutputFileName.Text;
 			if (!Directory.Exists(TxtOutputFolder.Text))
 			{
@@ -1345,7 +1365,7 @@ namespace SundayWorshipPPTMaker
 		}
 
 		private void OpenFinalPPT(ref PowerPoint.Presentations pptPres, string tempFilePath, string finalFilePath)
-        {
+		{
 			//Open the created Presentation
 			System.IO.File.Move(tempFilePath + ".pptx", finalFilePath);
 			pptPres.Open(finalFilePath);
@@ -1362,7 +1382,7 @@ namespace SundayWorshipPPTMaker
 			PowerPoint.Presentations pptPres = pptApp.Presentations;
 			PowerPoint.Presentation presentation = //pptPres.Open(settings.templateFileFullPath);
 				pptPres.Add();
-			presentation.PageSetup.SlideSize = PowerPoint.PpSlideSizeType.ppSlideSizeCustom; 
+			presentation.PageSetup.SlideSize = PowerPoint.PpSlideSizeType.ppSlideSizeCustom;
 			presentation.PageSetup.SlideWidth = Utils.CMToPoint(33.867f);
 			presentation.PageSetup.SlideHeight = Utils.CMToPoint(19.05f);
 
@@ -1371,7 +1391,7 @@ namespace SundayWorshipPPTMaker
 
 			int lastSlide = 1;
 			AddRandomCover(ref pptApp, ref pptPres, ref presentation);
-			AddCreed(ref presentation,ref lastSlide);
+			AddCreed(ref presentation, ref lastSlide);
 			AddSongSlides(ref pptApp, ref pptPres, ref presentation, ref lastSlide);
 			EditPrayer(ref presentation, ref lastSlide);
 			string argVerseString;
@@ -1384,48 +1404,162 @@ namespace SundayWorshipPPTMaker
 			AddLordsPrayer(ref presentation, ref lastSlide);
 			AddAdvSlides(ref presentation, ref lastSlide);
 
-			
+
 			string argTempFilePath, argFinalFilePath;
 			SavePPT(ref presentation, out argTempFilePath, out argFinalFilePath);
 			OpenFinalPPT(ref pptPres, argTempFilePath, argFinalFilePath);
 		}
-		
+
 		/// <summary>
 		/// Settings Window를 표시한다.
 		/// </summary>
-        private void BtnShowSettings_Click(object sender, RoutedEventArgs e)
-        {
+		private void BtnShowSettings_Click(object sender, RoutedEventArgs e)
+		{
 			settings.ShowDialog();
-        }
+		}
 		/// <summary>
 		/// 프로그램 종료 전 Settings Window를 닫는다.
 		/// </summary>
-        private void DisposeSettingWindow(object sender, System.ComponentModel.CancelEventArgs e)
-        {
+		private void DisposeSettingWindow(object sender, System.ComponentModel.CancelEventArgs e)
+		{
 			settings.Close();
-        }
+		}
 
-        private void BtnShowHelp_Click(object sender, RoutedEventArgs e)
-        {
+		private void BtnShowHelp_Click(object sender, RoutedEventArgs e)
+		{
 			HelpPopup.IsOpen = true;
-        }
+		}
 
-        private void LinkUri_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
+		private void LinkUri_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+		{
 			Process.Start(
-				new ProcessStartInfo(e.Uri.AbsoluteUri){ UseShellExecute=true,}
+				new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true, }
 			);
 			e.Handled = true;
-        }
+		}
 
-        private void ManualMode_Checked(object sender, RoutedEventArgs e)
-        {
+		private void ManualMode_Checked(object sender, RoutedEventArgs e)
+		{
 			((CheckBox)sender).IsEnabled = true;
-        }
+		}
 
-        private void ManualMode_Unchecked(object sender, RoutedEventArgs e)
-        {
+		private void ManualMode_Unchecked(object sender, RoutedEventArgs e)
+		{
 			((CheckBox)sender).IsEnabled = false;
-        }
+		}
+
+		private void SearchLyrics(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void TxtSearchBox_GotFocus(object sender, RoutedEventArgs e)
+		{
+			if (TxtSearchBox.Text == "제목을 입력하세요")
+			{
+				TxtSearchBox.Text = "";
+			}
+		}
+
+		private void TxtSearchBox_LostFocus(object sender, RoutedEventArgs e)
+		{
+			if (TxtSearchBox.Text == "")
+			{
+				TxtSearchBox.Text = "제목을 입력하세요";
+			}
+		}
+
+		private void CheckBold_Changed(object sender, RoutedEventArgs e)
+		{
+			if (((CheckBox)sender).IsChecked == true)
+				FontPreview.FontWeight = FontWeights.Bold;
+			else
+				FontPreview.FontWeight = FontWeights.Normal;
+		}
+
+		private void CheckItalic_Changed(object sender, RoutedEventArgs e)
+		{
+			if (((CheckBox)sender).IsChecked == true)
+				FontPreview.FontStyle = FontStyles.Italic;
+			else
+				FontPreview.FontStyle = FontStyles.Normal;
+		}
+
+		private void CheckUnderline_Changed(object sender, RoutedEventArgs e)
+		{
+			if (((CheckBox)sender).IsChecked == true)
+				FontPreview.TextDecorations = TextDecorations.Underline;
+			else
+				FontPreview.TextDecorations = null;
+		}
+
+		private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+		{
+			TxtSearchBox.Text = String.Empty;
+			TxtLyrics.Text = String.Empty;
+			CmbBGColor.SelectedColor = Color.FromArgb(0xff, 16, 0, 16);
+			CmbFontColor.SelectedColor = Color.FromArgb(0xff, 255, 255, 255);
+			CmbFontList.SelectedIndex = 0;
+			NumFontSize.Text = "40";
+			CheckBold.IsChecked = false;
+			CheckItalic.IsChecked = false;
+			CheckUnderline.IsChecked = false;
+			TitleVAlignTop.IsChecked = true;
+			NumAlignmentOffset.Text = "0.0";
+			TxtSongTitle.Text = String.Empty;
+			TxtSearchBox.Focus();
+		}
+
+		private void BtnCopyClipboard_Click(object sender, RoutedEventArgs e)
+		{
+			PowerPoint.Application pptApp = new PowerPoint.Application();
+			PowerPoint.Presentations pptPres = pptApp.Presentations;
+			PowerPoint.Presentation presentation = pptPres.Add(MsoTriState.msoFalse);
+
+			PowerPoint.CustomLayout pcl = presentation.SlideMaster.CustomLayouts[7];
+			presentation.Slides.AddSlide(1, pcl);
+
+			int lastSlide = 1;
+			presentation.Slides[lastSlide].Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal, 0, 0, Utils.CMToPoint(200), Utils.CMToPoint(100));
+			presentation.Slides[lastSlide].Shapes[1].TextFrame2.TextRange.Text = "1st";
+			presentation.Slides.AddSlide(++lastSlide, pcl);
+			presentation.Slides[lastSlide].Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal, 0, 0, Utils.CMToPoint(200), Utils.CMToPoint(100));
+			presentation.Slides[lastSlide].Shapes[1].TextFrame2.TextRange.Text = "2nd";
+			presentation.Slides.Range().Copy();
+
+			if (MessageBox.Show("슬라이드가 클립보드에 복사되었습니다.") == MessageBoxResult.OK)
+			{
+				presentation.Close();
+				pptApp.Quit();
+			}
+
+		}
+
+		private void BtnAddToSongList_Click(object sender, RoutedEventArgs e)
+		{
+			SongList.Items.Add(new SongItem { Title = TxtSongTitle.Text, PPTEnable = false });
+		}
+
+		private void BtnSearchLyricNode_Click(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(TxtSearchBoxNode.Text))
+				return;
+			MenuTab.SelectedIndex = 1;
+			BtnRefresh.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+			TxtSearchBox.Text = TxtSearchBoxNode.Text;
+			BtnSearchLyric.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+		}
+
+		private void BtnSearchLyric_Click(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(TxtSearchBox.Text)
+				|| TxtSearchBox.Text=="제목을 입력하세요")
+				return;
+			//검색
+
+
+			MessageBox.Show("Search");
+			TxtSongTitle.Text = TxtSearchBox.Text;
+		}
     }
 }

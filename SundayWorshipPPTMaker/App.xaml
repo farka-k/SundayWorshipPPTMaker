@@ -33,6 +33,103 @@
         <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>
         <SolidColorBrush x:Key="TabItem.Disabled.Background" Color="#F0F0F0"/>
         <SolidColorBrush x:Key="TabItem.Disabled.Border" Color="#D9D9D9"/>
+        <Style x:Key="OptionMarkFocusVisual1">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="RadioButton.Static.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Background" Color="#FF587483"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Border" Color="#FF5593FF"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Background" Color="#FF587483"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Border" Color="#FF3C77DD"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Border" Color="#FFBCBCBC"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Glyph" Color="#FF707070"/>
+        <ControlTemplate x:Key="ToggleRadioButton" TargetType="{x:Type RadioButton}">
+            <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                <Border x:Name="radioButtonBorder" Background="{StaticResource DarkMode.Control.Static.Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Center">
+                    <ContentPresenter x:Name="contentPresenter" Content="{TemplateBinding ContentControl.Content}" Focusable="False" HorizontalAlignment="Stretch" Margin="0" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.MouseOver.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.MouseOver.Border}"/>
+                    
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Disabled.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Disabled.Border}"/>
+                    
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Border}"/>
+                    
+                </Trigger>
+                <Trigger Property="IsChecked" Value="true">
+                    <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Border}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="false">
+                    <Setter Property="Background" TargetName="radioButtonBorder" Value="#FF36393F"/>
+                    <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Border}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="FocusVisual2">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.Static.Background" Color="#FF36393F"/>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.MouseOver.Background" Color="#FF587483"/>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.MouseOver.Border" Color="#FF5593FF"/>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.Pressed.Background" Color="#FF587483"/>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.Pressed.Border" Color="#FF3C77DD"/>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.Disabled.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="ImageCheckBoxMark.Disabled.Border" Color="#FFBCBCBC"/>
+        <ControlTemplate x:Key="ImageCheckBoxTemplate" TargetType="{x:Type CheckBox}">
+            <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                <Border x:Name="checkBoxBorder" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Center">
+                    <ContentPresenter x:Name="contentPresenter" Content="{TemplateBinding ContentControl.Content}" Focusable="False" HorizontalAlignment="Stretch" Margin="0" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.MouseOver.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.MouseOver.Border}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Disabled.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Disabled.Border}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Pressed.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Pressed.Border}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="true">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Pressed.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Pressed.Border}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="{x:Null}">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Static.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource ImageCheckBoxMark.Static.Border}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         <Style x:Key="TabItemStyle1" TargetType="{x:Type TabItem}">
             <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual1}"/>
             <Setter Property="Foreground" Value="Black"/>
@@ -358,8 +455,14 @@
         </Style>
         <Style TargetType="{x:Type xctk:IntegerUpDown}" BasedOn="{StaticResource baseStyle}">
             <Setter Property="Background" Value="{StaticResource DarkMode.Control.Static.Background}"/>
-
         </Style>
+        <Style TargetType="{x:Type xctk:UIntegerUpDown}" BasedOn="{StaticResource baseStyle}">
+            <Setter Property="Background" Value="{StaticResource DarkMode.Control.Static.Background}"/>
+        </Style>
+        <Style TargetType="{x:Type xctk:DecimalUpDown}" BasedOn="{StaticResource baseStyle}">
+            <Setter Property="Background" Value="{StaticResource DarkMode.Control.Static.Background}"/>
+        </Style>
+        
         <SolidColorBrush x:Key="TextBox.Static.Background" Color="#FF36393F"/>
         <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -574,7 +677,7 @@
                 </Grid.ColumnDefinitions>
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                     <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                        <Border x:Name="dropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+                        <Border x:Name="dropDownBorder" Background="{DynamicResource ComboBox.Static.Background}" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
                             <ScrollViewer x:Name="DropDownScrollViewer">
                                 <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">

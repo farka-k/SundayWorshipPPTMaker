@@ -40,6 +40,7 @@
     <None Remove="Resources\bibleTextOriginal.png" />
     <None Remove="Resources\birthday01.jpg" />
     <None Remove="Resources\birthday02.jpg" />
+    <None Remove="Resources\bold-white.png" />
     <None Remove="Resources\bsong01.png" />
     <None Remove="Resources\bsong02.png" />
     <None Remove="Resources\cross01.jpg" />
@@ -48,6 +49,7 @@
     <None Remove="Resources\cutImg02.png" />
     <None Remove="Resources\cutImg03.jpg" />
     <None Remove="Resources\dedication.jpg" />
+    <None Remove="Resources\down-chevron-white.png" />
     <None Remove="Resources\dsong01.png" />
     <None Remove="Resources\dsong02.png" />
     <None Remove="Resources\dsong03.png" />
@@ -57,6 +59,7 @@
     <None Remove="Resources\icon_default_gold.ico" />
     <None Remove="Resources\icon_default_navy.ico" />
     <None Remove="Resources\intro.png" />
+    <None Remove="Resources\italic-white.png" />
     <None Remove="Resources\logo01.png" />
     <None Remove="Resources\logo02.png" />
     <None Remove="Resources\logo03.png" />
@@ -67,9 +70,22 @@
     <None Remove="Resources\pray01.jpg" />
     <None Remove="Resources\pray02.jpg" />
     <None Remove="Resources\preach.jpg" />
+    <None Remove="Resources\refresh-white.png" />
     <None Remove="Resources\seal.png" />
+    <None Remove="Resources\search-white.png" />
     <None Remove="Resources\search.png" />
     <None Remove="Resources\search_vid.png" />
+    <None Remove="Resources\underline-white.png" />
+    <None Remove="Resources\up-chevron-white.png" />
+    <None Remove="Resources\valign-bottom-black.png" />
+    <None Remove="Resources\valign-bottom-white.png" />
+    <None Remove="Resources\valign-bottom.png" />
+    <None Remove="Resources\valign-center-black.png" />
+    <None Remove="Resources\valign-center-white.png" />
+    <None Remove="Resources\valign-center.png" />
+    <None Remove="Resources\valign-top-black.png" />
+    <None Remove="Resources\valign-top-white.png" />
+    <None Remove="Resources\valign-top.png" />
     <None Remove="RevisedKorBible.txt" />
   </ItemGroup>
 
@@ -164,6 +180,8 @@
     <Content Include="Resources\dsongBG.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\bold-white.png" />
+    <Resource Include="Resources\down-chevron-white.png" />
     <Resource Include="Resources\folder-management.png" />
     <Content Include="Resources\heart.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -173,6 +191,7 @@
     <Content Include="Resources\intro.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\italic-white.png" />
     <Resource Include="Resources\logo01.png" />
     <Resource Include="Resources\logo02.png" />
     <Resource Include="Resources\logo03.png" />
@@ -192,8 +211,18 @@
     <Content Include="Resources\seal.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\refresh-white.png" />
+    <Resource Include="Resources\search-white.png" />
     <Resource Include="Resources\search.png" />
     <Resource Include="Resources\search_vid.png" />
+    <Resource Include="Resources\underline-white.png" />
+    <Resource Include="Resources\up-chevron-white.png" />
+    <Resource Include="Resources\valign-bottom-black.png" />
+    <Resource Include="Resources\valign-bottom-white.png" />
+    <Resource Include="Resources\valign-center-black.png" />
+    <Resource Include="Resources\valign-center-white.png" />
+    <Resource Include="Resources\valign-top-black.png" />
+    <Resource Include="Resources\valign-top-white.png" />
   </ItemGroup>
 
   <ItemGroup>

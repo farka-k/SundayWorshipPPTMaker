@@ -7,16 +7,16 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SundayWorshipPPTMaker"
         mc:Ignorable="d"
-        Title="WorshipPPT Maker" Height="500" Width="600" Closing="DisposeSettingWindow">
+        Title="WorshipPPT Maker" Height="550" Width="600" Closing="DisposeSettingWindow">
     <Grid Background="{StaticResource DarkMode.Base.Background}">
-        <TabControl TabStripPlacement="Left">
+        <TabControl Name="MenuTab" TabStripPlacement="Left">
             <TabItem Style="{DynamicResource TabItemStyle1}" Header="Main">
                 <Grid Background="{StaticResource DarkMode.Base.Background}" UseLayoutRounding="False">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2.8*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="2*" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
@@ -82,22 +82,62 @@
 
                     <Label Grid.Row="1">Folder</Label>
                     <TextBox x:Name="TxtOutputFolder" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="작업 폴더"/>
-                    <xctk:IconButton Name="BtnSelectFolder" Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" 
+                    <Button Name="BtnSelectFolder" Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" 
                          Click="BtnSelectFolder_Click" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="작업에 필요한 파일들을 저장한 폴더를 선택합니다" >
                         <Image Source="/Resources/folder-management.png" />
-                    </xctk:IconButton>
+                    </Button>
 
-                    <Label Grid.Row="2" Grid.RowSpan="3">Songs</Label>
-                    <ListBox Name="SongList" SelectionMode="Extended"
-                 Grid.Row="2" Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="6"
-                 Background="{StaticResource DarkMode.Control.Static.Background}" />
+                    <Label Grid.Row="2" Grid.RowSpan="3" VerticalAlignment="Center">Songs</Label>
+                    <Grid Grid.Row="2" Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="6" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="5*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Name="TxtSearchBoxNode"></TextBox>
+                        <Button Name="BtnSearchLyricNode" Grid.Column="1" Click="BtnSearchLyricNode_Click">Search</Button>
+                        <ListBox Name="SongList" SelectionMode="Extended"
+                            Grid.Row="1" Grid.ColumnSpan="2"
+                            Background="{StaticResource DarkMode.Control.Static.Background}">
+                            <ListBox.Template>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <Grid ShowGridLines="True" Background="#FF383131">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="6*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="PPT" BorderBrush="#FFF0E5E5" />
+                                            <Label Content="Title" Grid.Column="1" BorderBrush="#FFF0E5E5" Margin="10 0" />
+                                        </Grid>
+                                        <ItemsPresenter />
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </ListBox.Template>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0 2" ShowGridLines="True">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox Template="{DynamicResource CheckBoxTemplate1}" IsChecked="{Binding PPTEnable}" Grid.Column="0" Margin="5 0 10 0"/>
+                                        <TextBlock Text="{Binding Title}" Grid.Column="1" HorizontalAlignment="Left" Margin="20 0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                     <StackPanel Grid.Row="2" Grid.RowSpan="3" Grid.Column="7" VerticalAlignment="Center" Margin="7,0">
-                        <xctk:IconButton Name="BtnOrderUp" Click="BtnOrderUp_Click" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <Button Name="BtnOrderUp" Click="BtnOrderUp_Click" Background="{x:Null}" BorderBrush="{x:Null}">
                             <Image Source="/Resources/arrow-up.png" Height="35"/>
-                        </xctk:IconButton>
-                        <xctk:IconButton Name="BtnOrderDown" Click="BtnOrderDown_Click" Background="{x:Null}" BorderBrush="{x:Null}">
+                        </Button>
+                        <Button Name="BtnOrderDown" Click="BtnOrderDown_Click" Background="{x:Null}" BorderBrush="{x:Null}">
                             <Image Source="/Resources/arrow-down.png" Height="35"/>
-                        </xctk:IconButton>
+                        </Button>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.RowSpan="3" Grid.Column="8" Grid.ColumnSpan="2" VerticalAlignment="Center">
                         <xctk:IconButton Name="BtnAddSongs" Click="BtnAddSongs_Click" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="가사ppt 파일 선택">
@@ -134,17 +174,17 @@
 
                     <Label Grid.Row="7" ToolTip="설교ppt">Preach</Label>
                     <TextBox Name="TxtPreachLocation" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="설교ppt"/>
-                    <xctk:IconButton Name="BtnBrowsePreach" Click="BtnBrowseSingleFile_Click"
+                    <Button Name="BtnBrowsePreach" Click="BtnBrowseSingleFile_Click"
                          Grid.Row="7" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" BorderBrush="{x:Null}" Background="{x:Null}" ToolTip="설교ppt 파일 선택">
                         <Image Source="/Resources/search.png" />
-                    </xctk:IconButton>
+                    </Button>
 
                     <Label Grid.Row="8" Grid.ColumnSpan="2" Margin="0,0,79,3" VerticalAlignment="Bottom" >Vid</Label>
                     <TextBox Name="TxtVidLocation" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="7" ToolTip="설교 전 영상"/>
-                    <xctk:IconButton Name="BtnBrowseVid" Click="BtnBrowseSingleFile_Click"
+                    <Button Name="BtnBrowseVid" Click="BtnBrowseSingleFile_Click"
                          Grid.Row="8" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="설교 전 영상 선택">
                         <Image Source="/Resources/search_vid.png" />
-                    </xctk:IconButton>
+                    </Button>
 
                     <Label Grid.Row="9" >Birthday</Label>
                     <CheckBox Name="CbBirth" Checked="CheckBox_CheckChanged" Unchecked="CheckBox_CheckChanged"
@@ -163,27 +203,163 @@
                     <Button Name="BtnDoTask" Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" Click="StartTask" Template="{DynamicResource ButtonTemplate1}" ToolTip="작업 실행">Run</Button>
                 </Grid>
             </TabItem>
-            <TabItem Style="{DynamicResource TabItemStyle1}" Header="가사">
+            <TabItem Style="{DynamicResource TabItemStyle1}" Header="가사" Height="20" VerticalAlignment="Top">
                 <Grid Background="{StaticResource DarkMode.Base.Background}">
-                    <StackPanel>
-                        
-                    <DockPanel>
-                        <TextBox Width="480">asdf</TextBox>
-                        <Button Template="{DynamicResource ButtonTemplate1}">asdf</Button>
-                    </DockPanel>
-                        <TextBox MaxHeight="150" TextWrapping="Wrap" AcceptsReturn="True"  AcceptsTab="True" VerticalScrollBarVisibility="Auto"
-                                 Text="가사 &#x0a; 인데요&#x0a;&#x0a;&#x0a;&#x0a;&#x0a;&#x0a;긴 가사를 넣으면&#x0a;&#x0a;이렇게 스크롤바가 뙇"
-                                 >
-                        </TextBox>
-                        <DockPanel>
-                            <Label Style="{StaticResource baseStyle}">BackGround</Label>
-                            <xctk:ColorPicker 
-                                
-                                Background="{StaticResource DarkMode.Control.Static.Background}"
-                                DropDownBackground="Black" HeaderBackground="#FF070808" HeaderForeground="#FFFFE2E2" 
-                                TabBackground="#FF070808" TabForeground="#FFFFE2E2"></xctk:ColorPicker>
-                        </DockPanel>
-                    </StackPanel>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="3.9*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="1.4*"/>
+                        <RowDefinition Height="1.1*"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Name="TxtSearchBox" Height="36" Margin="5" FontSize="20" GotFocus="TxtSearchBox_GotFocus" LostFocus="TxtSearchBox_LostFocus"
+                                 Text="제목을 입력하세요" />
+                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnSearchLyric" Grid.Column="1" Margin="5"
+                                Click="BtnSearchLyric_Click">
+                            <Image Source="\Resources\search-white.png" Width="32" Height="32"/>
+                        </Button>
+                    </Grid>
+                    <TextBox Name="TxtLyrics" Grid.Row="1" Grid.ColumnSpan="2" Margin="5"
+                             TextWrapping="Wrap" AcceptsReturn="True"  AcceptsTab="True" VerticalScrollBarVisibility="Auto"
+                             VerticalAlignment="Stretch"/>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="BackGround" Margin="5"/>
+                        <xctk:ColorPicker Name="CmbBGColor" Grid.Column="1" Margin="5 10"
+                                Background="{StaticResource DarkMode.Control.Static.Background}" Foreground="Ivory"
+                                DropDownBackground="{StaticResource DarkMode.Control.Static.Background}"
+                                HeaderBackground="{StaticResource DarkMode.Control.Static.Background}" HeaderForeground="Ivory" 
+                                TabBackground="{StaticResource DarkMode.Control.Static.Background}" TabForeground="Ivory"
+                                          SelectedColor="#FF100010"/>
+                    </Grid>
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="FontColor" Margin="5"/>
+                        <xctk:ColorPicker Name="CmbFontColor" Grid.Column="1" Margin="5 10"
+                                Background="{StaticResource DarkMode.Control.Static.Background}" Foreground="Ivory"
+                                DropDownBackground="{StaticResource DarkMode.Control.Static.Background}"
+                                HeaderBackground="{StaticResource DarkMode.Control.Static.Background}" HeaderForeground="Ivory" 
+                                TabBackground="{StaticResource DarkMode.Control.Static.Background}" TabForeground="Ivory"
+                                          SelectedColor="White"/>
+
+                    </Grid>
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="2.5*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Font" Margin="5"/>
+                        <ComboBox Style="{DynamicResource ComboBoxStyle1}" Grid.Column="1" Name="CmbFontList" Margin="3 0"
+                                  SelectedIndex="0"/>
+                        <Label Grid.Column="2" Margin="2">Size</Label>
+                        <xctk:UIntegerUpDown Name="NumFontSize" Grid.Column="3" Margin="0 10 5 10" Text="40"/>
+                    </Grid>
+                    <Grid Grid.Row="3" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Emphasis" Margin="5"/>
+                        <CheckBox Template="{DynamicResource ImageCheckBoxTemplate}" Name="CheckBold" Grid.Column="1" Margin="5 5 0 5"
+                                  Checked="CheckBold_Changed" Unchecked="CheckBold_Changed">
+                            <Image Source="\Resources\bold-white.png" Width="28" Height="28" Margin="2"/>
+                        </CheckBox>
+                        <CheckBox Template="{DynamicResource ImageCheckBoxTemplate}" Name="CheckItalic" Grid.Column="2" Margin="1 5 1 5" 
+                                  Checked="CheckItalic_Changed" Unchecked="CheckItalic_Changed">
+                            <Image Source="\Resources\italic-white.png" Width="28" Height="28" Margin="2"/>
+                        </CheckBox>
+                        <CheckBox Template="{DynamicResource ImageCheckBoxTemplate}" Name="CheckUnderline" Grid.Column="3" Margin="0 5 5 5"
+                                  Checked="CheckUnderline_Changed" Unchecked="CheckUnderline_Changed">
+                            <Image Source="\Resources\underline-white.png" Width="28" Height="28" Margin="2"/>
+                        </CheckBox>
+                    </Grid>
+                    <Grid Grid.Row="4" Grid.ColumnSpan="2">
+                        <TextBox Name="FontPreview" FontFamily="{Binding ElementName=CmbFontList, Path=SelectedItem}" 
+                                 FontSize="{Binding ElementName=NumFontSize, Path=Text}"
+                                 Background="{Binding ElementName=CmbBGColor,Path=SelectedColorText}"
+                                 Foreground="{Binding ElementName=CmbFontColor,Path=SelectedColorText}" 
+                                 VerticalAlignment="Stretch" TextAlignment="Center"
+                                     Text="AaBbCc가나다라1234"/>
+                    </Grid>
+                    <Grid Grid.Row="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Vertical&#x0a;Alignment" Margin="5 0"/>
+                        <RadioButton Name="TitleVAlignTop" Template="{DynamicResource ToggleRadioButton}" 
+                                     GroupName="TitleVerticalAlignment"
+                                     Grid.Column="1" Margin="5 5 0 5" IsChecked="True">
+                            <Image Source="\Resources\valign-top-white.png" Width="32" Height="32"/>
+                        </RadioButton>
+                        <RadioButton Name="TitleVAlignCenter" Template="{DynamicResource ToggleRadioButton}" 
+                                     GroupName="TitleVerticalAlignment" 
+                                     Grid.Column="2" Margin="1 5 1 5">
+                            <Image Source="\Resources\valign-center-white.png" Width="32" Height="32"/>
+                        </RadioButton>
+                        <RadioButton Name="TitleVAlignBottom" Template="{DynamicResource ToggleRadioButton}" 
+                                     GroupName="TitleVerticalAlignment" 
+                                     Grid.Column="3" Margin="0 5 5 5">
+                            <Image Source="\Resources\valign-bottom-white.png" Width="32" Height="32"/>
+                        </RadioButton>
+                    </Grid>
+                    <Grid Grid.Row="5" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Offset" Margin="5"/>
+                        <xctk:DecimalUpDown Name="NumAlignmentOffset" Grid.Column="1" Margin="5 10"
+                                           Text="0.0" Increment="0.1" InputScope="Number" DefaultValue="0.0" Maximum="50" FormatString="F1"/>
+                    </Grid>
+                    <Grid Grid.Row="6" Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Title"/>
+                        <TextBox Name="TxtSongTitle" Grid.Column="1" Height="36" FontSize="20"/>
+                    </Grid>
+                    <Grid Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnRefresh" Width="70"
+                                VerticalAlignment="Stretch" Click="BtnRefresh_Click">
+                            <Image Source="\Resources\refresh-white.png" Width="32" Height="32"/>
+                        </Button>
+                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnCopyClipboard" Grid.Column="1" Width="70"
+                                VerticalAlignment="Stretch" Click="BtnCopyClipboard_Click">Copy</Button>
+                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnAddToSongList" Grid.Column="2" 
+                                Width="70" VerticalAlignment="Stretch" Click="BtnAddToSongList_Click">Add</Button>
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>

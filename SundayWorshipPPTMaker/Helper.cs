@@ -5,9 +5,14 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Windows.Media;
+using System.Globalization;
+using System.Windows.Markup;
+using System.Windows.Data;
 using Tesseract;
 using Microsoft.Office.Core;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
+
 namespace SundayWorshipPPTMaker
 {
 	///	<summary>
@@ -111,7 +116,6 @@ namespace SundayWorshipPPTMaker
 			if (next.Month != dt.Month) return true;
 			else return false;
         }
-
 	}
 
 	public class ClovaOCRRequstFormat
@@ -122,7 +126,7 @@ namespace SundayWorshipPPTMaker
 		public string requestId { get; set; }
 		[JsonInclude]
 		public long timestamp { get; set; }
-		public string? lang { get; set; }
+		public string lang { get; set; }
 		[JsonInclude]
 		public List<RequestImageJsonModel> images { get; set; }
     }
@@ -140,9 +144,9 @@ namespace SundayWorshipPPTMaker
 		[JsonInclude]
 		public string format { get; set; }
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-		public string? url { get; set; }
+		public string url { get; set; }
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-		public string? data { get; set; }
+		public string data { get; set; }
 		[JsonInclude]
 		public string name { get; set; }
 		public List<int> templateIds { get; set; }
@@ -196,6 +200,14 @@ namespace SundayWorshipPPTMaker
 		public float width { get; set; }
 		public float height { get; set; }
 	}
+
+	public class SongItem
+    {
+		public string Title { get; set; }
+		public string Path { get; set; }
+		public bool? PPTEnable { get; set; }
+		public List<string> Verse { get; set; }
+    }
 
 	/// <summary>
 	/// 주보 파일에 대한 Path와 추출 데이터.
