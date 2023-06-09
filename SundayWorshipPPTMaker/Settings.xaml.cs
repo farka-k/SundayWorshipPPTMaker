@@ -33,6 +33,16 @@ namespace SundayWorshipPPTMaker
 			SetParams();
 		}
 
+		public string GetSlideSizeTypeString { 
+			get
+            {
+				if (SlideSizeType == SlideSizeType.Normal)
+					return "4x3";
+				else
+					return "16x9";
+            } 
+		}
+
 		private void InitImages()
         {
 			var imgFullPath = Constants.BaseDirectory + ConfigurationManager.AppSettings.Get("ImgUriCreed");

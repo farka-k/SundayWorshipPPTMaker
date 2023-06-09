@@ -12,6 +12,7 @@ using System.Windows.Data;
 using Tesseract;
 using Microsoft.Office.Core;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
+using HtmlAgilityPack;
 
 namespace SundayWorshipPPTMaker
 {
@@ -27,13 +28,19 @@ namespace SundayWorshipPPTMaker
 		public const float SlideSize4x3Width = 25.4f;
 		public const float CoverImageWidth = 27.6f;
 		public const float CoverImageHeight = 9.4f;
-		public const float CoverImageTop = 2.52f;
+		public const float CoverImageTop = 4.0f;
 		public const float CoverImageLeft = 3.13f;
+		public const float CoverLogoWidth = 3.84f;
+		public const float CoverLogoHeight = 3.37f;
+		public const float CoverLogoTop = 2.71f;
+		public const float CoverLogoLeft = 15.01f;
 		public const float CoverCommentWidth = 16.86f;
 		public const float CoverCommentHeight = 4.02f;
 		public const float CoverCommentTop = 12.53f;
 		public const float CoverCommentLeft = 8.5f;
 		public const float PaneHeight = 14.32f;
+		public const float HorizontalMargin = 0.26f;
+		public const float VerticalMargin = 0.13f;
 
 		public const string FontNanumSquareBold = "나눔스퀘어 Bold";
 		public const string FontNanumSquareExBold = "나눔스퀘어라운드 ExtraBold";
@@ -44,33 +51,33 @@ namespace SundayWorshipPPTMaker
 		public const float RoundedRectangleRadius = 0.07707f;
 	}
 	public struct slideSize
-    {
+	{
 		public float Width;
 		public float Height;
-		public slideSize(float width,float height)
-        {
+		public slideSize(float width, float height)
+		{
 			Width = width;
 			Height = height;
-        }
-    }
-	
+		}
+	}
+
 	public enum SlideContentsType { Cover, Main }
 	public enum SlideSizeType { WideScreen, Normal }
 	public enum OCREngineType { Clova, Tesseract }
 	public enum TextEmphasis
-    {
-		None=0b_0000_0000,
-		Bold=0b_0000_0001,
-		Italic=0b_0000_0010,
-		UnderLine=0b_0000_0100,
-		Shadow=0b_0000_1000,
-		StrikeThrough=0b_0001_0000
-    }
+	{
+		None = 0b_0000_0000,
+		Bold = 0b_0000_0001,
+		Italic = 0b_0000_0010,
+		UnderLine = 0b_0000_0100,
+		Shadow = 0b_0000_1000,
+		StrikeThrough = 0b_0001_0000
+	}
 	public class ShadowOptions
-    {
+	{
 		public ShadowOptions(MsoShadowStyle style = MsoShadowStyle.msoShadowStyleOuterShadow,
-			int color = 0, float transparency=0.57f, float size=100, float blur=3, double angle=45,float distance=3)
-        {
+			int color = 0, float transparency = 0.57f, float size = 100, float blur = 3, double angle = 45, float distance = 3)
+		{
 			Style = style;
 			Color = color;
 			Transparency = transparency;
@@ -78,7 +85,7 @@ namespace SundayWorshipPPTMaker
 			Blur = blur;
 			Angle = angle;
 			Distance = distance;
-        }
+		}
 		public MsoShadowStyle Style { get; set; }
 		public int Color { get; set; }
 		public float Transparency { get; set; }
@@ -86,7 +93,7 @@ namespace SundayWorshipPPTMaker
 		public float Blur { get; set; }
 		public double Angle { get; set; }
 		public float Distance { get; set; }
-    }
+	}
 
 	public static class Utils
 	{
@@ -97,6 +104,14 @@ namespace SundayWorshipPPTMaker
 		public static float PointToCM(float pt)
 		{
 			return (pt / 72) * 2.54f;
+		}
+		public static double CMToPixel(double cm)
+		{
+			return cm * (96 / 2.54);
+		}
+		public static double PixelToCM(double px)
+		{
+			return px / (96 / 2.54);
 		}
 		/// <summary>
 		/// 다가오는 일요일의 날짜를 구한다.
@@ -110,16 +125,62 @@ namespace SundayWorshipPPTMaker
 		}
 
 		public static bool IsLastSundayOfMonth()
-        {
+		{
 			DateTime dt = GetComingSundayDate();
 			var next = dt.AddDays(7);
 			if (next.Month != dt.Month) return true;
 			else return false;
-        }
+		}
+	}
+
+	public class FirstDegreeFunctionConverter : IValueConverter
+	{
+		public double A { get; set; }
+		public double B { get; set; }
+
+		#region IValueConverter Members
+
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			double a = GetDoubleValue(parameter, A);
+
+			double x = GetDoubleValue(value, 0.0);
+
+			return (a * x) + B;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			double a = GetDoubleValue(parameter, A);
+
+			double y = GetDoubleValue(value, 0.0);
+
+			return (y - B) / a;
+		}
+
+		#endregion
+
+
+		private double GetDoubleValue(object parameter, double defaultValue)
+		{
+			double a;
+			if (parameter != null)
+				try
+				{
+					a = System.Convert.ToDouble(parameter);
+				}
+				catch
+				{
+					a = defaultValue;
+				}
+			else
+				a = defaultValue;
+			return a;
+		}
 	}
 
 	public class ClovaOCRRequstFormat
-    {
+	{
 		[JsonInclude]
 		public string version { get; set; }
 		[JsonInclude]
@@ -129,15 +190,15 @@ namespace SundayWorshipPPTMaker
 		public string lang { get; set; }
 		[JsonInclude]
 		public List<RequestImageJsonModel> images { get; set; }
-    }
+	}
 
 	public class ClovaOCRResponseFormat
-    {
+	{
 		//public string version { get; set; }
 		//public string requestId { get; set; }
 		//public long timestamp { get; set; }
 		public List<ResponseImageJsonModel> images { get; set; }
-    }
+	}
 
 	public class RequestImageJsonModel
 	{
@@ -153,7 +214,7 @@ namespace SundayWorshipPPTMaker
 	}
 
 	public class ResponseImageJsonModel
-    {
+	{
 		public string uid { get; set; }
 		public string name { get; set; }
 		public string inferResult { get; set; }
@@ -165,19 +226,19 @@ namespace SundayWorshipPPTMaker
 	}
 
 	public class MatchedTemplateModel
-    {
+	{
 		public int id { get; set; }
 		public string name { get; set; }
 	}
 
 	public class ValidationResultModel
-    {
+	{
 		public string result { get; set; }
 		public string message { get; set; }
 	}
 
 	public class ImageFieldModel
-    {
+	{
 		public string name { get; set; }
 		public string valueType { get; set; }
 		public string inferText { get; set; }
@@ -186,7 +247,7 @@ namespace SundayWorshipPPTMaker
 	}
 
 	public class TitleModel
-    {
+	{
 		public string name { get; set; }
 		public BoundingModel bounding { get; set; }
 		public string inferText { get; set; }
@@ -194,7 +255,7 @@ namespace SundayWorshipPPTMaker
 	}
 
 	public class BoundingModel
-    {
+	{
 		public float top { get; set; }
 		public float left { get; set; }
 		public float width { get; set; }
@@ -202,11 +263,50 @@ namespace SundayWorshipPPTMaker
 	}
 
 	public class SongItem
-    {
+	{
 		public string Title { get; set; }
 		public string Path { get; set; }
-		public bool? PPTEnable { get; set; }
-		public List<string> Verse { get; set; }
+		public bool PPTEnable { get; set; }
+		public List<string>? Verse { get; set; }
+		public LyricSlideOptions? Options { get; set; }
+	}
+
+	public class LyricSlideOptions
+    {
+		public int BackgroundColor { get; set; }
+		public int FontColor { get; set; }
+		public string FontName { get; set; }
+		public float FontSize { get; set; }
+		public TextEmphasis Emphasis { get; set; }
+		public MsoVerticalAnchor VerticalAlignment{ get; set; }
+		public float Offset { get; set; }
+    }
+	
+	public class GoogleCustomSearchAPIResponseModel
+    {
+		public List<SearchResultItemModel> items { get; set; }
+    }
+	public class SearchResultItemModel
+    {
+		public string title { get; set; }
+		public string link { get; set; }
+    }
+
+	public static class LyricsCollector
+    {
+		public static string GetLyrics(string url)
+        {
+			string fullLyrics = String.Empty;
+			HtmlWeb web = new HtmlWeb();
+			HtmlDocument htmlDoc = web.Load(url);
+
+			var contentBody = htmlDoc.DocumentNode.SelectSingleNode("//div[@id='hyrendContentBody']");
+			var lyricsSection = contentBody.SelectSingleNode("article/section[@class='sectionPadding contents lyrics']");
+			var lyricsContainer = lyricsSection.SelectSingleNode("div/div[@class='lyricsContainer']");
+			fullLyrics = lyricsContainer.SelectSingleNode("p/xmp").InnerText;
+
+			return fullLyrics;
+        }
     }
 
 	/// <summary>

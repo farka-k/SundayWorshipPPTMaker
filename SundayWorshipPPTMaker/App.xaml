@@ -344,6 +344,8 @@
         <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource baseStyle}">
             <Setter Property="Background" Value="{StaticResource DarkMode.Control.Static.Background}" />
         </Style>
+        <local:FirstDegreeFunctionConverter x:Key="PreviewSize" A="0.25" B="0"/>
+        
         <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FF587483"/>
         <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
         <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>

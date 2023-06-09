@@ -44,24 +44,22 @@ namespace SundayWorshipPPTMaker
 		private static SQLiteCommand command = null;
 		private static SQLiteDataReader rdr = null;
 		private List<string> fonts = new List<string>();
+
 		/// <summary>
 		/// MainWindow 초기화 코드
 		/// </summary>
 		public MainWindow()
 		{
 			InitializeComponent();
-
 			//GetBibleBooks();
 			GetBibleBooksDB();
 			InitComponentsValues();
 
-
 			jubo = new Jubo(dt.ToString("yy. M. d"));
 
 			RegisterHWPSecurityModule();
-
 		}
-
+		
 		/// <summary>
 		/// Hwp Object Library 보안 모듈을 레지스트리에 등록한다.
 		/// </summary>
@@ -136,8 +134,10 @@ namespace SundayWorshipPPTMaker
 			TxtOutputFileName.Text = dt.ToString("yyyy.MM.dd") + " 고등부 예배.pptx";
 
 			settings = new Settings();
-
+			
 			GetFontFamilies();
+			SlidePreview.Width = Utils.CMToPixel(Utils.PointToCM(settings.SlideSize.Width)) / 4;
+			TitleVAlignTop.IsChecked = true;
 		}
 
 		/// <summary>
@@ -202,6 +202,7 @@ namespace SundayWorshipPPTMaker
 						if (GetTextFromOCRResult(settings.OCREngineType, dlg.FileName))
 						{
 							ManualMode.IsChecked = false;
+							if (jubo.BirthPersonList.Count > 0) jubo.IsBirthday = true;
 							MessageBox.Show(jubo.GetJuboInfo());
 						}
 						else
@@ -398,7 +399,6 @@ namespace SundayWorshipPPTMaker
 
 		private ClovaOCRResponseFormat GetOCRResultClova(string imagePath)
 		{
-			//string imagePath= @"G:\대양 고등부\230514\test.jpg";
 			string response = SendImageToClovaServer(imagePath);
 			ClovaOCRResponseFormat responseObj = JsonSerializer.Deserialize<ClovaOCRResponseFormat>(response);
 			return responseObj;
@@ -686,9 +686,9 @@ namespace SundayWorshipPPTMaker
 			ref PowerPoint.Presentation presentation)
 		{
 			Random rnd = new Random();
-			int coverIndex = rnd.Next(1, 23);
 			PowerPoint.Presentation covers = pptPres.Open(AppDomain.CurrentDomain.BaseDirectory + "cover.pptx",
 				WithWindow: MsoTriState.msoFalse);
+			int coverIndex = rnd.Next(2, covers.Slides.Count);
 			covers.Slides[coverIndex].Copy();
 			presentation.Windows[1].Activate();
 			pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
@@ -702,14 +702,22 @@ namespace SundayWorshipPPTMaker
 			presentation.Slides[1].Shapes[1].Left = Utils.CMToPoint(Constants.CoverImageLeft);
 
 			presentation.Slides[1].Shapes[2].LockAspectRatio = MsoTriState.msoFalse;
-			presentation.Slides[1].Shapes[2].Top = Utils.CMToPoint(Constants.CoverCommentTop);
-			presentation.Slides[1].Shapes[2].Left = Utils.CMToPoint(Constants.CoverCommentLeft);
+			presentation.Slides[1].Shapes[2].Height = Utils.CMToPoint(Constants.CoverLogoHeight);
+			presentation.Slides[1].Shapes[2].Width = Utils.CMToPoint(Constants.CoverLogoWidth);
+			presentation.Slides[1].Shapes[2].Top = Utils.CMToPoint(Constants.CoverLogoTop);
+			presentation.Slides[1].Shapes[2].Left = Utils.CMToPoint(Constants.CoverLogoLeft);
 
+			presentation.Slides[1].Shapes[3].LockAspectRatio = MsoTriState.msoFalse;
+			presentation.Slides[1].Shapes[3].Top = Utils.CMToPoint(Constants.CoverCommentTop);
+			presentation.Slides[1].Shapes[3].Left = Utils.CMToPoint(Constants.CoverCommentLeft);
+			presentation.Slides[1].Shapes[3].Width = Utils.CMToPoint(Constants.CoverCommentWidth);
 
-			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[1, 1].Text = dt.ToString("yyyy.MM.dd");
-			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[1, 1].Font.Size = 40;
-			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[2, 1].Text = "XX주일";
-			presentation.Slides[1].Shapes[2].TextFrame2.TextRange.Lines[2, 1].Font.Size = 48;
+			presentation.Slides[1].Shapes[3].TextFrame2.TextRange.Font.NameFarEast = "Nanum JangMiCe";
+			presentation.Slides[1].Shapes[3].TextFrame2.TextRange.Font.NameAscii = "(한글 글꼴 사용)";
+			presentation.Slides[1].Shapes[3].TextFrame2.TextRange.Lines[1, 1].Text = dt.ToString("yyyy.MM.dd");
+			presentation.Slides[1].Shapes[3].TextFrame2.TextRange.Lines[1, 1].Font.Size = 40;
+			presentation.Slides[1].Shapes[3].TextFrame2.TextRange.Lines[2, 1].Text = "XX주일";
+			presentation.Slides[1].Shapes[3].TextFrame2.TextRange.Lines[2, 1].Font.Size = 48;
 
 		}
 
@@ -825,20 +833,33 @@ namespace SundayWorshipPPTMaker
 
 			for (int i = 0; i < SongList.Items.Count; i++)
 			{
-				PowerPoint.Presentation item = pptPres.Open((string)SongList.Items[i], WithWindow: MsoTriState.msoFalse);
-				item.Slides.Range().Copy();
+				var item = ((SongItem)SongList.Items[i]);
+				if (item.PPTEnable)
+				{
+					PowerPoint.Presentation songppt = pptPres.Open(item.Path, WithWindow: MsoTriState.msoFalse);
+					songppt.Slides.Range().Copy();
 
-				presentation.Windows[1].Activate();
-				presentation.Windows[1].View.GotoSlide(last_idx);
-				pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
-				//찬양 제목 슬라이드
-				currentSlide = presentation.Slides[++last_idx];
-				currentSlide.Duplicate();
-				currentSlide.Shapes.Range().Delete();
-				AddSongTitle(ref currentSlide, i);
+					presentation.Windows[1].Activate();
+					presentation.Windows[1].View.GotoSlide(last_idx);
+					pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
+					//찬양 제목 슬라이드
+					currentSlide = presentation.Slides[++last_idx];
+					currentSlide.Duplicate();
+					currentSlide.Shapes.Range().Delete();
+					AddSongTitle(ref currentSlide, i);
 
-				last_idx += item.Slides.Count;
-				item.Close();
+					last_idx += songppt.Slides.Count;
+					songppt.Close();
+				}
+                else
+                {
+					MakeLyricsSlides(item.Verse, item.Options, false);
+					presentation.Windows[1].Activate();
+					presentation.Windows[1].View.GotoSlide(last_idx);
+					pptApp.CommandBars.ExecuteMso("PasteSourceFormatting");
+
+					last_idx += item.Verse.Count;
+				}
 			}
 			//presentation.Slides[settings.SettingsPraiseEntry].Delete();
 
@@ -866,7 +887,7 @@ namespace SundayWorshipPPTMaker
 			gradStops.Insert(0xeceae0, 0.22f);
 			gradStops.Insert(0xf9f4f3, 0.56f);
 
-			SetTextEffectOptions(ref currentShape, System.IO.Path.GetFileNameWithoutExtension(SongList.Items[index] as string),
+			SetTextEffectOptions(ref currentShape, ((SongItem)SongList.Items[index]).Title,
 				Constants.FontSongTitle, 40, TextEmphasis.Shadow, 0,
 				MsoParagraphAlignment.msoAlignCenter, MsoVerticalAnchor.msoAnchorMiddle,
 				MsoAutoSize.msoAutoSizeNone, shadowOptions: new ShadowOptions(transparency: 0.6f, distance: 3));
@@ -1473,7 +1494,7 @@ namespace SundayWorshipPPTMaker
 		{
 			if (((CheckBox)sender).IsChecked == true)
 				FontPreview.FontWeight = FontWeights.Bold;
-			else
+            else
 				FontPreview.FontWeight = FontWeights.Normal;
 		}
 
@@ -1510,34 +1531,153 @@ namespace SundayWorshipPPTMaker
 			TxtSearchBox.Focus();
 		}
 
-		private void BtnCopyClipboard_Click(object sender, RoutedEventArgs e)
+		private void MakeLyricsSlides(List<string> phrases, LyricSlideOptions options, bool isCopy)
 		{
 			PowerPoint.Application pptApp = new PowerPoint.Application();
 			PowerPoint.Presentations pptPres = pptApp.Presentations;
 			PowerPoint.Presentation presentation = pptPres.Add(MsoTriState.msoFalse);
+			if (settings.SlideSizeType == SlideSizeType.Normal)
+				presentation.PageSetup.SlideSize = PowerPoint.PpSlideSizeType.ppSlideSizeOnScreen;
+			else
+			{
+				presentation.PageSetup.SlideSize = PowerPoint.PpSlideSizeType.ppSlideSizeCustom;
+				presentation.PageSetup.SlideWidth = settings.SlideSize.Width;
+				presentation.PageSetup.SlideHeight = settings.SlideSize.Height;
+			}
+
+			presentation.SlideMaster.Background.Fill.ForeColor.RGB = options.BackgroundColor;
 
 			PowerPoint.CustomLayout pcl = presentation.SlideMaster.CustomLayouts[7];
 			presentation.Slides.AddSlide(1, pcl);
 
+			//first slide
 			int lastSlide = 1;
-			presentation.Slides[lastSlide].Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal, 0, 0, Utils.CMToPoint(200), Utils.CMToPoint(100));
-			presentation.Slides[lastSlide].Shapes[1].TextFrame2.TextRange.Text = "1st";
-			presentation.Slides.AddSlide(++lastSlide, pcl);
-			presentation.Slides[lastSlide].Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal, 0, 0, Utils.CMToPoint(200), Utils.CMToPoint(100));
-			presentation.Slides[lastSlide].Shapes[1].TextFrame2.TextRange.Text = "2nd";
-			presentation.Slides.Range().Copy();
+			presentation.Slides[lastSlide].Shapes.AddTextbox(MsoTextOrientation.msoTextOrientationHorizontal,
+				0, Utils.CMToPoint(options.Offset),
+				settings.SlideSize.Width, 0);
+			var currentShape = presentation.Slides[lastSlide].Shapes[1];
+			SetTextEffectOptions(ref currentShape, phrases[0], options.FontName, options.FontSize,
+				options.Emphasis, options.FontColor, MsoParagraphAlignment.msoAlignCenter,options.VerticalAlignment, lineSpace: 1.5f);
 
-			if (MessageBox.Show("슬라이드가 클립보드에 복사되었습니다.") == MessageBoxResult.OK)
+			float offset = Utils.CMToPoint(options.Offset);
+			if (TitleVAlignCenter.IsChecked == true)
 			{
-				presentation.Close();
-				pptApp.Quit();
+				offset = offset + (Constants.SlideSizeHeight - currentShape.Height) / 2;
+			}
+			else if (TitleVAlignBottom.IsChecked == true)
+			{
+				offset = offset + Constants.SlideSizeHeight - currentShape.Height;
+			}
+			currentShape.Top = offset;
+
+			//remain slides
+			for (int i = phrases.Count - 1; i > 0; --i)
+			{
+				presentation.Slides[lastSlide].Duplicate();
+			}
+			for (int i = 1; i < phrases.Count; ++i)
+			{
+				presentation.Slides[i + 1].Shapes[1].TextFrame2.TextRange.Text = phrases[i].Trim();
 			}
 
+			//copy all
+			presentation.Slides.Range().Copy();
+
+			if (isCopy)
+				MessageBox.Show("슬라이드가 클립보드에 복사되었습니다.");
+			presentation.Close();
+		}
+
+		private void BtnCopyClipboard_Click(object sender, RoutedEventArgs e)
+		{
+			PopPreview.IsOpen = false;
+			var phrases = SplitLyrics();
+			TextEmphasis emphasis = TextEmphasis.None;
+			if (CheckBold.IsChecked == true)
+			{
+				emphasis |= TextEmphasis.Bold;
+			}
+			if (CheckItalic.IsChecked == true)
+			{
+				emphasis |= TextEmphasis.Italic;
+			}
+			if (CheckUnderline.IsChecked == true)
+			{
+				emphasis |= TextEmphasis.UnderLine;
+			}
+
+			MsoVerticalAnchor lyricsVAlignment = MsoVerticalAnchor.msoAnchorTop;
+			if (TitleVAlignCenter.IsChecked == true)
+			{
+				lyricsVAlignment = MsoVerticalAnchor.msoAnchorMiddle;
+			}
+			else if (TitleVAlignBottom.IsChecked == true)
+			{
+				lyricsVAlignment = MsoVerticalAnchor.msoAnchorBottom;
+			}
+			var options = new LyricSlideOptions
+			{
+				BackgroundColor = int.Parse(CmbBGColor.SelectedColor.ToString().Remove(0, 3), NumberStyles.HexNumber),
+				FontColor = int.Parse(CmbFontColor.SelectedColor.ToString().Remove(0, 3), NumberStyles.HexNumber),
+				Emphasis = emphasis,
+				FontName = CmbFontList.Text,
+				FontSize = NumFontSize.Value.Value,
+				Offset = ((float)NumAlignmentOffset.Value.Value),
+				VerticalAlignment = lyricsVAlignment
+			};
+			MakeLyricsSlides(phrases, options, true);
+		}
+
+		private List<string> SplitLyrics()
+        {
+			TxtLyrics.Text = TxtLyrics.Text.Replace("\r\n\r\n", "\r\n \r\n");
+			List<string> phrases = TxtLyrics.Text.Split("\r\n \r\n").ToList();
+			return phrases;
 		}
 
 		private void BtnAddToSongList_Click(object sender, RoutedEventArgs e)
 		{
-			SongList.Items.Add(new SongItem { Title = TxtSongTitle.Text, PPTEnable = false });
+			TextEmphasis emphasis=TextEmphasis.None;
+			if (CheckBold.IsChecked == true)
+            {
+				emphasis |= TextEmphasis.Bold;
+            }
+			if (CheckItalic.IsChecked == true)
+            {
+				emphasis |= TextEmphasis.Italic;
+            }
+            if (CheckUnderline.IsChecked == true)
+            {
+				emphasis |= TextEmphasis.UnderLine;
+            }
+
+			MsoVerticalAnchor lyricsVAlignment = MsoVerticalAnchor.msoAnchorTop;
+            if (TitleVAlignCenter.IsChecked == true)
+            {
+				lyricsVAlignment = MsoVerticalAnchor.msoAnchorMiddle;
+            }
+			else if (TitleVAlignBottom.IsChecked == true)
+            {
+				lyricsVAlignment = MsoVerticalAnchor.msoAnchorBottom;
+            }
+
+			SongList.Items.Add(new SongItem
+			{
+				Title = TxtSongTitle.Text,
+				PPTEnable = false,
+				Verse = SplitLyrics(),
+				Options = new LyricSlideOptions
+				{
+					BackgroundColor = int.Parse(CmbBGColor.SelectedColor.ToString().Remove(0, 3), NumberStyles.HexNumber),
+					FontColor = int.Parse(CmbFontColor.SelectedColor.ToString().Remove(0, 3), NumberStyles.HexNumber),
+					Emphasis = emphasis,
+					FontName = CmbFontList.Text,
+					FontSize = NumFontSize.Value.Value,
+					Offset = ((float)NumAlignmentOffset.Value.Value),
+					VerticalAlignment = lyricsVAlignment
+				}
+			});
+			MenuTab.SelectedIndex = 0;
 		}
 
 		private void BtnSearchLyricNode_Click(object sender, RoutedEventArgs e)
@@ -1556,10 +1696,109 @@ namespace SundayWorshipPPTMaker
 				|| TxtSearchBox.Text=="제목을 입력하세요")
 				return;
 			//검색
+			//google custom search api
+			string response = string.Empty;
+			string key = Environment.GetEnvironmentVariable("GoogleCustomSearchKey", EnvironmentVariableTarget.User);
+			string cx = Environment.GetEnvironmentVariable("GoogleCustomSearchEngineID", EnvironmentVariableTarget.User);
+			string requestUrl= "https://www.googleapis.com/customsearch/v1?"+"key="+key+"&cx="+cx+"&q="+TxtSearchBox.Text+" 가사"+"&num=5";
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+			request.Method = "GET";
+			request.ContentType = "application/json";
+			using (HttpWebResponse resp = (HttpWebResponse)request.GetResponse())
+			{
+				HttpStatusCode status = resp.StatusCode;
+				if (status == HttpStatusCode.OK)
+				{
+					Stream respStream = resp.GetResponseStream();
+					using (StreamReader sr = new StreamReader(respStream))
+					{
+						response = sr.ReadToEnd();
+					}
+				}
+			}
+			var responseObj=JsonSerializer.Deserialize<GoogleCustomSearchAPIResponseModel>(response);
+			string lyricsUrl = responseObj.items[0].link;
 
+			TxtLyrics.Text= LyricsCollector.GetLyrics(lyricsUrl);
 
-			MessageBox.Show("Search");
 			TxtSongTitle.Text = TxtSearchBox.Text;
+			PopPreview.IsOpen = true;
 		}
+
+        private void BtnPreview_Click(object sender, RoutedEventArgs e)
+        {
+			PopPreview.IsOpen = !PopPreview.IsOpen;
+        }
+
+        private void SlidePreview_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+			PopPreview.IsOpen = false;
+        }
+
+        private void SlidePreviewText_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+			PopPreview.IsOpen = false;
+        }
+
+        private void TitleVAlignTop_Checked(object sender, RoutedEventArgs e)
+        {
+			SlidePreviewText.VerticalAlignment = VerticalAlignment.Top;
+			NumAlignmentOffset.Minimum = 0;
+			NumAlignmentOffset.Maximum = (decimal?)(Constants.SlideSizeHeight / 2
+				- (Utils.PointToCM(NumFontSize.Value.Value) + Constants.VerticalMargin * 2 + 0.56));
+			NumAlignmentOffset.Text = NumAlignmentOffset.Text;
+			NumAlignmentOffset.Value++;
+			NumAlignmentOffset.Value--;
+		}
+
+        private void TitleVAlignCenter_Checked(object sender, RoutedEventArgs e)
+        {
+			SlidePreviewText.VerticalAlignment = VerticalAlignment.Center;
+			NumAlignmentOffset.Minimum = (decimal?)(- Constants.SlideSizeHeight / 2
+				+ Utils.PointToCM(NumFontSize.Value.Value) + Constants.VerticalMargin * 2 + 0.56);
+			NumAlignmentOffset.Maximum = (decimal?)(Constants.SlideSizeHeight / 2
+				- (Utils.PointToCM(NumFontSize.Value.Value) + Constants.VerticalMargin * 2 + 0.56));
+			NumAlignmentOffset.Value++;
+			NumAlignmentOffset.Value--;
+		}
+
+        private void TitleVAlignBottom_Checked(object sender, RoutedEventArgs e)
+        {
+			SlidePreviewText.VerticalAlignment = VerticalAlignment.Bottom;
+			NumAlignmentOffset.Minimum = (decimal?)(- Constants.SlideSizeHeight / 2
+				+ Utils.PointToCM(NumFontSize.Value.Value) + Constants.VerticalMargin * 2 + 0.56);
+			NumAlignmentOffset.Maximum = 0;
+			NumAlignmentOffset.Text = NumAlignmentOffset.Text;
+		}
+
+        private void NumAlignmentOffset_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+			if (SlidePreviewText == null) return;
+			double offset = Utils.CMToPixel(((double)NumAlignmentOffset.Value.Value) + 0.7) / 4;
+			if (NumAlignmentOffset.Value.Value < 0)
+            {
+				if (TitleVAlignCenter.IsChecked == true)
+					SlidePreviewText.Padding = new Thickness(0, 0, 0, -2 * offset);
+				else
+					SlidePreviewText.Padding = new Thickness(0, 0, 0, -offset);
+            }
+            else
+            {
+				if (TitleVAlignCenter.IsChecked == true)
+					SlidePreviewText.Padding = new Thickness(0, 2 * offset, 0, 0);
+				else
+					SlidePreviewText.Padding = new Thickness(0, offset, 0, 0);
+			}
+        }
+
+        private void BtnUsage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+			PopUsage.IsOpen = true;
+        }
+
+        private void BtnUsage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+			PopUsage.IsOpen = false;
+        }
     }
 }

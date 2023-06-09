@@ -11,6 +11,7 @@
     <Company />
     <Authors>Farka</Authors>
     <RepositoryUrl />
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -63,6 +64,7 @@
     <None Remove="Resources\logo01.png" />
     <None Remove="Resources\logo02.png" />
     <None Remove="Resources\logo03.png" />
+    <None Remove="Resources\LyricsUsageImage.png" />
     <None Remove="Resources\minus.png" />
     <None Remove="Resources\open-folder.png" />
     <None Remove="Resources\plus.png" />
@@ -111,8 +113,6 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Microsoft.Office.Interop.PowerPoint" Version="15.0.4420.1018" />
     <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
-    <PackageReference Include="NetOffice.Core" Version="1.7.4.11" />
-    <PackageReference Include="NetOffice.PowerPoint" Version="1.7.4.11" />
     <PackageReference Include="OpenCvSharp4" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.7.0.20230115" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.116" />
@@ -195,6 +195,7 @@
     <Resource Include="Resources\logo01.png" />
     <Resource Include="Resources\logo02.png" />
     <Resource Include="Resources\logo03.png" />
+    <Resource Include="Resources\LyricsUsageImage.png" />
     <Resource Include="Resources\minus.png" />
     <Resource Include="Resources\open-folder.png" />
     <Resource Include="Resources\plus.png" />

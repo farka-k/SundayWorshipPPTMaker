@@ -7,8 +7,8 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SundayWorshipPPTMaker"
         mc:Ignorable="d"
-        Title="WorshipPPT Maker" Height="550" Width="600" Closing="DisposeSettingWindow">
-    <Grid Background="{StaticResource DarkMode.Base.Background}">
+        Title="WorshipPPT Maker" Height="550" Width="600" Closing="DisposeSettingWindow" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid Background="#FF202225">
         <TabControl Name="MenuTab" TabStripPlacement="Left">
             <TabItem Style="{DynamicResource TabItemStyle1}" Header="Main">
                 <Grid Background="{StaticResource DarkMode.Base.Background}" UseLayoutRounding="False">
@@ -104,17 +104,19 @@
                             Background="{StaticResource DarkMode.Control.Static.Background}">
                             <ListBox.Template>
                                 <ControlTemplate>
-                                    <StackPanel>
-                                        <Grid ShowGridLines="True" Background="#FF383131">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="6*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Label Content="PPT" BorderBrush="#FFF0E5E5" />
-                                            <Label Content="Title" Grid.Column="1" BorderBrush="#FFF0E5E5" Margin="10 0" />
-                                        </Grid>
-                                        <ItemsPresenter />
-                                    </StackPanel>
+                                    <ScrollViewer>
+                                        <StackPanel>
+                                            <Grid ShowGridLines="True" Background="#FF383131">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="6*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Content="PPT" BorderBrush="#FFF0E5E5" />
+                                                <Label Content="Title" Grid.Column="1" BorderBrush="#FFF0E5E5" Margin="10 0" />
+                                            </Grid>
+                                            <ItemsPresenter />
+                                        </StackPanel>
+                                    </ScrollViewer>
                                 </ControlTemplate>
                             </ListBox.Template>
                             <ListBox.ItemTemplate>
@@ -124,7 +126,7 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="5*"/>
                                         </Grid.ColumnDefinitions>
-                                        <CheckBox Template="{DynamicResource CheckBoxTemplate1}" IsChecked="{Binding PPTEnable}" Grid.Column="0" Margin="5 0 10 0"/>
+                                        <CheckBox Template="{DynamicResource CheckBoxTemplate1}" IsChecked="{Binding PPTEnable}" Grid.Column="0" Margin="5 0 10 0" IsEnabled="False"/>
                                         <TextBlock Text="{Binding Title}" Grid.Column="1" HorizontalAlignment="Left" Margin="20 0" />
                                     </Grid>
                                 </DataTemplate>
@@ -203,7 +205,7 @@
                     <Button Name="BtnDoTask" Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Margin="2,0" Click="StartTask" Template="{DynamicResource ButtonTemplate1}" ToolTip="작업 실행">Run</Button>
                 </Grid>
             </TabItem>
-            <TabItem Style="{DynamicResource TabItemStyle1}" Header="가사" Height="20" VerticalAlignment="Top">
+            <TabItem Style="{DynamicResource TabItemStyle1}" Header="가사" Margin="-2,-2,0,2">
                 <Grid Background="{StaticResource DarkMode.Base.Background}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -235,6 +237,16 @@
                     <TextBox Name="TxtLyrics" Grid.Row="1" Grid.ColumnSpan="2" Margin="5"
                              TextWrapping="Wrap" AcceptsReturn="True"  AcceptsTab="True" VerticalScrollBarVisibility="Auto"
                              VerticalAlignment="Stretch"/>
+                    <Button Name="BtnUsage" Grid.Row="1" Grid.Column="1" Content="?" Template="{DynamicResource ButtonTemplate1}" 
+                            FontSize="20" Width="30"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" BorderBrush="White"
+                            MouseEnter="BtnUsage_MouseEnter" MouseLeave="BtnUsage_MouseLeave"/>
+                    <Popup Name="PopUsage" Placement="Mouse">
+                        <StackPanel>
+                            <TextBlock Text="문단으로 슬라이드를 구분합니다" FontSize="15"/>
+                            <Image Source="Resources/LyricsUsageImage.png" Width="300"/>
+                        </StackPanel>
+                    </Popup>
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -259,7 +271,7 @@
                                 DropDownBackground="{StaticResource DarkMode.Control.Static.Background}"
                                 HeaderBackground="{StaticResource DarkMode.Control.Static.Background}" HeaderForeground="Ivory" 
                                 TabBackground="{StaticResource DarkMode.Control.Static.Background}" TabForeground="Ivory"
-                                          SelectedColor="White"/>
+                                          SelectedColor="#FFFFFFFF"/>
 
                     </Grid>
                     <Grid Grid.Row="3">
@@ -271,7 +283,7 @@
                         </Grid.ColumnDefinitions>
                         <Label Content="Font" Margin="5"/>
                         <ComboBox Style="{DynamicResource ComboBoxStyle1}" Grid.Column="1" Name="CmbFontList" Margin="3 0"
-                                  SelectedIndex="0"/>
+                                  IsEditable="True" SelectedIndex="0"/>
                         <Label Grid.Column="2" Margin="2">Size</Label>
                         <xctk:UIntegerUpDown Name="NumFontSize" Grid.Column="3" Margin="0 10 5 10" Text="40"/>
                     </Grid>
@@ -297,12 +309,12 @@
                         </CheckBox>
                     </Grid>
                     <Grid Grid.Row="4" Grid.ColumnSpan="2">
-                        <TextBox Name="FontPreview" FontFamily="{Binding ElementName=CmbFontList, Path=SelectedItem}" 
+                        <TextBox Name="FontPreview" FontFamily="{Binding ElementName=CmbFontList, Path=SelectedItem, TargetNullValue=굴림}" 
                                  FontSize="{Binding ElementName=NumFontSize, Path=Text}"
                                  Background="{Binding ElementName=CmbBGColor,Path=SelectedColorText}"
                                  Foreground="{Binding ElementName=CmbFontColor,Path=SelectedColorText}" 
                                  VerticalAlignment="Stretch" TextAlignment="Center"
-                                     Text="AaBbCc가나다라1234"/>
+                                     Text="AaBbCc가나다라1234" Margin="0,2,0,-2"/>
                     </Grid>
                     <Grid Grid.Row="5">
                         <Grid.ColumnDefinitions>
@@ -314,17 +326,17 @@
                         <Label Content="Vertical&#x0a;Alignment" Margin="5 0"/>
                         <RadioButton Name="TitleVAlignTop" Template="{DynamicResource ToggleRadioButton}" 
                                      GroupName="TitleVerticalAlignment"
-                                     Grid.Column="1" Margin="5 5 0 5" IsChecked="True">
+                                     Grid.Column="1" Margin="5 5 0 5" Checked="TitleVAlignTop_Checked">
                             <Image Source="\Resources\valign-top-white.png" Width="32" Height="32"/>
                         </RadioButton>
                         <RadioButton Name="TitleVAlignCenter" Template="{DynamicResource ToggleRadioButton}" 
                                      GroupName="TitleVerticalAlignment" 
-                                     Grid.Column="2" Margin="1 5 1 5">
+                                     Grid.Column="2" Margin="1 5 1 5" Checked="TitleVAlignCenter_Checked">
                             <Image Source="\Resources\valign-center-white.png" Width="32" Height="32"/>
                         </RadioButton>
                         <RadioButton Name="TitleVAlignBottom" Template="{DynamicResource ToggleRadioButton}" 
                                      GroupName="TitleVerticalAlignment" 
-                                     Grid.Column="3" Margin="0 5 5 5">
+                                     Grid.Column="3" Margin="0 5 5 5" Checked="TitleVAlignBottom_Checked">
                             <Image Source="\Resources\valign-bottom-white.png" Width="32" Height="32"/>
                         </RadioButton>
                     </Grid>
@@ -333,9 +345,11 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Offset" Margin="5"/>
+                        <Label Content="Offset ( cm )" Margin="5"/>
                         <xctk:DecimalUpDown Name="NumAlignmentOffset" Grid.Column="1" Margin="5 10"
-                                           Text="0.0" Increment="0.1" InputScope="Number" DefaultValue="0.0" Maximum="50" FormatString="F1"/>
+                                           Text="0.0" Increment="0.1" InputScope="Number" DefaultValue="0.0" Maximum="17.08" Minimum="-17.08" 
+                                           FormatString="F2" ValueChanged="NumAlignmentOffset_ValueChanged" ClipValueToMinMax="True" 
+                                            ToolTip="수직 정렬 기준 위치로 부터 거리&#x0a;양수는 아래, 음수는 위 방향"/>
                     </Grid>
                     <Grid Grid.Row="6" Margin="5">
                         <Grid.ColumnDefinitions>
@@ -350,16 +364,37 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnRefresh" Width="70"
-                                VerticalAlignment="Stretch" Click="BtnRefresh_Click">
+                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnRefresh" Width="65"
+                                VerticalAlignment="Stretch" ToolTip="기본값" 
+                                Click="BtnRefresh_Click">
                             <Image Source="\Resources\refresh-white.png" Width="32" Height="32"/>
                         </Button>
-                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnCopyClipboard" Grid.Column="1" Width="70"
-                                VerticalAlignment="Stretch" Click="BtnCopyClipboard_Click">Copy</Button>
+                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnCopyClipboard" Grid.Column="1" Width="65"
+                                VerticalAlignment="Stretch" ToolTip="가사 슬라이드를 클립보드에 복사합니다&#x0a;복사한 슬라이드를 기존 PPT에 붙여넣을 수 있습니다"
+                                Click="BtnCopyClipboard_Click">Copy</Button>
                         <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnAddToSongList" Grid.Column="2" 
-                                Width="70" VerticalAlignment="Stretch" Click="BtnAddToSongList_Click">Add</Button>
+                                Width="65" VerticalAlignment="Stretch" ToolTip="곡 목록에 추가"
+                                Click="BtnAddToSongList_Click" >Add</Button>
+                        <Button Template="{DynamicResource ButtonTemplate1}" Name="BtnPreview" Grid.Column="3" Width="65"
+                                VerticalAlignment="Stretch" Click="BtnPreview_Click" Content="Preview"/>
                     </Grid>
+                    <Popup Name="PopPreview"  Placement="Right" VerticalOffset="300" StaysOpen="True" AllowsTransparency="True">
+                        <Grid>
+                            <Rectangle Name="SlidePreview" Height="180" Fill="{Binding ElementName=CmbBGColor,Path=SelectedColorText}" MouseDown="SlidePreview_MouseDown"/>
+                            <TextBox Name="SlidePreviewText" Width="{Binding ElementName=SlidePreview,Path=Width}"
+                                     Background="Transparent" BorderBrush="{x:Null}"
+                                     Foreground="{Binding ElementName=FontPreview,Path=Foreground}" 
+                                     FontFamily="{Binding ElementName=FontPreview, Path=FontFamily, TargetNullValue=굴림}"
+                                     FontSize="{Binding ElementName=FontPreview, Path=FontSize, Converter={StaticResource PreviewSize}}"
+                                     FontWeight="{Binding ElementName=FontPreview, Path=FontWeight}"
+                                     FontStyle="{Binding ElementName=FontPreview,Path=FontStyle}"
+                                     TextDecorations="{Binding ElementName=FontPreview,Path=TextDecorations}"
+                                     TextAlignment="Center" VerticalAlignment="Stretch"
+                                     Text="{Binding ElementName=FontPreview,Path=Text}" Focusable="False" MouseDown="SlidePreviewText_MouseDown"/>
+                        </Grid>
+                    </Popup>
                 </Grid>
             </TabItem>
         </TabControl>
